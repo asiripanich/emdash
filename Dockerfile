@@ -15,7 +15,6 @@ RUN Rscript -e 'remotes::install_version("shinydashboard",upgrade="never", versi
 RUN Rscript -e 'remotes::install_version("DT",upgrade="never", version = "0.14")'
 RUN Rscript -e 'remotes::install_version("flexdashboard",upgrade="never", version = "0.5.2")'
 RUN Rscript -e 'remotes::install_version("esquisse",upgrade="never", version = "0.3.0")'
-RUN Rscript -e 'remotes::install_version("checkmate",upgrade="never", version = "2.0.0")'
 RUN Rscript -e 'remotes::install_version("lubridate",upgrade="never", version = "1.7.8")'
 RUN Rscript -e 'remotes::install_version("dplyr",upgrade="never", version = "0.8.5")'
 RUN Rscript -e 'remotes::install_version("leaflet",upgrade="never", version = "2.0.3")'

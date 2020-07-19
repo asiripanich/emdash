@@ -23,7 +23,6 @@ mod_mapview_server <- function(input, output, session, data_sf, mapview.map.type
   ns <- session$ns
   
   req(data_sf)
-  checkmate::assert_data_frame(x = data_sf)
   
   data_r <- reactiveValues(data = data_sf)
   

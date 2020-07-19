@@ -24,8 +24,6 @@ mod_DT_server <- function(input, output, session, data){
   ns <- session$ns
   
   req(data)
-
-  checkmate::assert_data_frame(data)
   
   output$DTtable <- DT::renderDataTable({
       DT::datatable(

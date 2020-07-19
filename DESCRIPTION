@@ -17,7 +17,6 @@ Imports:
     DT,
     flexdashboard,
     esquisse,
-    checkmate,
     lubridate,
     dplyr,
     leaflet,

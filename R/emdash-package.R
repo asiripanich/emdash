@@ -2,7 +2,6 @@
 #' @import mongolite
 #' @import shiny
 #' @import shinydashboard
-#' @import checkmate
 #' @importFrom sf st_linestring st_drop_geometry
 #' @import mapview
 #' @importFrom flexdashboard gauge gaugeSectors gaugeOutput
