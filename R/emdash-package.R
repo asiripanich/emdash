@@ -1,5 +1,4 @@
 #' @keywords internal
-#' @import mongolite
 #' @import shiny
 #' @import shinydashboard
 #' @importFrom sf st_linestring st_drop_geometry
