@@ -10,7 +10,7 @@
 mod_ggplotly_ui <- function(id){
   ns <- NS(id)
   tagList(
-    plotly::plotlyOutput(ns("plot"))
+    shinycssloaders::withSpinner(plotly::plotlyOutput(ns("plot")))
   )
 }
     

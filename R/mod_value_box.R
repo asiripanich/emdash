@@ -10,7 +10,7 @@
 mod_value_box_ui <- function(id, width = 3){
   ns <- NS(id)
   tagList(
-    valueBoxOutput(ns("value_box"), width = width)
+    shinycssloaders::withSpinner(valueBoxOutput(ns("value_box"), width = width))
   )
 }
     
