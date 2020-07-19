@@ -51,6 +51,17 @@ install.packages("remotes")
 remotes::install_github("asiripanich/emdash")
 ```
 
+## WARNING\!
+
+This package has been tested only on the following e-mission-phone
+branches: `rciti1`, `rciti2`, and `rciti3`. There are query functions
+that only work on those branches hence it is likely that the dashboard
+will crash if you use other branches. I will find time to generalise the
+dashboard or at least make it work with e-mission-phone’s `master`
+branch in September. However, it shouldn’t be hard to modify this
+dashboard specific to your e-mission deployment, granted that you know R
+and Shiny.
+
 ## How to use the dashboard
 
 ### Run locally
@@ -73,7 +84,7 @@ library(emdash)
 emdash::run_app(mongo_url = 'mongodb://localhost:27017')
 ```
 
-### use Docker
+### Use with Docker
 
 We provide a Dockerfile to run this dashboard. In the future we may
 include this as part of an e-mission docker-compose file which will be
