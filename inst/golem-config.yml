@@ -1,0 +1,9 @@
+default:
+  golem_name: emdash
+  golem_version: 0.0.0.9000
+  app_prod: no
+  project_crs: 4326
+production:
+  app_prod: yes
+dev:
+  golem_wd: !expr here::here()

@@ -1,0 +1,33 @@
+Package: emdash
+Title: e-mission dashboard built with the Shiny framework
+Version: 0.0.0.9000
+Authors@R: person('Amarin', 'Siripanich', email = 'amarin.siri@gmail.com', role = c('cre', 'aut'))
+Description: e-mission dashboard built with the Shiny framework
+License: MIT + file LICENSE
+Imports: 
+    config,
+    golem,
+    shiny,
+    data.table,
+    magrittr,
+    mapview,
+    ggplot2,
+    mongolite,
+    shinydashboard,
+    DT,
+    flexdashboard,
+    esquisse,
+    checkmate,
+    lubridate,
+    dplyr,
+    leaflet,
+    janitor,
+    tidyr,
+    shinycssloaders,
+    plotly,
+    randomcoloR
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+URL: https://github.com/asiripanich/emdash
+BugReports: https://github.com/asiripanich/emdash/issues

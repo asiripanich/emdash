@@ -1,0 +1,14 @@
+#' @keywords internal
+#' @import mongolite
+#' @import shiny
+#' @import shinydashboard
+#' @import checkmate
+#' @import sf
+#' @import mapview
+#' @importFrom flexdashboard gauge gaugeSectors gaugeOutput
+#' @importFrom esquisse esquisserUI esquisserServer
+# The following block is used by usethis to automatically manage
+# roxygen namespace tags. Modify with care!
+## usethis namespace: start
+## usethis namespace: end
+NULL
