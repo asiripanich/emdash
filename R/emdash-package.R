@@ -3,7 +3,7 @@
 #' @import shiny
 #' @import shinydashboard
 #' @import checkmate
-#' @import sf
+#' @importFrom sf st_linestring st_drop_geometry
 #' @import mapview
 #' @importFrom flexdashboard gauge gaugeSectors gaugeOutput
 #' @importFrom esquisse esquisserUI esquisserServer
