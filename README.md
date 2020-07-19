@@ -7,6 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![tic](https://github.com/asiripanich/emdash/workflows/tic/badge.svg?branch=master)](https://github.com/asiripanich/emdash/actions)
 <!-- badges: end -->
 
 The goal of emdash is to provide a deployer dashboard for an e-mission
