@@ -13,6 +13,8 @@ mod_mapview_server(
 )
 }
 \arguments{
+\item{input, output, session}{Internal parameters for {shiny}.}
+
 \item{data_sf}{a spatial data object from the 'sf' package.}
 
 \item{mapview.map.types}{see `map.types` in the [mapview::mapview] function.}

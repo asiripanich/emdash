@@ -8,6 +8,8 @@ normalise_uuid(.data, keep_uuid = FALSE)
 }
 \arguments{
 \item{.data}{a data.frame.}
+
+\item{keep_uuid}{logical.}
 }
 \value{
 a data.frame

@@ -7,7 +7,9 @@
 mod_mapview_ui(id, height)
 }
 \arguments{
-\item{id, input, output, session}{Internal parameters for {shiny}.}
+\item{id}{Internal parameters for {shiny}.}
+
+\item{height}{[leaflet::leafletOutput]'s `height` argument.}
 }
 \description{
 A shiny Module.

@@ -94,6 +94,7 @@ query_stage_profiles <- function(cons) {
 #' Normalise UUID
 #'
 #' @param .data a data.frame.
+#' @param keep_uuid logical.
 #'
 #' @return a data.frame
 #' @export
