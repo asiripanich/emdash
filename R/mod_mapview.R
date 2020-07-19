@@ -26,12 +26,17 @@ mod_mapview_server <- function(input, output, session, data_sf, mapview.map.type
   data_r <- reactiveValues(data = data_sf)
   
   output$map <- leaflet::renderLeaflet({
-    m <- mapview::mapview(
-      data_sf,
-      zcol = "user_id",
-      color = randomcoloR::distinctColorPalette,
-      map.types = mapview.map.types
-    )
+    if (nrow(data_sf) == 0) {
+      m <- mapview::mapview(map.types = mapview.map.types)
+    } else {
+      m <-
+        mapview::mapview(
+          data_sf,
+          zcol = "user_id",
+          color = randomcoloR::distinctColorPalette,
+          map.types = mapview.map.types
+        )
+    }
     m@map
   })
 }
