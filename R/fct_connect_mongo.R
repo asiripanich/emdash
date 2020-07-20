@@ -17,7 +17,7 @@ connect_stage_collections <- function(db = "Stage_database", collections = COLLE
 
 create_connection <- function(db, collection, url) {
   stopifnot(collection %in% COLLECTIONS)
-  mongolte::mongo(
+  mongolite::mongo(
     db = db,
     collection = collection,
     url = url
