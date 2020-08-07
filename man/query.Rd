@@ -29,7 +29,7 @@ query_stage_uuids(cons)
 query_stage_profiles(cons)
 }
 \arguments{
-\item{cons}{a list of connections created with `create_all_connections()`.}
+\item{cons}{a list of connections created with [connect_stage_collections()].}
 }
 \value{
 a data.frame/data.table.

@@ -1,7 +1,7 @@
 #' Connect to the e-mission's MongoDB database
 #'
 #' @param collections collections to connect to, by default this try to connect to
-#' all the collections in `COLLECTIONS`.
+#' all the collections in [COLLECTIONS].
 #' @param db database name. Default as 'Stage_database'.
 #' @param url address of the emisison mongodb server in mongo 
 #'   connection string [URI format](https://docs.mongodb.com/manual/reference/connection-string/).

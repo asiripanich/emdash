@@ -14,7 +14,7 @@ connect_stage_collections(
 \item{db}{database name. Default as 'Stage_database'.}
 
 \item{collections}{collections to connect to, by default this try to connect to
-all the collections in `COLLECTIONS`.}
+all the collections in [COLLECTIONS].}
 
 \item{url}{address of the emisison mongodb server in mongo 
 connection string [URI format](https://docs.mongodb.com/manual/reference/connection-string/).

@@ -1,6 +1,6 @@
 #' Query functions
 #'
-#' @param cons a list of connections created with `create_all_connections()`.
+#' @param cons a list of connections created with [connect_stage_collections()].
 #'
 #' @return a data.frame/data.table.
 #' @name query
