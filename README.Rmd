@@ -94,7 +94,7 @@ First you need to know [R](https://www.r-project.org/) and [Shiny](https://shiny
 
 ### Customise query functions
 
-See `R/utils_stage_db_queries.R`.
+See `R/utils_query_database.R`.
 
 The functions in this script are for querying data from the e-mission mongoDB database.
 
@@ -102,4 +102,4 @@ The functions in this script are for querying data from the e-mission mongoDB da
 
 See `R/utils_tidy_data.R`.
 
-The functions in this script are for cleansing and transforming data queried using the functions in `R/utils_stage_db_queries.R`.
+The functions in this script are for cleansing and transforming data queried using the functions in `R/utils_query_database.R`.

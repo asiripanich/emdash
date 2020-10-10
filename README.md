@@ -103,7 +103,7 @@ customised. Any advices to improve the dashboard are welcomed. :)
 
 ### Customise query functions
 
-See `R/utils_stage_db_queries.R`.
+See `R/utils_query_database.R`.
 
 The functions in this script are for querying data from the e-mission
 mongoDB database.
@@ -113,4 +113,4 @@ mongoDB database.
 See `R/utils_tidy_data.R`.
 
 The functions in this script are for cleansing and transforming data
-queried using the functions in `R/utils_stage_db_queries.R`.
+queried using the functions in `R/utils_query_database.R`.
