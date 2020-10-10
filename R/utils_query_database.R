@@ -92,24 +92,27 @@ query_stage_profiles <- function(cons) {
 }
 
 #' Normalise UUID
+#' 
+#' @description 
+#' Note that this function will rename `uuid` to `user_id`. 
 #'
-#' @param .data a data.frame.
-#' @param keep_uuid logical.
+#' @param .data a data.frame created using `query_*` functions in `R/utils_query_database.R`.
+#' @param keep_uuid a logical value default as FALSE. If this is true then the
+#' original `uuid` field will not be removed from `.data`.
 #'
 #' @return a data.frame
 #' @export
 normalise_uuid <- function(.data, keep_uuid = FALSE) {
-  # return(.data)
   if (!is.data.table(.data)) {
     setDT(.data)
   }
-  if ("uuid" %in% names(.data)) {
-    .data[, user_id := sapply(uuid, function(.x) paste0(unlist(.x), collapse = ""))]
-    if (!keep_uuid)  {
-      .data[, uuid := NULL]
-    }
-  } else {
-    .data[, user_id := sapply(user_id, function(.x) paste0(unlist(.x), collapse = ""))]
+  if (!"uuid" %in% names(.data)) {
+    stop("`uuid` is not a valid column name in `.data`.")
+  }
+  # the `uuid` field is a list column, so it has to be convert into a character.
+  .data[, user_id := sapply(uuid, function(.x) paste0(unlist(.x), collapse = ""))]
+  if (!keep_uuid) {
+    .data[, uuid := NULL]
   }
   .data
 }
