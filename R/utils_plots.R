@@ -1,4 +1,8 @@
 #' Plots
+#' 
+#' @description 
+#' 
+#' Plotting functions.
 #'
 #' @param participants 
 #' @param trips 
@@ -16,7 +20,7 @@ utils_plot_signup_trend = function(participants) {
     theme_minimal()
 }
 
-#' @rdname utils_plot
+# @rdname utils_plot
 utils_plot_trip_trend = function(trips) {
   trips %>%
     dplyr::transmute(date = lubridate::date(start_fmt_time)) %>%
@@ -26,7 +30,7 @@ utils_plot_trip_trend = function(trips) {
     theme_minimal()
 }
 
-#' @rdname utils_plot
+# @rdname utils_plot
 utils_plot_trips_last_seven_days = function(trips) {
   trips %>%
     dplyr::transmute(date = lubridate::date(start_fmt_time)) %>%
@@ -38,7 +42,7 @@ utils_plot_trips_last_seven_days = function(trips) {
     theme_minimal()
 }
 
-#' @rdname utils_plot
+# @rdname utils_plot
 utils_plot_branch = function(participants) {
   participants %>%
     ggplot(aes(x = branch, fill = branch)) +
@@ -48,7 +52,7 @@ utils_plot_branch = function(participants) {
     theme_minimal()
 }
 
-#' @rdname utils_plot
+# @rdname utils_plot
 utils_plot_participation_period = function(participants) {
   participants %>%
     ggplot(aes(x = round(n_days))) +
@@ -57,7 +61,7 @@ utils_plot_participation_period = function(participants) {
     theme_minimal()
 }
 
-#' @rdname utils_plot
+# @rdname utils_plot
 utils_plot_platform = function(participants) {
   participants %>%
     ggplot(aes(x = curr_platform, fill = curr_platform)) +
