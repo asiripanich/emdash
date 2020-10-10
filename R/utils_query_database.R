@@ -109,7 +109,7 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
   if (!"uuid" %in% names(.data)) {
     stop("`uuid` is not a valid column name in `.data`.")
   }
-  # the `uuid` field is a list column, so it has to be convert into a character.
+  # the `uuid` field is a list column, so it has to be converted into a character.
   .data[, user_id := sapply(uuid, function(.x) paste0(unlist(.x), collapse = ""))]
   if (!keep_uuid) {
     .data[, uuid := NULL]
