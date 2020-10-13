@@ -33,40 +33,6 @@ query_cleaned_section <- function(cons) {
 
 #' @rdname query
 #' @export
-query_trip_ends <- function(cons) {
-  .data <-
-    cons$Stage_timeseries$find('{"metadata.key": "manual/confirm_survey"}') %>%
-    as.data.table() %>%
-    .[, data.survey_result := lapply(data.survey_result, function(.x) {
-      list(xml2::read_xml(.x) %>% xml2::as_list() %>% unlist())
-    })]
-  
-  tripend_survey_responses <-
-    .data$data.survey_result %>%
-    purrr::flatten(.) %>%
-    purrr::map_dfr(., ~ {
-      .x %>%
-        matrix(byrow = T, nrow = 1, dimnames = list(c(), names(.))) %>%
-        as.data.table()
-    })
-  
-  cbind(tripend_survey_responses, .data) %>%
-    data.table::setcolorder(c("user_id", "data.timestamp")) %>%
-    normalise_uuid(.)
-  
-}
-
-#' @rdname query
-#' @export
-query_user_profile_survey <- function(cons) {
-  cons$Stage_timeseries$find('{"metadata.key": "manual/user_profile_survey"}') %>%
-    as.data.table() %>%
-    normalise_uuid() %>%
-    .[, data.datetime := as_datetime(data.timestamp, tz = "Australia/Sydney")]
-}
-
-#' @rdname query
-#' @export
 query_raw_trips <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "segmentation/raw_trip"}') %>%
     as.data.table() %>%
@@ -106,6 +72,7 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
   if (!is.data.table(.data)) {
     setDT(.data)
   }
+  print(names(.data))
   if (!"uuid" %in% names(.data)) {
     stop("`uuid` is not a valid column name in `.data`.")
   }

@@ -11,69 +11,13 @@ tidy_participants <- function(stage_profiles, stage_uuids) {
     .[, -"user_email"]
 }
 
-tidy_trip_ends <- function(trip_ends) {
-  # unnesting the xml trip end survey result
-  te <-
-    trip_ends[, .(user_id, data.timestamp, data.start_ts, data.end_ts, survey = data.survey_result)]
-  
-  te_unnested = lapply(1:nrow(te), function(i) {
-    unlist(te[i,]) %>% t() %>% as.data.table()
-  }) %>%
-    rbindlist(fill = TRUE) %>%
-    setnames(gsub("trip-end-survey_v9.", "data_old.", names(.))) %>%
-    .[, .SD, .SDcols = !grepl("data_old", names(.))] %>%
-    setnames(gsub("survey.", "", names(.))) %>%
-    .[!is.na(data.start)] %>%
-    janitor::clean_names() %>%
-    .[, -"data_version"]
-  
-  # clean up columns
-  te_unnested %>%
-    tidyr::unite(travel_mode, dplyr::contains("travel_mode"), sep = "|", na.rm = TRUE) %>%
-    tidyr::unite(destination_purpose, dplyr::contains("purpose"), sep = "|", na.rm = TRUE) %>%
-    tidyr::unite(transit_fees, dplyr::contains("transit_fees"), sep = "|", na.rm = TRUE) %>%
-    tidyr::unite(parking_location, dplyr::contains("parking_location"), sep = "|", na.rm = TRUE) %>%
-    tidyr::unite(n_persons, dplyr::contains("total_people_in_trip_party"), sep = "|", na.rm = TRUE) %>%
-    tidyr::unite(toll_charges, dplyr::contains("toll_charges"), sep = "|", na.rm = TRUE) %>%
-    tidyr::unite(parking_cost, dplyr::contains("parking_cost"), sep = "|", na.rm = TRUE) %>%
-    tidyr::unite(non_household_members, dplyr::contains("non_household_member"), sep = "|", na.rm = TRUE) %>%
-    dplyr::mutate(
-      data_timestamp = lubridate::as_datetime(data_timestamp),
-      data_start = lubridate::as_datetime(data_start),
-      data_end = lubridate::as_datetime(data_end),
-      data_start_ts = as.numeric(data_start_ts),
-      data_end_ts = as.numeric(data_end_ts)
-      # data_start = lubridate::as_datetime(data_start, tz = "Australia/Sydney"),
-      # data_end = lubridate::as_datetime(data_end, tz = "Australia/Sydney")
-    ) %>%
-    as.data.table()
-}
-
-tidy_cleaned_trips = function(cleaned_trips) {
-  cleaned_trips %>%
-    dplyr::select(-dplyr::contains(c(".hour", ".second", ".minute", ".day", ".month", ".year", ".weekday"))) %>%
-    setnames(gsub("data.", "", names(.))) %>%
-    janitor::clean_names() %>%
-    dplyr::select(-metakey, -metaplatform) %>%
-    dplyr::mutate(
-      start_fmt_time = lubridate::as_datetime(start_fmt_time),
-      end_fmt_time = lubridate::as_datetime(end_fmt_time)
-    ) %>%
-    data.table::setDT()
-}
-
-complete_trips = function(tidied_cleaned_trips, tidied_trip_ends, project_crs) {
+complete_trips = function(tidied_cleaned_trips, project_crs) {
   
   smallest_rounding_digit = 2
   
   # select the most recent responses
-  most_recent_trip_ends =
-    tidied_trip_ends %>%
-    .[, `:=`(data_start_ts = round(data_end_ts, smallest_rounding_digit),
-             data_end_ts = round(data_end_ts, smallest_rounding_digit))] %>%
-    .[order(data_timestamp), ] %>%
-    .[, order := 1:.N, by = .(user_id, data_start_ts, data_end_ts)] %>%
-    .[.[, .I[which.max(order)], by = .(user_id, data_start_ts, data_end_ts)]$V1]
+  # SHANKARI: pretend that there are no responses
+  most_recent_trip_ends <- vector()
   
   # round *_ts variables to make equality operators not to ignore a very small diff
   tidied_trips_rounded_ts =
