@@ -116,6 +116,7 @@ tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_roundi
       dplyr::everything()
     )
   message("Finished cleaning trips")
+  return(cleaned_trips_sf)
 }
 
 #' Create a summary of trips in data.table format.
@@ -128,6 +129,7 @@ tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_roundi
 summarise_trips = function(participants, trips) {
   summ_trips <-
     trips %>%
+    sf::st_drop_geometry(.) %>%
     data.table::setDT(.) %>%
     .[, date := lubridate::date(start_fmt_time)] %>%
     .[, .(
