@@ -28,11 +28,8 @@ mod_load_data_server <- function(input, output, session, cons){
   
   observeEvent(input$reload_data, {
     message("About to load trips")
-    data_r$trips <-
-      complete_trips(
-        query_cleaned_trips(cons)  %>% tidy_cleaned_trips(.),
-        project_crs = get_golem_config("project_crs")
-      )
+    data_r$trips <- tidy_cleaned_trips(query_cleaned_trips(cons), 
+                                       project_crs = get_golem_config("project_crs"))
     message("Finished loading trips")
 
     message("About to load participants")

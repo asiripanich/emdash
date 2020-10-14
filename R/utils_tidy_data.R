@@ -1,3 +1,15 @@
+#' Create a tidied participant data.table
+#' 
+#'
+#' @param stage_profiles the output of `query_stage_profiles()`.
+#' @param stage_uuids the output of `query_stage_uuids()`.
+#'
+#' @note 
+#' 
+#' the `update_ts` field can be used to infer the signup datetime of each user.
+#' 
+#' @return a data.table
+#' @export
 tidy_participants <- function(stage_profiles, stage_uuids) {
   merge(x = stage_profiles,
         y = stage_uuids[, c("update_ts") := NULL],
@@ -11,40 +23,40 @@ tidy_participants <- function(stage_profiles, stage_uuids) {
     .[, -"user_email"]
 }
 
-complete_trips = function(tidied_cleaned_trips, project_crs) {
+#' Tidy the 'cleaned trips' data.frame into a sf object.
+#'
+#' @param cleaned_trips a data.table output from `query_cleaned_trip()`.
+#' @param project_crs a EPSG code. Default as 4326.
+#' @param smallest_rounding_digit an integer value.
+#'
+#' @return a spatial data.frame of class sf. 
+#' @export
+tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_rounding_digit = 2) {
   
-  smallest_rounding_digit = 2
-  
-  # select the most recent responses
-  # SHANKARI: pretend that there are no responses
-  most_recent_trip_ends <- vector()
-  
-  # round *_ts variables to make equality operators not to ignore a very small diff
-  tidied_trips_rounded_ts =
-    tidied_cleaned_trips %>%
-    .[, `:=`(start_ts = round(start_ts, smallest_rounding_digit),
-             end_ts = round(end_ts, smallest_rounding_digit))] %>%
-    .[, end_ts_plus := end_ts + 5 * 60]
-  
-  # merge trips and end surveys using timestamps
-  trips_dt =
-    most_recent_trip_ends[tidied_trips_rounded_ts,
-                          on = .(user_id,
-                                 data_start_ts >= start_ts,
-                                 data_end_ts <= end_ts_plus
-                          ),
-                          allow.cartesian = TRUE] %>%
-    .[destination_purpose != "trip_not_valid", ]
-  
-  # merge non-validated trips (trips with no trip-end surveys)
-  trips_dt =
-    rbind(trips_dt,
-          tidied_trips_rounded_ts[!raw_trip %in% trips_dt[, raw_trip],],
-          fill = TRUE)
-  
-  # create a geometry column but is not a sf object yet
-  trips_dt_with_geometry <-
-    copy(trips_dt) %>%
+  cleaned_trips_sf =
+    # flatten out names and remove unnecessary columns
+    cleaned_trips %>%
+    dplyr::select(-dplyr::contains(
+      c(
+        ".hour",
+        ".second",
+        ".minute",
+        ".day",
+        ".month",
+        ".year",
+        ".weekday"
+      )
+    )) %>%
+    setnames(gsub("data.", "", names(.))) %>%
+    janitor::clean_names() %>%
+    dplyr::select(-metakey, -metaplatform) %>%
+    dplyr::mutate(
+      start_fmt_time = lubridate::as_datetime(start_fmt_time),
+      end_fmt_time = lubridate::as_datetime(end_fmt_time)
+    ) %>%
+    # convert to data.table for speed!
+    data.table::setDT(.) %>%
+    # create a geometry column but is not a sf object yet
     .[,
       geometry := list(list(st_linestring(matrix(
         as.numeric(unlist(
@@ -55,58 +67,81 @@ complete_trips = function(tidied_cleaned_trips, project_crs) {
       )))),
       by = 1:nrow(.)] %>%
     # add lat and lon columns for both start and end locations
-    dplyr::mutate(end_lat_lon = gsub("c\\(|\\)| ", "", paste(end_loc_coordinates)),
-           start_lat_lon = gsub("c\\(|\\)| ", "", paste(start_loc_coordinates))) %>%
-    tidyr::separate(end_lat_lon, into = c("end_lon", "end_lat"), sep = ',', convert = TRUE) %>%
-    tidyr::separate(start_lat_lon, into = c("start_lon", "start_lat"), sep = ',', convert = TRUE)
-  
-  # further processing
-  trips_dt_with_geometry =
-    trips_dt_with_geometry %>%
-    # aggregate similar labels
     dplyr::mutate(
-      travel_mode = gsub('vehicle_driver', 'driver', travel_mode),
-      travel_mode = gsub('vehicle_passenger', 'passenger', travel_mode),
-      travel_mode = gsub('taxi_and_ride_sharing_services|^taxi$', 'taxi_and_ride', travel_mode),
-      travel_mode = gsub('bike', 'bicycle', travel_mode),
-      destination_purpose = dplyr::case_when(
-        grepl("pick_up_or_dr", destination_purpose) ~ "pick_up_or_drop_off_someone",
-        grepl("pick_up_or_del", destination_purpose) ~ "pick_up_or_delivery_something",
-        grepl("recreation", destination_purpose) ~ "recreational (e.g exercise).",
-        grepl("personal_busi", destination_purpose) ~ "Personal business",
-        grepl("social", destination_purpose) ~ "Social (e.g. dine out)",
-        grepl("accom", destination_purpose) ~ "Accompany someone",
-        grepl("buy_something", destination_purpose) ~ "shopping",
-        grepl("work", destination_purpose) ~ "Work related",
-        TRUE ~ as.character(destination_purpose)
-      ),
-      destination_purpose = gsub("_", " ", destination_purpose)
+      end_lat_lon = gsub("c\\(|\\)| ", "", paste(end_loc_coordinates)),
+      start_lat_lon = gsub("c\\(|\\)| ", "", paste(start_loc_coordinates))
     ) %>%
-    dplyr::mutate(
-      transit_fees = as.numeric(transit_fees),
-      toll_charges = as.numeric(toll_charges),
-      parking_cost = as.numeric(parking_cost)
+    tidyr::separate(
+      end_lat_lon,
+      into = c("end_lon", "end_lat"),
+      sep = ',',
+      convert = TRUE
     ) %>%
-    data.table::setDT(.)
-  
-  # turn it into a sf object
-  trips_sf =
-    sf::st_sf(trips_dt_with_geometry[, -"geometry"],
-          geometry = trips_dt_with_geometry[["geometry"]],
-          crs = project_crs)
-  
-  trips_sf %>%
-    dplyr::select(-dplyr::starts_with(c("meta", "data_")), -order) %>%
-    dplyr::select(-dplyr::ends_with(c("_ts", "_ts_plus", "_place",
-                                      "_loc_type", "raw_trip",
-                                      "_lat", "_lon",
-                                      "_coordinates"))) %>%
-    dplyr::select(user_id,
-                  start_fmt_time, start_local_dt_timezone,
-                  end_fmt_time, end_local_dt_timezone,
-                  dplyr::everything())
+    tidyr::separate(
+      start_lat_lon,
+      into = c("start_lon", "start_lat"),
+      sep = ',',
+      convert = TRUE
+    ) %>% 
+    # convert into a sf object, this allows us to use spatial mapping functions
+    # from packages like `ggplot2` and `mapview`. 
+    # this requires the curley brackets because we are re-using the placeholder
+    # see: the section 'Re-using the placeholder for attributes' in
+    # https://magrittr.tidyverse.org/
+    {
+      sf::st_sf(.[, -"geometry"],
+                geometry = .[["geometry"]],
+                crs = project_crs)  
+    } %>%
+    dplyr::select(-dplyr::starts_with(c("meta", "data_"))) %>%
+    dplyr::select(-dplyr::ends_with(
+      c(
+        "_ts",
+        "_ts_plus",
+        "_place",
+        "_loc_type",
+        "raw_trip",
+        "_lat",
+        "_lon",
+        "_coordinates"
+      )
+    )) %>%
+    dplyr::select(
+      user_id,
+      start_fmt_time,
+      start_local_dt_timezone,
+      end_fmt_time,
+      end_local_dt_timezone,
+      dplyr::everything()
+    )
   
 }
+
+#' Create a summary of trips in data.table format.
+#'
+#' @param participants the output from `tidy_participants()`.
+#' @param trips the output from `tidy_cleaned_trips()`.
+#'
+#' @return a data.table.
+#' @export
+summarise_trips = function(participants, trips) {
+  summ_trips <-
+    trips %>%
+    sf::st_drop_geometry(.) %>%
+    data.table::setDT(.) %>%
+    .[, date := lubridate::date(start_fmt_time)] %>%
+    .[, .(
+      n_trips = .N, 
+      n_trips_today = sum(date == Sys.Date()),
+      n_active_days = data.table::uniqueN(date),
+      first_trip_datetime = min(start_fmt_time),
+      last_trip_datetime = max(start_fmt_time)
+    ), by = user_id] %>%
+    .[, n_days := as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days"))]
+  
+  merge(participants, summ_trips, by = "user_id", all.x = TRUE)
+}
+
 
 #' Convert columns to datetime
 #'

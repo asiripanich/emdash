@@ -7,14 +7,13 @@
 normalise_uuid(.data, keep_uuid = FALSE)
 }
 \arguments{
-\item{.data}{a data.frame created using `query_*` functions in `R/utils_query_database.R`.}
+\item{.data}{a data.frame.}
 
-\item{keep_uuid}{a logical value default as FALSE. If this is true then the
-original `uuid` field will not be removed from `.data`.}
+\item{keep_uuid}{logical.}
 }
 \value{
 a data.frame
 }
 \description{
-Note that this function will rename `uuid` to `user_id`.
+Normalise UUID
 }
