@@ -32,7 +32,7 @@ tidy_participants <- function(stage_profiles, stage_uuids) {
 #' @return a spatial data.frame of class sf. 
 #' @export
 tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_rounding_digit = 2) {
-  
+  message("Finished query, about to clean trips")
   cleaned_trips_sf =
     # flatten out names and remove unnecessary columns
     cleaned_trips %>%
@@ -89,9 +89,9 @@ tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_roundi
     # see: the section 'Re-using the placeholder for attributes' in
     # https://magrittr.tidyverse.org/
     {
-      sf::st_sf(.[, -"geometry"],
+      sf::st_sf(dplyr::select(., -geometry),
                 geometry = .[["geometry"]],
-                crs = project_crs)  
+                crs = project_crs)
     } %>%
     dplyr::select(-dplyr::starts_with(c("meta", "data_"))) %>%
     dplyr::select(-dplyr::ends_with(
@@ -114,7 +114,7 @@ tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_roundi
       end_local_dt_timezone,
       dplyr::everything()
     )
-  
+  message("Finished cleaning trips")
 }
 
 #' Create a summary of trips in data.table format.
