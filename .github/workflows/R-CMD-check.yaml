@@ -8,12 +8,10 @@ on:
   push:
     branches:
       - main
-      - fix-gha-ci
       - master
   pull_request:
     branches:
       - main
-      - fix-gha-ci
       - master
 
 name: R-CMD-check
