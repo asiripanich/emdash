@@ -11,14 +11,15 @@
 #' @return a data.table
 #' @export
 tidy_participants <- function(stage_profiles, stage_uuids) {
-  merge(x = stage_profiles,
+  merged <- merge(x = stage_profiles,
         y = stage_uuids[, c("update_ts") := NULL],
-        by = "user_id") %>%
-    .[, c("uuid",
-          "source",
-          "device_token",
-          "mpg_array",
-          "curr_sync_interval") := NULL] %>%
+        by = "user_id")
+  print(names(merged))
+  max_cols_to_purge <- c("uuid", "source", "device_token", "mpg_array", "curr_sync_interval")
+  cols_to_purge <- intersect(names(merged), max_cols_to_purge)
+  print(cols_to_purge)
+  merged %>%
+    .[, eval(cols_to_purge) := NULL] %>%
     data.table::setcolorder(c("user_email", "user_id")) %>%
     .[, -"user_email"]
 }
