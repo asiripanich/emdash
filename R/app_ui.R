@@ -62,12 +62,12 @@ app_ui <- function(request) {
                       collapsible = TRUE,
                       mod_ggplotly_ui("ggplotly_ui_participation_period")
                     ),
-                    box(
-                      title = "Branch",
-                      solidHeader = TRUE,
-                      collapsible = TRUE,
-                      mod_ggplotly_ui("ggplotly_ui_branch")
-                    ),
+#                     box(
+#                       title = "Branch",
+#                       solidHeader = TRUE,
+#                       collapsible = TRUE,
+#                       mod_ggplotly_ui("ggplotly_ui_branch")
+#                     ),
                     box(
                       title = "Platform",
                       solidHeader = TRUE,
