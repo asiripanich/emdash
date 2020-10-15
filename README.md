@@ -98,14 +98,20 @@ and take a while to build.
 ## Loading test data
 
 This repository contains a test mongodump with entries from the [e-mission unit test real data](https://github.com/e-mission/e-mission-server/tree/master/emission/tests/data/real_examples).
-- 2016-07-22
-- 2016-07-25
-- 2016-07-27
-- 2016-08-04
-- 2016-08-05
-- 2016-08-09
-- 2016-08-10
-- 2016-08-11
+- testuser:
+    - 2016-07-22
+    - 2016-07-25
+    - 2016-07-27
+    - 2016-08-04
+    - 2016-08-05
+    - 2016-08-09
+    - 2016-08-10
+    - 2016-08-11
+- testanotheruser:
+    - 2015-07-22
+    - 2015-08-21
+    - 2015-08-23
+    - 2015-08-27
 
 It includes background sensed data (`background/*`), analysis results
 (`analysis/*`) and the mode and purpose confirm objects from the master branch
@@ -114,7 +120,7 @@ It includes background sensed data (`background/*`), analysis results
 To load the data into a local mongodb,
 
 ```
-$ unzip data/2016_jul_aug_test_trips.zip
+$ unzip data/2015_2016_jul_aug_test_trips.zip
 $ mongorestore
 ```
 
