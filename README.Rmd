@@ -102,7 +102,7 @@ It includes background sensed data (`background/*`), analysis results
 To load the data into a local mongodb,
 
 ```
-$ unzip data/2016_jul_aug_test_trips.zip
+$ unzip test-data/2016_jul_aug_test_trips.zip
 $ mongorestore
 ```
 
