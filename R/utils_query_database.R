@@ -33,40 +33,6 @@ query_cleaned_section <- function(cons) {
 
 #' @rdname query
 #' @export
-query_trip_ends <- function(cons) {
-  .data <-
-    cons$Stage_timeseries$find('{"metadata.key": "manual/confirm_survey"}') %>%
-    as.data.table() %>%
-    .[, data.survey_result := lapply(data.survey_result, function(.x) {
-      list(xml2::read_xml(.x) %>% xml2::as_list() %>% unlist())
-    })]
-  
-  tripend_survey_responses <-
-    .data$data.survey_result %>%
-    purrr::flatten(.) %>%
-    purrr::map_dfr(., ~ {
-      .x %>%
-        matrix(byrow = T, nrow = 1, dimnames = list(c(), names(.))) %>%
-        as.data.table()
-    })
-  
-  cbind(tripend_survey_responses, .data) %>%
-    data.table::setcolorder(c("user_id", "data.timestamp")) %>%
-    normalise_uuid(.)
-  
-}
-
-#' @rdname query
-#' @export
-query_user_profile_survey <- function(cons) {
-  cons$Stage_timeseries$find('{"metadata.key": "manual/user_profile_survey"}') %>%
-    as.data.table() %>%
-    normalise_uuid() %>%
-    .[, data.datetime := as_datetime(data.timestamp, tz = "Australia/Sydney")]
-}
-
-#' @rdname query
-#' @export
 query_raw_trips <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "segmentation/raw_trip"}') %>%
     as.data.table() %>%
@@ -87,32 +53,28 @@ query_stage_uuids <- function(cons) {
 query_stage_profiles <- function(cons) {
   cons$Stage_Profiles$find() %>%
     as.data.table() %>%
-    normalise_uuid(., keep_uuid = FALSE) %>%
-    convert_datetime_string_to_datetime(cols = c("update_ts"))
+    normalise_uuid(., keep_uuid = FALSE)
 }
 
 #' Normalise UUID
-#' 
-#' @description 
-#' Note that this function will rename `uuid` to `user_id`. 
 #'
-#' @param .data a data.frame created using `query_*` functions in `R/utils_query_database.R`.
-#' @param keep_uuid a logical value default as FALSE. If this is true then the
-#' original `uuid` field will not be removed from `.data`.
+#' @param .data a data.frame.
+#' @param keep_uuid logical.
 #'
 #' @return a data.frame
 #' @export
 normalise_uuid <- function(.data, keep_uuid = FALSE) {
+  # return(.data)
   if (!is.data.table(.data)) {
     setDT(.data)
   }
-  if (!"uuid" %in% names(.data)) {
-    stop("`uuid` is not a valid column name in `.data`.")
-  }
-  # the `uuid` field is a list column, so it has to be converted into a character.
-  .data[, user_id := sapply(uuid, function(.x) paste0(unlist(.x), collapse = ""))]
-  if (!keep_uuid) {
-    .data[, uuid := NULL]
+  if ("uuid" %in% names(.data)) {
+    .data[, user_id := sapply(uuid, function(.x) paste0(unlist(.x), collapse = ""))]
+    if (!keep_uuid)  {
+      .data[, uuid := NULL]
+    }
+  } else {
+    .data[, user_id := sapply(user_id, function(.x) paste0(unlist(.x), collapse = ""))]
   }
   .data
 }

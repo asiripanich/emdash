@@ -5,8 +5,6 @@
 \alias{query_cleaned_trips}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
-\alias{query_trip_ends}
-\alias{query_user_profile_survey}
 \alias{query_raw_trips}
 \alias{query_stage_uuids}
 \alias{query_stage_profiles}
@@ -17,10 +15,6 @@ query_cleaned_trips(cons)
 query_cleaned_place(cons)
 
 query_cleaned_section(cons)
-
-query_trip_ends(cons)
-
-query_user_profile_survey(cons)
 
 query_raw_trips(cons)
 
