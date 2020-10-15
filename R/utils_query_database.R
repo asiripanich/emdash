@@ -53,8 +53,7 @@ query_stage_uuids <- function(cons) {
 query_stage_profiles <- function(cons) {
   cons$Stage_Profiles$find() %>%
     as.data.table() %>%
-    normalise_uuid(., keep_uuid = FALSE) %>%
-    convert_datetime_string_to_datetime(cols = c("update_ts"))
+    normalise_uuid(., keep_uuid = FALSE)
 }
 
 #' Normalise UUID
