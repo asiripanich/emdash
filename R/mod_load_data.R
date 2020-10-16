@@ -27,17 +27,16 @@ mod_load_data_server <- function(input, output, session, cons){
     renderText(paste0("Last loaded: ", as.character(Sys.time())))
   
   observeEvent(input$reload_data, {
-    
-    data_r$trips <-
-      complete_trips(
-        query_cleaned_trips(cons)  %>% tidy_cleaned_trips(.),
-        query_trip_ends(cons) %>% tidy_trip_ends(.),
-        project_crs = get_golem_config("project_crs")
-      )
-    
+    message("About to load trips")
+    data_r$trips <- tidy_cleaned_trips(query_cleaned_trips(cons), 
+                                       project_crs = get_golem_config("project_crs"))
+    message("Finished loading trips")
+
+    message("About to load participants")
     data_r$participants <- 
       tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
       summarise_trips(., data_r$trips)
+    message("Finished loading participants")
     
     data_r$click <- runif(1)
   }, ignoreNULL = FALSE)
