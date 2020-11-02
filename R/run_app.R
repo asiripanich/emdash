@@ -11,10 +11,11 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app <- function(mongo_url, ...
+run_app <- function(mongo_url, anon_locations, ...
 ) {
   if (!missing(mongo_url)) {
     options('emdash.mongo_url' = mongo_url)
+    options('emdash.anon_locations' = anon_locations)
   }
   with_golem_options(
     app = shinyApp(

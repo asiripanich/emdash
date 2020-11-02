@@ -79,6 +79,21 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
   .data
 }
 
+anonymize_uuid <- function(.data, keep_uuid = FALSE) {
+  # return(.data)
+  unique_uuid <- unique(.data$user_id)
+  data_count <- length(unique_uuid)
+  message(data_count)
+  anon_uuid = sapply(sample(1:data_count), function(.i) paste0("user_", .i))
+  message(anon_uuid)
+  for(i in seq_along(unique_uuid)) {
+    .data$user_id[.data$user_id == unique_uuid[i]] <- anon_uuid[i]
+    # message(unique_uuid[i], anon_uuid[i])
+  }
+  message(.data$user_id)
+  .data
+}
+
 #' Convert character columns to datetime columns
 #'
 #' @param .data a data.frame.
