@@ -15,6 +15,10 @@ run_app <- function(mongo_url, anon_locations, ...
 ) {
   if (!missing(mongo_url)) {
     options('emdash.mongo_url' = mongo_url)
+  }
+  if (missing(anon_locations)) {
+    options('emdash.anon_locations' = FALSE)
+  } else {
     options('emdash.anon_locations' = anon_locations)
   }
   with_golem_options(
