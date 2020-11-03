@@ -92,7 +92,10 @@ anonymize_uuid <- function(.data) {
   }
   unique_uuid <- unique(.data$user_id)
   anon_uuid <- paste0("user_", sample(length(unique_uuid)))
-  .data$user_id = anon_uuid
+  for(i in seq_along(unique_uuid)) {
+    .data$user_id[.data$user_id == unique_uuid[i]] <- anon_uuid[i]
+    # message(unique_uuid[i], anon_uuid[i])
+  }
   .data
 }
 
