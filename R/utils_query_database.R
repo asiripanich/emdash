@@ -79,18 +79,20 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
   .data
 }
 
-anonymize_uuid <- function(.data, keep_uuid = FALSE) {
-  # return(.data)
-  unique_uuid <- unique(.data$user_id)
-  data_count <- length(unique_uuid)
-  message(data_count)
-  anon_uuid = sapply(sample(1:data_count), function(.i) paste0("user_", .i))
-  message(anon_uuid)
-  for(i in seq_along(unique_uuid)) {
-    .data$user_id[.data$user_id == unique_uuid[i]] <- anon_uuid[i]
-    # message(unique_uuid[i], anon_uuid[i])
+#' Anonymize user_id field
+#'
+#' @param .data a data.frame/data.table object
+#'
+#' @return .data with anonymized user_id
+#' @export 
+anonymize_uuid <- function(.data) {
+  stopifnot(is.data.frame(.data))
+  if (!"user_id" %in% names(.data)) {
+    stop("There is no `user_id` field in `.data`.")
   }
-  message(.data$user_id)
+  unique_uuid <- unique(.data$user_id)
+  anon_uuid <- paste0("user_", sample(length(unique_uuid)))
+  .data$user_id = anon_uuid
   .data
 }
 
