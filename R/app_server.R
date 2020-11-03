@@ -112,7 +112,7 @@ app_server <- function( input, output, session ) {
     callModule(
       module = esquisse::filterDF,
       id = "filtering",
-      data_table = reactive(data_r$anon_trips),
+      data_table = reactive(data_r$trips),
       data_name = reactive("data"), 
       drop_ids = FALSE
     )
