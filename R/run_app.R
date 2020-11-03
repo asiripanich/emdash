@@ -8,7 +8,7 @@
 #'   need to find the gateway ip of your Docker to connect to the database.
 #' @param ... A series of options to be used inside the app.
 #' @param anon_locations (optional) a Boolean value. If TRUE, the UUIDs that are 
-#' displayed on 'Maps' will be anonymised to 'user_1', 'user_2', etc.
+#' displayed on 'Maps' will be anonymized to 'user_1', 'user_2', etc.
 #'
 #' @export
 #' @importFrom shiny shinyApp
