@@ -8,6 +8,7 @@ RUN Rscript -e 'remotes::install_version("golem",upgrade="never", version = "0.2
 RUN Rscript -e 'remotes::install_version("shiny",upgrade="never", version = "1.5.0")'
 RUN Rscript -e 'remotes::install_version("data.table",upgrade="never", version = "1.12.8")'
 RUN Rscript -e 'remotes::install_version("magrittr",upgrade="never", version = "1.5")'
+RUN Rscript -e 'remotes::install_version("checkmate",upgrade="never", version = "2.0.0")'
 RUN Rscript -e 'remotes::install_version("mapview",upgrade="never", version = "2.7.8")'
 RUN Rscript -e 'remotes::install_version("ggplot2",upgrade="never", version = "3.3.0")'
 RUN Rscript -e 'remotes::install_version("mongolite",upgrade="never", version = "2.2.0")'

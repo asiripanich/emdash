@@ -79,6 +79,32 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
   .data
 }
 
+#' Anonymize user_id field
+#'
+#' @param .data a data.frame/data.table object
+#'
+#' @return .data with anonymized user_id
+#' @export 
+anonymize_uuid <- function(.data) {
+  stopifnot(is.data.frame(.data))
+  if (!"user_id" %in% names(.data)) {
+    stop("There is no `user_id` field in `.data`.")
+  }
+  unique_uuid <- unique(.data$user_id)
+  anon_uuid <- paste0("user_", sample(length(unique_uuid)))
+  .data$user_id = anon_uuid
+  .data
+}
+
+anonymize_uuid_if_required <- function(.data, flag = getOption("emdash.anon_locations")) {
+  checkmate::assert_flag(flag, null.ok = FALSE)
+  if (flag) {
+    message("Anonymize trajectories")
+    return(anonymize_uuid(.data))
+  } 
+  .data
+}
+
 #' Convert character columns to datetime columns
 #'
 #' @param .data a data.frame.

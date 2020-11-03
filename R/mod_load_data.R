@@ -37,7 +37,7 @@ mod_load_data_server <- function(input, output, session, cons){
       tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
       summarise_trips(., data_r$trips)
     message("Finished loading participants")
-    
+
     data_r$click <- runif(1)
   }, ignoreNULL = FALSE)
  
