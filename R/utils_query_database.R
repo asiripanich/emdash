@@ -96,6 +96,15 @@ anonymize_uuid <- function(.data) {
   .data
 }
 
+anonymize_uuid_if_required <- function(.data, flag = getOption("emdash.anon_locations")) {
+  checkmate::assert_flag(flag, null.ok = FALSE)
+  if (flag) {
+    message("Anonymize trajectories")
+    return(anonymize_uuid(.data))
+  } 
+  .data
+}
+
 #' Convert character columns to datetime columns
 #'
 #' @param .data a data.frame.

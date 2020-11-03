@@ -37,12 +37,6 @@ mod_load_data_server <- function(input, output, session, cons){
       tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
       summarise_trips(., data_r$trips)
     message("Finished loading participants")
-    
-    if (getOption("emdash.anon_locations"))  {
-      message("About to anonymize trajectories")
-      data_r$trips <- data_r$trips %>% anonymize_uuid
-      message("Finished anonymizing trajectories")
-    } 
 
     data_r$click <- runif(1)
   }, ignoreNULL = FALSE)
