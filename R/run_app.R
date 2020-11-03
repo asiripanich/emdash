@@ -7,22 +7,26 @@
 #'   work on Linux. If you are using Linux or Docker version prior to 18.03 you
 #'   need to find the gateway ip of your Docker to connect to the database.
 #' @param ... A series of options to be used inside the app.
-#' @param anon_locations (optional) a Boolean value. If TRUE, the UUIDs that are 
+#' @param anon_locations a Boolean value, default as FALSE. If TRUE, the UUIDs that are 
 #' displayed on 'Maps' will be anonymized to 'user_1', 'user_2', etc.
 #'
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app <- function(mongo_url, anon_locations, ...
+run_app <- function(mongo_url, anon_locations = FALSE, ...
 ) {
+  checkmate::assert_flag(anon_locations, na.ok = FALSE, null.ok = FALSE)
   if (!missing(mongo_url)) {
+    checkmate::assert_string(mongo_url)
     options('emdash.mongo_url' = mongo_url)
   }
-  if (missing(anon_locations)) {
-    options('emdash.anon_locations' = FALSE)
-  } else {
+  
+  if (anon_locations) {
     options('emdash.anon_locations' = anon_locations)
+  } else {
+    options('emdash.anon_locations' = FALSE)
   }
+  
   with_golem_options(
     app = shinyApp(
       ui = app_ui, 

@@ -4,7 +4,7 @@
 \alias{run_app}
 \title{Run the Shiny Application}
 \usage{
-run_app(mongo_url, anon_locations, ...)
+run_app(mongo_url, anon_locations = FALSE, ...)
 }
 \arguments{
 \item{mongo_url}{address of the emisison mongodb server in mongo 
@@ -14,7 +14,7 @@ then this is set to `mongodb://host.docker.internal:27017`, however this may not
 work on Linux. If you are using Linux or Docker version prior to 18.03 you
 need to find the gateway ip of your Docker to connect to the database.}
 
-\item{anon_locations}{(optional) a Boolean value. If TRUE, the UUIDs that are 
+\item{anon_locations}{a Boolean value, default as FALSE. If TRUE, the UUIDs that are 
 displayed on 'Maps' will be anonymized to 'user_1', 'user_2', etc.}
 
 \item{...}{A series of options to be used inside the app.}
