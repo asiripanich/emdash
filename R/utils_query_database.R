@@ -81,7 +81,7 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
 
 #' Anonymize user_id field
 #'
-#' @param .data a data.frame/data.table object
+#' @param .data a data.frame object
 #'
 #' @return .data with anonymized user_id
 #' @export 
@@ -92,7 +92,8 @@ anonymize_uuid <- function(.data) {
   }
   unique_uuid <- unique(.data$user_id)
   anon_uuid <- paste0("user_", sample(length(unique_uuid)))
-  .data$user_id = anon_uuid
+  names(anon_uuid) <- unique_uuid
+  .data$user_id <- anon_uuid[.data$user_id]
   .data
 }
 
