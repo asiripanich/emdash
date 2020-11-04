@@ -7,7 +7,7 @@
 anonymize_uuid(.data)
 }
 \arguments{
-\item{.data}{a data.frame/data.table object}
+\item{.data}{a data.frame object}
 }
 \value{
 .data with anonymized user_id
