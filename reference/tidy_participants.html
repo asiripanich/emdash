@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run the Shiny Application — run_app • emdash</title>
+<title>Create a tidied participant data.table — tidy_participants • emdash</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Run the Shiny Application — run_app" />
-<meta property="og:description" content="Run the Shiny Application" />
+<meta property="og:title" content="Create a tidied participant data.table — tidy_participants" />
+<meta property="og:description" content="Create a tidied participant data.table" />
 
 
 
@@ -111,40 +111,36 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run the Shiny Application</h1>
-    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/run_app.R'><code>R/run_app.R</code></a></small>
-    <div class="hidden name"><code>run_app.Rd</code></div>
+    <h1>Create a tidied participant data.table</h1>
+    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/utils_tidy_data.R'><code>R/utils_tidy_data.R</code></a></small>
+    <div class="hidden name"><code>tidy_participants.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Run the Shiny Application</p>
+    <p>Create a tidied participant data.table</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_app</span><span class='op'>(</span><span class='va'>mongo_url</span>, anon_locations <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>tidy_participants</span><span class='op'>(</span><span class='va'>stage_profiles</span>, <span class='va'>stage_uuids</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mongo_url</th>
-      <td><p>address of the emisison mongodb server in mongo 
-connection string [URI format](https://docs.mongodb.com/manual/reference/connection-string/). 
-Defaut as `mongodb://localhost:27017`. If you are using the emdash docker container
-then this is set to `mongodb://host.docker.internal:27017`, however this may not 
-work on Linux. If you are using Linux or Docker version prior to 18.03 you
-need to find the gateway ip of your Docker to connect to the database.</p></td>
+      <th>stage_profiles</th>
+      <td><p>the output of `query_stage_profiles()`.</p></td>
     </tr>
     <tr>
-      <th>anon_locations</th>
-      <td><p>a Boolean value, default as FALSE. If TRUE, the UUIDs that are 
-displayed on 'Maps' will be anonymized to 'user_1', 'user_2', etc.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>A series of options to be used inside the app.</p></td>
+      <th>stage_uuids</th>
+      <td><p>the output of `query_stage_uuids()`.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a data.table</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>the `update_ts` field can be used to infer the signup datetime of each user.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

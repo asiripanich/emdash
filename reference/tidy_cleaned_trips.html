@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run the Shiny Application — run_app • emdash</title>
+<title>Tidy the 'cleaned trips' data.frame into a sf object. — tidy_cleaned_trips • emdash</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Run the Shiny Application — run_app" />
-<meta property="og:description" content="Run the Shiny Application" />
+<meta property="og:title" content="Tidy the 'cleaned trips' data.frame into a sf object. — tidy_cleaned_trips" />
+<meta property="og:description" content="Tidy the 'cleaned trips' data.frame into a sf object." />
 
 
 
@@ -111,40 +111,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run the Shiny Application</h1>
-    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/run_app.R'><code>R/run_app.R</code></a></small>
-    <div class="hidden name"><code>run_app.Rd</code></div>
+    <h1>Tidy the 'cleaned trips' data.frame into a sf object.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/utils_tidy_data.R'><code>R/utils_tidy_data.R</code></a></small>
+    <div class="hidden name"><code>tidy_cleaned_trips.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Run the Shiny Application</p>
+    <p>Tidy the 'cleaned trips' data.frame into a sf object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_app</span><span class='op'>(</span><span class='va'>mongo_url</span>, anon_locations <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>tidy_cleaned_trips</span><span class='op'>(</span>
+  <span class='va'>cleaned_trips</span>,
+  project_crs <span class='op'>=</span> <span class='fl'>4326</span>,
+  smallest_rounding_digit <span class='op'>=</span> <span class='fl'>2</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mongo_url</th>
-      <td><p>address of the emisison mongodb server in mongo 
-connection string [URI format](https://docs.mongodb.com/manual/reference/connection-string/). 
-Defaut as `mongodb://localhost:27017`. If you are using the emdash docker container
-then this is set to `mongodb://host.docker.internal:27017`, however this may not 
-work on Linux. If you are using Linux or Docker version prior to 18.03 you
-need to find the gateway ip of your Docker to connect to the database.</p></td>
+      <th>cleaned_trips</th>
+      <td><p>a data.table output from `query_cleaned_trip()`.</p></td>
     </tr>
     <tr>
-      <th>anon_locations</th>
-      <td><p>a Boolean value, default as FALSE. If TRUE, the UUIDs that are 
-displayed on 'Maps' will be anonymized to 'user_1', 'user_2', etc.</p></td>
+      <th>project_crs</th>
+      <td><p>a EPSG code. Default as 4326.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>A series of options to be used inside the app.</p></td>
+      <th>smallest_rounding_digit</th>
+      <td><p>an integer value.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a spatial data.frame of class sf.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
