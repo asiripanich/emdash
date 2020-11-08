@@ -131,7 +131,8 @@ app_server <- function( input, output, session ) {
                  dplyr::select(-dplyr::any_of(cols_to_remove_from_participts_table)))
     callModule(mod_DT_server, "DT_ui_trips", 
                data = data_r$trips %>%
-                 dplyr::select(-dplyr::any_of(cols_to_remove_from_trips_table)))
+                 dplyr::select(-dplyr::any_of(cols_to_remove_from_trips_table)) %>%
+                 sf::st_drop_geometry())
   })
   
   # Maps --------------------------------------------------------------------
@@ -147,13 +148,15 @@ app_server <- function( input, output, session ) {
   #   "start_loc_coordinates", "duration", "distance", "duration_min", 
   #   "distance_mi", "distance_km", "location_points")
   
-  cols_to_include_in_map_filter <- reactive(data_r$trips_with_trajectories %>%
+  cols_to_include_in_map_filter <- reactive({
+    data_r$trips_with_trajectories %>%
     colnames() %>%
     # specify columns to remove here
     setdiff(c("start_fmt_time0", "start_local_dt_timezone", "start_local_time", 
               "end_fmt_time0", "end_local_dt_timezone", "end_local_time", 
               "end_loc_coordinates", "start_loc_coordinates", "duration", "distance", 
-              "location_points")))
+              "location_points"))
+    })
     
   filtered_trips <- 
     callModule(
@@ -161,7 +164,7 @@ app_server <- function( input, output, session ) {
       id = "filtering",
       data_table = reactive(anonymize_uuid_if_required(data_r$trips_with_trajectories)),
       data_name = reactive("data"),
-      data_vars = cols_to_include_in_map_filter(),
+      data_vars = reactive(cols_to_include_in_map_filter()),
       drop_ids = FALSE
     )
   
