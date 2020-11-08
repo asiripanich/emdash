@@ -11,7 +11,7 @@ tidy_cleaned_trips(
 )
 }
 \arguments{
-\item{cleaned_trips}{a data.table output from `query_cleaned_trip()`.}
+\item{cleaned_trips}{a data.table output from `query_cleaned_trips()`.}
 
 \item{project_crs}{a EPSG code. Default as 4326.}
 
