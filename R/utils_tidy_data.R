@@ -187,7 +187,7 @@ tidy_cleaned_locations = function(cleaned_locations) {
 
 #' Tidy together the 'tidied trips' and 'tidied locations' to generate trajectories within a trip
 #'
-#' @param tidied_trips 
+#' @param tidied_trips a data.frame from `tidy_cleaned_trips()`.
 #' @param tidied_locations a tibble from `tidy_cleaned_locations()`.
 #' @param project_crs a EPSG code. Default as 4326.
 #'

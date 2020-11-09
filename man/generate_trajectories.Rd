@@ -7,7 +7,7 @@
 generate_trajectories(tidied_trips, tidied_locations, project_crs = 4326)
 }
 \arguments{
-\item{tidied_trips}{}
+\item{tidied_trips}{a data.frame from `tidy_cleaned_trips()`.}
 
 \item{tidied_locations}{a tibble from `tidy_cleaned_locations()`.}
 
