@@ -2,9 +2,9 @@
 
 ## Major changes
 
-- The map now displays trips' trajectories, `generate_trajectories()` is used to generate them. 
+- The map now displays trips' trajectories, `generate_trajectories()` is used to generate them. Warning: this is curently performed at loading - future versions could wait to do this until "show trajectories" is selected on the map view and after desired trip filters are applied
+- New data columns for local timestamps, duration in min, distances in mi and km. Some of these and others are later hidden from view in tables/map filter/map popup.
 - Add a column visibility button to the tables.
-- 
 
 # emdash 1.0.0
 
