@@ -1,3 +1,11 @@
+# emdash 1.1.0 (in development)
+
+## Major changes
+
+- The map now displays trips' trajectories, `generate_trajectories()` is used to generate them. 
+- Add a column visibility button to the tables.
+- 
+
 # emdash 1.0.0
 
 ## Major changes
