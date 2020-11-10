@@ -103,20 +103,10 @@ app_server <- function( input, output, session ) {
   
   # DATA TABS
   # 
-  # this list of columns can inform which columns to remove
-  
+  # use these to generate lists of columns to inform which columns to remove
   # data_r$participants %>% colnames() %>% dput()
-  # c("user_id", "update_ts", "client", "curr_platform", "n_trips",
-  #   "n_trips_today", "n_active_days", "first_trip_datetime", "last_trip_datetime",
-  #   "first_trip_local_datetime", "last_trip_local_datetime", "n_days"
-  # )
-   
   # data_r$trips %>% colnames() %>% dput()
-  # c("user_id", "start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
-  #   "start_local_time", "end_fmt_time0", "end_local_dt_timezone",
-  #   "end_fmt_time", "end_local_time", "source", "end_loc_coordinates",
-  #   "start_loc_coordinates", "duration", "distance", "geometry",
-  #   "duration_min", "distance_mi", "distance_km")
+
   
   cols_to_remove_from_participts_table <- c("first_trip_datetime", 
                                               "last_trip_datetime")
@@ -142,11 +132,6 @@ app_server <- function( input, output, session ) {
   # 2) which columns to remove to pass to the map and show up in the map popups
 
   # data_r$trips_with_trajectories %>% colnames() %>% dput()
-  # c("user_id", "start_fmt_time0", "start_local_dt_timezone", "start_fmt_time", 
-  #   "start_local_time", "end_fmt_time0", "end_local_dt_timezone", 
-  #   "end_fmt_time", "end_local_time", "source", "end_loc_coordinates", 
-  #   "start_loc_coordinates", "duration", "distance", "duration_min", 
-  #   "distance_mi", "distance_km", "location_points")
   
   cols_to_include_in_map_filter <- reactive({
     data_r$trips_with_trajectories %>%
@@ -164,7 +149,7 @@ app_server <- function( input, output, session ) {
       id = "filtering",
       data_table = reactive(anonymize_uuid_if_required(data_r$trips_with_trajectories)),
       data_name = reactive("data"),
-      data_vars = reactive(cols_to_include_in_map_filter()),
+      data_vars = reactive(cols_to_include_in_map_filter()), # the map filter uses start_fmt_time and end_fmt_time (UTC time)
       drop_ids = FALSE
     )
   

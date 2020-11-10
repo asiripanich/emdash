@@ -54,10 +54,10 @@ tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_roundi
     dplyr::mutate(
       start_fmt_time0 = start_fmt_time,
       end_fmt_time0 = end_fmt_time,
-      start_fmt_time = lubridate::as_datetime(start_fmt_time0),
-      end_fmt_time = lubridate::as_datetime(end_fmt_time0),
-      start_local_time = purrr::map2(start_fmt_time, start_local_dt_timezone, ~format(.x, tz = .y, usetz = TRUE)),
-      end_local_time = purrr::map2(end_fmt_time, end_local_dt_timezone, ~format(.x, tz = .y, usetz = TRUE))
+      start_fmt_time = lubridate::as_datetime(start_fmt_time0), # converts to UTC
+      end_fmt_time = lubridate::as_datetime(end_fmt_time0), # converts to UTC
+      start_local_time = purrr::map2(start_fmt_time, start_local_dt_timezone, ~format(.x, tz = .y, usetz = TRUE)), # a timestamp but has to be a string
+      end_local_time = purrr::map2(end_fmt_time, end_local_dt_timezone, ~format(.x, tz = .y, usetz = TRUE)) # a timestamp but has to be a string
     ) %>%
     tidyr::unnest(c("start_local_time", "end_local_time")) %>%
     # convert to data.table for speed!
@@ -201,7 +201,7 @@ generate_trajectories = function(tidied_trips, tidied_locations, project_crs = 4
   data.table::setDT(tidied_trips)
   # set locations as data.table and duplicate location time to set an "interval"
   data.table::setDT(tidied_locations)[, fmt_time_utc_end := fmt_time_utc] 
-  # join locations to trips according to time interval overlap
+  # join locations to trips according to time interval overlap (all done in UTC time for consistency)
   data.table::setkey(tidied_locations, user_id, fmt_time_utc, fmt_time_utc_end)
   data.table::setkey(tidied_trips, user_id, start_fmt_time, end_fmt_time)
   joined_trips_and_locs <- data.table::foverlaps(tidied_locations, tidied_trips)
