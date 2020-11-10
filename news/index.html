@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emdash</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -114,12 +114,25 @@
       <small>Source: <a href='https://github.com/asiripanich/emdash/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="emdash-100" class="section level1">
-<h1 class="page-header" data-toc-text="1.0.0">
-<a href="#emdash-100" class="anchor"></a>emdash 1.0.0</h1>
+    <div id="emdash-110-in-development" class="section level1">
+<h1 class="page-header" data-toc-text="1.1.0">
+<a href="#emdash-110-in-development" class="anchor"></a>emdash 1.1.0 (in development)</h1>
 <div id="major-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#major-changes" class="anchor"></a>Major changes</h2>
+<ul>
+<li>The map now displays trips’ trajectories, <code><a href="../reference/generate_trajectories.html">generate_trajectories()</a></code> is used to generate them. Warning: this is curently performed at loading - future versions could wait to do this until “show trajectories” is selected on the map view and after desired trip filters are applied</li>
+<li>New data columns for local timestamps, duration in min, distances in mi and km. Some of these and others are later hidden from view in tables/map filter/map popup.</li>
+<li>Add a column visibility button to the tables.</li>
+</ul>
+</div>
+</div>
+    <div id="emdash-100" class="section level1">
+<h1 class="page-header" data-toc-text="1.0.0">
+<a href="#emdash-100" class="anchor"></a>emdash 1.0.0</h1>
+<div id="major-changes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#major-changes-1" class="anchor"></a>Major changes</h2>
 <ul>
 <li>the dashboard now works with the standard e-mission database. To continue to use the dashboard for <code>rciti</code> branches please checkout the d41daeca03e42d053ecadf5fe4b84a861ce36aeb commit on master.</li>
 </ul>

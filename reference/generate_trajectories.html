@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert columns to datetime — convert_columns_to_datetime • emdash</title>
+<title>Tidy together the 'tidied trips' and 'tidied locations' to generate trajectories within a trip — generate_trajectories • emdash</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Convert columns to datetime — convert_columns_to_datetime" />
-<meta property="og:description" content="Convert columns to datetime" />
+<meta property="og:title" content="Tidy together the 'tidied trips' and 'tidied locations' to generate trajectories within a trip — generate_trajectories" />
+<meta property="og:description" content="Tidy together the 'tidied trips' and 'tidied locations' to generate trajectories within a trip" />
 
 
 
@@ -111,37 +111,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert columns to datetime</h1>
+    <h1>Tidy together the 'tidied trips' and 'tidied locations' to generate trajectories within a trip</h1>
     <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/utils_tidy_data.R'><code>R/utils_tidy_data.R</code></a></small>
-    <div class="hidden name"><code>convert_columns_to_datetime.Rd</code></div>
+    <div class="hidden name"><code>generate_trajectories.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Convert columns to datetime</p>
+    <p>Tidy together the 'tidied trips' and 'tidied locations' to generate trajectories within a trip</p>
     </div>
 
-    <pre class="usage"><span class='fu'>convert_columns_to_datetime</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>cols</span>, tz <span class='op'>=</span> <span class='st'>"Australia/Sydney"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>generate_trajectories</span><span class='op'>(</span><span class='va'>tidied_trips</span>, <span class='va'>tidied_locations</span>, project_crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.data</th>
-      <td><p>a data.table object</p></td>
+      <th>tidied_trips</th>
+      <td><p>a data.frame from `tidy_cleaned_trips()`.</p></td>
     </tr>
     <tr>
-      <th>cols</th>
-      <td><p>the names of the columns to convert to datetime</p></td>
+      <th>tidied_locations</th>
+      <td><p>a tibble from `tidy_cleaned_locations()`.</p></td>
     </tr>
     <tr>
-      <th>tz</th>
-      <td><p>time zone default as "Australia/Sydney".</p></td>
+      <th>project_crs</th>
+      <td><p>a EPSG code. Default as 4326.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>.data</p>
+    <p>a data.frame of class sf.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
