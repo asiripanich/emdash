@@ -1,4 +1,4 @@
-# emdash 1.1.0 (in development)
+# emdash 1.1.0
 
 ## Major changes
 
