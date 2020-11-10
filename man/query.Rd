@@ -2,6 +2,7 @@
 % Please edit documentation in R/utils_query_database.R
 \name{query}
 \alias{query}
+\alias{query_cleaned_locations}
 \alias{query_cleaned_trips}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
@@ -10,6 +11,8 @@
 \alias{query_stage_profiles}
 \title{Query functions}
 \usage{
+query_cleaned_locations(cons)
+
 query_cleaned_trips(cons)
 
 query_cleaned_place(cons)

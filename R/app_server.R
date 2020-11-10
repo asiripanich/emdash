@@ -102,26 +102,68 @@ app_server <- function( input, output, session ) {
   )
   
   # DATA TABS
+  # 
+  # use these to generate lists of columns to inform which columns to remove
+  # data_r$participants %>% colnames() %>% dput()
+  # data_r$trips %>% colnames() %>% dput()
+
+  
+  cols_to_remove_from_participts_table <- c("first_trip_datetime", 
+                                              "last_trip_datetime")
+  cols_to_remove_from_trips_table <- c("start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
+                                       "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time", 
+                                       "end_loc_coordinates", "start_loc_coordinates", 
+                                       "duration", "distance", "geometry")
+  
   observeEvent(data_r$click, {
-    callModule(mod_DT_server, "DT_ui_participants", data = data_r$participants)  
-    callModule(mod_DT_server, "DT_ui_trips", data = data_r$trips)
+    callModule(mod_DT_server, "DT_ui_participants", 
+               data = data_r$participants %>%
+                 dplyr::select(-dplyr::any_of(cols_to_remove_from_participts_table)))
+    callModule(mod_DT_server, "DT_ui_trips", 
+               data = data_r$trips %>%
+                 dplyr::select(-dplyr::any_of(cols_to_remove_from_trips_table)) %>%
+                 sf::st_drop_geometry())
   })
   
   # Maps --------------------------------------------------------------------
+  
+  # these lists of columns in trips_with_trajectories can inform  
+  # 1) which columns to remove in the map filter
+  # 2) which columns to remove to pass to the map and show up in the map popups
+
+  # data_r$trips_with_trajectories %>% colnames() %>% dput()
+  
+  cols_to_include_in_map_filter <- reactive({
+    data_r$trips_with_trajectories %>%
+    colnames() %>%
+    # specify columns to remove here
+    setdiff(c("start_fmt_time0", "start_local_dt_timezone", "start_local_time", 
+              "end_fmt_time0", "end_local_dt_timezone", "end_local_time", 
+              "end_loc_coordinates", "start_loc_coordinates", "duration", "distance", 
+              "location_points"))
+    })
+    
   filtered_trips <- 
     callModule(
       module = esquisse::filterDF,
       id = "filtering",
-      data_table = reactive(anonymize_uuid_if_required(data_r$trips)),
-      data_name = reactive("data"), 
+      data_table = reactive(anonymize_uuid_if_required(data_r$trips_with_trajectories)),
+      data_name = reactive("data"),
+      data_vars = reactive(cols_to_include_in_map_filter()), # the map filter uses start_fmt_time and end_fmt_time (UTC time)
       drop_ids = FALSE
     )
+  
+  cols_to_remove_from_map_popup <- c("start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
+                                     "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time",
+                                     "end_loc_coordinates", "start_loc_coordinates", 
+                                     "duration", "distance", "location_points")
   
   observeEvent(filtered_trips$data_filtered(), {
     callModule(
       mod_mapview_server,
       "mapview_trips",
-      data_sf = filtered_trips$data_filtered()
+      data_sf = filtered_trips$data_filtered() %>% 
+        dplyr::select(-dplyr::any_of(cols_to_remove_from_map_popup))
     )
   })
   

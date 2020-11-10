@@ -25,14 +25,18 @@ mod_DT_server <- function(input, output, session, data){
   
   req(data)
   
+  #button_list <- list(list(extend='colvis', columns=c()))
+  
   output$DTtable <- DT::renderDataTable({
       DT::datatable(
         data,
+        autoHideNavigation = TRUE,
         options = list(
           scrollX = TRUE,
           pageLength = 50,
           dom = 'Bfrtip',
-          buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+          #columnDefs = list(list(visible=FALSE, targets=c(5:16)))
+          buttons = c('copy', 'csv', 'excel', 'pdf', 'print', 'colvis') #, button_list)
         ),
         filter = list(position = 'top', clear = FALSE),
         extensions = 'Buttons'

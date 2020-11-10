@@ -8,6 +8,16 @@
 
 #' @rdname query
 #' @export
+query_cleaned_locations <- function(cons) {
+  # to implement later - query only for locations between a range of timestamps (as specified in map filter)
+  # cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/recreated_location", "data.ts": {"$lte": range_end_ts, "$gte": range_start_ts}}') %>%
+  cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/recreated_location"}') %>%  
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#' @rdname query
+#' @export
 query_cleaned_trips <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/cleaned_trip"}') %>%
     as.data.table() %>%
