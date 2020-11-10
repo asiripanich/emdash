@@ -153,8 +153,8 @@ summarise_trips = function(participants, trips) {
       n_active_days = data.table::uniqueN(date),
       first_trip_datetime = min(start_fmt_time), # in UTC
       last_trip_datetime = max(start_fmt_time), # in UTC
-      first_trip_local_datetime = format(min(lubridate::as_datetime(start_local_time)), usetz = TRUE),
-      last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = TRUE)
+      first_trip_local_datetime = format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE),
+      last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
     ), by = user_id] %>%
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
   
