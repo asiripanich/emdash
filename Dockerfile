@@ -31,4 +31,6 @@ WORKDIR /build_zone
 RUN R -e 'remotes::install_local(upgrade="never")'
 EXPOSE 80
 
-CMD R -e "options('shiny.port'=80,shiny.host='0.0.0.0');emdash::run_app(mongo_url = 'mongodb://host.docker.internal:27017')"
+ENV MONGO_URL=${MONGO_URL:-"mongodb://host.docker.internal:27017"}
+ENV ANON_LOCATIONS=${ANON_LOCATIONS:-FALSE}
+CMD R -e "options('shiny.port'=80,shiny.host='0.0.0.0');emdash::run_app(mongo_url = '$MONGO_URL', anon_locations=$ANON_LOCATIONS)"
