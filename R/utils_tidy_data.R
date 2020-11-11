@@ -204,7 +204,7 @@ generate_trajectories = function(tidied_trips, tidied_locations, project_crs = 4
   # join locations to trips according to time interval overlap (all done in UTC time for consistency)
   data.table::setkey(tidied_locations, user_id, fmt_time_utc, fmt_time_utc_end)
   data.table::setkey(tidied_trips, user_id, start_fmt_time, end_fmt_time)
-  joined_trips_and_locs <- data.table::foverlaps(tidied_locations, tidied_trips)
+  joined_trips_and_locs <- data.table::foverlaps(tidied_locations, tidied_trips, nomatch=NULL)
   
   # convert locations to points
   trajectories <- joined_trips_and_locs %>%
