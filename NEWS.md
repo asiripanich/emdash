@@ -1,3 +1,8 @@
+# emdash 1.2.0
+
+- Fixed [#15](https://github.com/asiripanich/emdash/issues/15).
+- Fixed the issue with trips didn't show when loading the map without adjusting any of the filter options.
+
 # emdash 1.1.0
 
 ## Major changes
