@@ -52,7 +52,13 @@ install.packages("remotes")
 remotes::install_github("asiripanich/emdash")
 ```
 
-Alternatively, with Docker `docker pull amarins/emdash`.
+Alternatively, with Docker CLI:
+
+    docker pull amarins/emdash
+    docker run -d -p 80:80 --name emdash amarins/emdash
+
+After that, open your favourite browser and type `localhost` or
+`http://0.0.0.0:80` in the URL bar to see the dashboard.
 
 ## How to use the dashboard
 
