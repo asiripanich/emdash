@@ -149,7 +149,7 @@ app_server <- function( input, output, session ) {
       id = "filtering",
       data_table = reactive(anonymize_uuid_if_required(data_r$trips_with_trajectories)),
       data_name = reactive("data"),
-      data_vars = reactive(cols_to_include_in_map_filter()), # the map filter uses start_fmt_time and end_fmt_time (UTC time)
+      data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
       drop_ids = FALSE
     )
   
