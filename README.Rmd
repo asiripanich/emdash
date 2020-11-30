@@ -60,6 +60,8 @@ install.packages("remotes")
 remotes::install_github("asiripanich/emdash")
 ```
 
+Alternatively, with Docker `docker pull amarins/emdash`.
+
 ## How to use the dashboard
 
 ### Run locally 
@@ -111,7 +113,7 @@ For convenience, you may use this `docker_start_test_mongodb.sh` for starting up
 
 We provide a Dockerfile to run this dashboard. In the future we may include this as part of an e-mission docker-compose file which will be hosted on [the e-mission-docker github repo](https://github.com/e-mission/e-mission-docker).
 
-Be warned that the emdash Docker image is quite large, around 2.8 GB, and take a while to build.
+Be warned that the emdash Docker image is quite large, around 2.8 GB, and take a while to build. You can use pull from [the emdash docker repository](https://hub.docker.com/r/amarins/emdash) and skip the wait!
 
 ## How to customise the dashboard
 

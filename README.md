@@ -52,6 +52,8 @@ install.packages("remotes")
 remotes::install_github("asiripanich/emdash")
 ```
 
+Alternatively, with Docker `docker pull amarins/emdash`.
+
 ## How to use the dashboard
 
 ### Run locally
@@ -113,7 +115,8 @@ hosted on [the e-mission-docker github
 repo](https://github.com/e-mission/e-mission-docker).
 
 Be warned that the emdash Docker image is quite large, around 2.8 GB,
-and take a while to build.
+and take a while to build. You can use pull from [the emdash docker
+repository](https://hub.docker.com/r/amarins/emdash) and skip the wait\!
 
 ## How to customise the dashboard
 
