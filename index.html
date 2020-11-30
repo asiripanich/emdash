@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">emdash</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -128,6 +128,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"asiripanich/emdash"</span><span class="op">)</span></code></pre></div>
+<p>Alternatively, with Docker <code>docker pull amarins/emdash</code>.</p>
 </div>
 <div id="how-to-use-the-dashboard" class="section level2">
 <h2 class="hasAnchor">
@@ -168,7 +169,7 @@ ssh -L 27017:localhost:27017 ec2-user@123.12.12.1</code></pre>
 <h3 class="hasAnchor">
 <a href="#use-with-docker" class="anchor"></a>Use with Docker</h3>
 <p>We provide a Dockerfile to run this dashboard. In the future we may include this as part of an e-mission docker-compose file which will be hosted on <a href="https://github.com/e-mission/e-mission-docker">the e-mission-docker github repo</a>.</p>
-<p>Be warned that the emdash Docker image is quite large, around 2.8 GB, and take a while to build.</p>
+<p>Be warned that the emdash Docker image is quite large, around 2.8 GB, and take a while to build. You can use pull from <a href="https://hub.docker.com/r/amarins/emdash">the emdash docker repository</a> and skip the wait!</p>
 </div>
 </div>
 <div id="how-to-customise-the-dashboard" class="section level2">
