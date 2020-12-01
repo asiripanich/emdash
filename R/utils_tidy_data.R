@@ -169,10 +169,11 @@ summarise_trips = function(participants, trips) {
 #' @return a data.table.
 #' @export
 summarise_server_calls = function(participants, server_calls) {
+  
   summ_calls <-
     server_calls %>%
     data.table::setDT(.) %>%
-    .[, date := lubridate::date(lubridate::as_datetime(ts))] # adds the date of local datetime of trip
+    .[, date := format(lubridate::as_datetime(ts), usetz = FALSE)] # adds the date of local datetime of trip
 
   usercache_get_summ <- summ_calls %>% .[name == 'POST_/usercache/get', .(first_get_call = min(date), last_get_call = max(date)), by = user_id]
   usercache_put_summ <- summ_calls %>% .[name == 'POST_/usercache/put', .(first_put_call = min(date), last_put_call = max(date)), by = user_id]
