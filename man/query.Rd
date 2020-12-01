@@ -3,6 +3,7 @@
 \name{query}
 \alias{query}
 \alias{query_cleaned_locations}
+\alias{query_server_calls}
 \alias{query_cleaned_trips}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
@@ -12,6 +13,8 @@
 \title{Query functions}
 \usage{
 query_cleaned_locations(cons)
+
+query_server_calls(cons)
 
 query_cleaned_trips(cons)
 

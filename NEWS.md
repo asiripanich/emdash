@@ -1,6 +1,10 @@
+# emdash 1.2.2
+
+- Added support for displaying the server communication status on the participant table.
+
 # emdash 1.2.1
 
--  Hide the "source" column from the trip table and the map. 
+-  Hid the "source" column from the trip table and the map. 
 
 # emdash 1.2.0
 

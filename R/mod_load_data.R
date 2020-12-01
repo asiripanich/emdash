@@ -31,6 +31,10 @@ mod_load_data_server <- function(input, output, session, cons){
     data_r$trips <- tidy_cleaned_trips(query_cleaned_trips(cons), 
                                        project_crs = get_golem_config("project_crs"))
     message("Finished loading trips")
+
+    message("About to load server calls")
+    data_r$server_calls <- tidy_server_calls(query_server_calls(cons))
+    message("Finished loading server calls")
     
     message("About to load locations")
     data_r$locations <- tidy_cleaned_locations(query_cleaned_locations(cons))
@@ -45,7 +49,8 @@ mod_load_data_server <- function(input, output, session, cons){
     message("About to load participants")
     data_r$participants <- 
       tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
-      summarise_trips(., data_r$trips)
+      summarise_trips(., data_r$trips) %>%
+      summarise_server_calls(., data_r$server_calls)
     message("Finished loading participants")
 
     

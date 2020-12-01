@@ -161,6 +161,30 @@ summarise_trips = function(participants, trips) {
   merge(participants, summ_trips, by = "user_id", all.x = TRUE)
 }
 
+#' Create a summary of server calls in data.table format.
+#'
+#' @param participants the output from `tidy_participants()`.
+#' @param server_calls the output from `tidy_server_calls()`.
+#'
+#' @return a data.table.
+#' @export
+summarise_server_calls = function(participants, server_calls) {
+  
+  summ_calls <-
+    server_calls %>%
+    data.table::setDT(.) %>%
+    .[, date := format(lubridate::as_datetime(ts), usetz = FALSE)] # adds the date of local datetime of trip
+
+  usercache_get_summ <- summ_calls %>% .[name == 'POST_/usercache/get', .(first_get_call = min(date), last_get_call = max(date)), by = user_id]
+  usercache_put_summ <- summ_calls %>% .[name == 'POST_/usercache/put', .(first_put_call = min(date), last_put_call = max(date)), by = user_id]
+  diary_summ <- summ_calls %>% .[name == 'POST_/pipeline/get_complete_ts', .(first_diary_call = min(date), last_diary_call = max(date)), by = user_id]
+
+  message("merging ")
+  # merge(participants, usercache_get_summ, usercache_put_summ, by = "user_id", all.x = TRUE)
+  merge(participants, usercache_get_summ, by = "user_id", all.x = TRUE) %>%
+   merge(., usercache_put_summ, by = "user_id", all.x = TRUE) %>%
+    merge(., diary_summ, by = "user_id", all.x = TRUE)
+}
 
 #' Tidy the 'cleaned locations' data.frame into a tibble.
 #'
@@ -182,6 +206,28 @@ tidy_cleaned_locations = function(cleaned_locations) {
     ) 
   message("Finished cleaning locations")
   return(tidied_locations)
+}
+
+#' Tidy the 'server calls' data.frame into a tibble.
+#'
+#' @param server_calls a data.table output from `query_server_calls()`.
+#'
+#' @return a tibble.
+#' @export
+tidy_server_calls = function(server_calls) {
+  message("Finished query, about to tidy server calls")
+  tidied_server_calls =
+    # flatten out names and select specific columns
+    server_calls %>%
+    setnames(gsub("data.", "", names(.))) %>%
+    janitor::clean_names() %>%
+    dplyr::select(user_id, name, ts, reading) %>%
+    # convert datetime
+    dplyr::mutate(
+      fmt_time_utc = lubridate::as_datetime(ts)
+    )
+  message("Finished tidying server calls")
+  return(tidied_server_calls)
 }
 
 
