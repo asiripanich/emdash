@@ -177,7 +177,7 @@ summarise_server_calls = function(participants, server_calls) {
 
   usercache_get_summ <- summ_calls %>% .[name == 'POST_/usercache/get', .(first_get_call = min(date), last_get_call = max(date)), by = user_id]
   usercache_put_summ <- summ_calls %>% .[name == 'POST_/usercache/put', .(first_put_call = min(date), last_put_call = max(date)), by = user_id]
-  diary_summ <- summ_calls %>% .[.$name == 'POST_/pipeline/get_complete_ts', .(first_diary_call = min(date), last_diary_call = max(date)), by = user_id]
+  diary_summ <- summ_calls %>% .[name == 'POST_/pipeline/get_complete_ts', .(first_diary_call = min(date), last_diary_call = max(date)), by = user_id]
 
   message("merging ")
   # merge(participants, usercache_get_summ, usercache_put_summ, by = "user_id", all.x = TRUE)
