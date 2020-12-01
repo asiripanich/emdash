@@ -27,38 +27,40 @@ mod_load_data_server <- function(input, output, session, cons){
     renderText(paste0("Last loaded: ", as.character(Sys.time())))
   
   observeEvent(input$reload_data, {
-    message("About to load trips")
+    message("Loading participants")
+    data_r$participants <- 
+      tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons))
+    
+    if (is.null(data_r$participants)) {
+      stop("There are no participants yet, wait until there is at least one ",
+           "participant and try again. :(")
+    }
+    
+    message("Loading trips")
     data_r$trips <- tidy_cleaned_trips(query_cleaned_trips(cons), 
                                        project_crs = get_golem_config("project_crs"))
-    message("Finished loading trips")
-
-    message("About to load server calls")
+    data_r$trips = data_r$trips[0, ]
+    
+    message("Loading server calls")
     data_r$server_calls <- tidy_server_calls(query_server_calls(cons))
-    message("Finished loading server calls")
+    data_r$server_calls = data_r$server_calls[0, ]
     
-    message("About to load locations")
+    message("Loading locations")
     data_r$locations <- tidy_cleaned_locations(query_cleaned_locations(cons))
-    message("Finished loading locations")
-
-    message("About to create trajectories within trips")
-    data_r$trips_with_trajectories <- generate_trajectories(data_r$trips, 
-                                                            data_r$locations,
-                                                            project_crs = get_golem_config("project_crs"))
-    message("Finished creating trajectories within trips")
+    data_r$locations = data_r$locations[0, ]
     
-    message("About to load participants")
-    data_r$participants <- 
-      tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
-      summarise_trips(., data_r$trips) %>%
-      summarise_server_calls(., data_r$server_calls)
-    message("Finished loading participants")
-
-    
-    # output column names into R
-    # data_r$trips %>% colnames() %>% dput()
-    # data_r$participants %>% colnames() %>% dput()
-    # data_r$trips_with_trajectories %>% colnames() %>% dput()
-    
+    message("Creating trajectories within trips")
+    data_r$trips_with_trajectories <-
+      generate_trajectories(data_r$trips,
+                            data_r$locations,
+                            project_crs = get_golem_config("project_crs"))
+  
+    message("Adding summarised trips to participants.") 
+    data_r$participants = summarise_trips(data_r$participants, data_r$trips)
+  
+    message("Adding summarised server calls to participants.") 
+    data_r$participants = summarise_server_calls(data_r$participants, data_r$server_calls)
+  
     data_r$click <- runif(1)
   }, ignoreNULL = FALSE)
  
