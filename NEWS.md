@@ -1,3 +1,7 @@
+# emdash 1.2.1
+
+-  Hide the "source" column from the trip table and the map. 
+
 # emdash 1.2.0
 
 - Fixed [#15](https://github.com/asiripanich/emdash/issues/15).

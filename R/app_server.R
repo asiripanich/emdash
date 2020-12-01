@@ -113,7 +113,7 @@ app_server <- function( input, output, session ) {
   cols_to_remove_from_trips_table <- c("start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
                                        "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time", 
                                        "end_loc_coordinates", "start_loc_coordinates", 
-                                       "duration", "distance", "geometry")
+                                       "duration", "distance", "geometry", "source")
   
   observeEvent(data_r$click, {
     callModule(mod_DT_server, "DT_ui_participants", 
@@ -140,7 +140,7 @@ app_server <- function( input, output, session ) {
     setdiff(c("start_fmt_time0", "start_local_dt_timezone", "start_local_time", 
               "end_fmt_time0", "end_local_dt_timezone", "end_local_time", 
               "end_loc_coordinates", "start_loc_coordinates", "duration", "distance", 
-              "location_points"))
+              "location_points", "source"))
     })
     
   filtered_trips <- 
