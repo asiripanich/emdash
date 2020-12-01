@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Connect to the e-mission's MongoDB database — connect_stage_collections • emdash</title>
+<title>Create a summary of server calls in data.table format. — summarise_server_calls • emdash</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Connect to the e-mission's MongoDB database — connect_stage_collections" />
-<meta property="og:description" content="Connect to the e-mission's MongoDB database" />
+<meta property="og:title" content="Create a summary of server calls in data.table format. — summarise_server_calls" />
+<meta property="og:description" content="Create a summary of server calls in data.table format." />
 
 
 
@@ -111,44 +111,33 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Connect to the e-mission's MongoDB database</h1>
-    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/utils_connect_database.R'><code>R/utils_connect_database.R</code></a></small>
-    <div class="hidden name"><code>connect_stage_collections.Rd</code></div>
+    <h1>Create a summary of server calls in data.table format.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/utils_tidy_data.R'><code>R/utils_tidy_data.R</code></a></small>
+    <div class="hidden name"><code>summarise_server_calls.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Connect to the e-mission's MongoDB database</p>
+    <p>Create a summary of server calls in data.table format.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>connect_stage_collections</span><span class='op'>(</span>
-  db <span class='op'>=</span> <span class='st'>"Stage_database"</span>,
-  collections <span class='op'>=</span> <span class='va'>COLLECTIONS</span>,
-  url <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"emdash.mongo_url"</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>summarise_server_calls</span><span class='op'>(</span><span class='va'>participants</span>, <span class='va'>server_calls</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>db</th>
-      <td><p>database name. Default as 'Stage_database'.</p></td>
+      <th>participants</th>
+      <td><p>the output from `tidy_participants()`.</p></td>
     </tr>
     <tr>
-      <th>collections</th>
-      <td><p>collections to connect to, by default this try to connect to
-all the collections in [COLLECTIONS].</p></td>
-    </tr>
-    <tr>
-      <th>url</th>
-      <td><p>address of the emisison mongodb server in mongo 
-connection string [URI format](https://docs.mongodb.com/manual/reference/connection-string/).
-The default is `getOption('emdash.mongo_url')`</p></td>
+      <th>server_calls</th>
+      <td><p>the output from `tidy_server_calls()`.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of mongolite connection objects.</p>
+    <p>a data.table.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
