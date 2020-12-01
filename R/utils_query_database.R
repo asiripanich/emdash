@@ -18,6 +18,19 @@ query_cleaned_locations <- function(cons) {
 
 #' @rdname query
 #' @export
+query_server_calls <- function(cons) {
+  # to implement later - query only for the API call patterns that are relevant
+  # the problem is that if there aren't any entries (might happen if the user
+  # has just signed up and not taken any trips), then numerous downstream calls fail
+  # Fixes for downstream calls are in a patch in the PR
+  # cons$Stage_timeseries$find('{"metadata.key": "stats/server_api_time", "data.name": {"$regex": "/usercache|get_complete_ts/", "$options": ""}}') %>%
+  cons$Stage_timeseries$find('{"metadata.key": "stats/server_api_time"}') %>%
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#' @rdname query
+#' @export
 query_cleaned_trips <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/cleaned_trip"}') %>%
     as.data.table() %>%
@@ -74,6 +87,9 @@ query_stage_profiles <- function(cons) {
 #' @return a data.frame
 #' @export
 normalise_uuid <- function(.data, keep_uuid = FALSE) {
+  if (nrow(.data) == 0) {
+    return(.data);
+  }
   # return(.data)
   if (!is.data.table(.data)) {
     setDT(.data)
