@@ -164,7 +164,7 @@ summarise_trips = function(participants, trips) {
 #' Create a summary of server calls in data.table format.
 #'
 #' @param participants the output from `tidy_participants()`.
-#' @param trips the output from `tidy_cleaned_trips()`.
+#' @param server_calls the output from `tidy_server_calls()`.
 #'
 #' @return a data.table.
 #' @export
@@ -210,7 +210,7 @@ tidy_cleaned_locations = function(cleaned_locations) {
 
 #' Tidy the 'server calls' data.frame into a tibble.
 #'
-#' @param server_calls a data.table output from `query_cleaned_trips()`.
+#' @param server_calls a data.table output from `query_server_calls()`.
 #'
 #' @return a tibble.
 #' @export

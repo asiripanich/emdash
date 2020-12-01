@@ -7,7 +7,7 @@
 tidy_server_calls(server_calls)
 }
 \arguments{
-\item{server_calls}{a data.table output from `query_cleaned_trips()`.}
+\item{server_calls}{a data.table output from `query_server_calls()`.}
 }
 \value{
 a tibble.

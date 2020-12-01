@@ -9,7 +9,7 @@ summarise_server_calls(participants, server_calls)
 \arguments{
 \item{participants}{the output from `tidy_participants()`.}
 
-\item{trips}{the output from `tidy_cleaned_trips()`.}
+\item{server_calls}{the output from `tidy_server_calls()`.}
 }
 \value{
 a data.table.
