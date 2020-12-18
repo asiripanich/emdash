@@ -49,6 +49,7 @@ tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_roundi
       )
     )) %>%
     setnames(gsub("data.", "", names(.))) %>%
+    setnames(gsub("user_input", "", names(.))) %>%
     janitor::clean_names() %>%
     dplyr::select(-metakey, -metaplatform) %>%
     dplyr::mutate(
