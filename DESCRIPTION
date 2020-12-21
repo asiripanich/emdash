@@ -27,7 +27,6 @@ Imports:
     randomcoloR,
     sf,
     purrr,
-    xml2,
     checkmate
 Encoding: UTF-8
 LazyData: true
