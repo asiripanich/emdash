@@ -9,39 +9,19 @@
 status](https://github.com/asiripanich/emdash/workflows/R-CMD-check/badge.svg)](https://github.com/asiripanich/emdash/actions)
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
+
 <!-- badges: end -->
 
 The goal of emdash is to provide a deployer dashboard for an e-mission
 deployment.
 
-The dashboard is structured as follow:
-
-  - Dashboard
-      - Value boxes
-          - Number of users (+ daily)
-          - Number of active users today
-          - Number of trips (+ daily)
-          - Time since first user
-      - Plots
-          - Sign ups
-          - Trips
-          - Branch
-          - Platform
-
-<img src="man/figures/emdash_dashboard.gif" ></img>
-
-  - Tables
-      - Interactive plot (linked with the tables)
-      - Tables (downloadable in various formats from the UI)
-          - Participants
-          - Trips
-
-<img src="man/figures/emdash_tables.gif" ></img>
-
-  - Maps
-      - Trips (with a data filter on the left side)
-
-<img src="man/figures/emdash_map.gif" ></img>
+|                                            |                                                                           |
+|--------------------------------------------|---------------------------------------------------------------------------|
+| **Tab**                                    | **Example**                                                               |
+| **Dashboard**                              | ![Screen Shot 2020-10-14 at 5 21 17 PM](man/figures/emdash_dashboard.gif) |
+| **Tables** (and interactive visualisation) | ![](man/figures/emdash_tables.gif)                                        |
+| **Map**                                    | ![](man/figures/emdash_map.gif)                                           |
 
 ## Installation
 
@@ -88,14 +68,14 @@ This repository contains a test mongodump with entries from the
 [e-mission unit test real
 data](https://github.com/e-mission/e-mission-server/tree/master/emission/tests/data/real_examples).
 
-  - 2016-07-22
-  - 2016-07-25
-  - 2016-07-27
-  - 2016-08-04
-  - 2016-08-05
-  - 2016-08-09
-  - 2016-08-10
-  - 2016-08-11
+-   2016-07-22
+-   2016-07-25
+-   2016-07-27
+-   2016-08-04
+-   2016-08-05
+-   2016-08-09
+-   2016-08-10
+-   2016-08-11
 
 It includes background sensed data (`background/*`), analysis results
 (`analysis/*`) and the mode and purpose confirm objects from the master
@@ -122,7 +102,7 @@ repo](https://github.com/e-mission/e-mission-docker).
 
 Be warned that the emdash Docker image is quite large, around 2.8 GB,
 and take a while to build. You can use pull from [the emdash docker
-repository](https://hub.docker.com/r/amarins/emdash) and skip the wait\!
+repository](https://hub.docker.com/r/amarins/emdash) and skip the wait!
 
 ## How to customise the dashboard
 
@@ -144,3 +124,20 @@ See `R/utils_tidy_data.R`.
 
 The functions in this script are for cleansing and transforming data
 queried using the functions in `R/utils_query_database.R`.
+
+# Citation
+
+Use `emdash` in your work? Consider citing the package:
+
+    @software{siripanich_amarin_2021_4456315,
+      author       = {Siripanich, Amarin and
+                      Rashidi, Taha and
+                      Shankari, K},
+      title        = {asiripanich/emdash: v1.2.3},
+      month        = jan,
+      year         = 2021,
+      publisher    = {Zenodo},
+      version      = {v1.2.3},
+      doi          = {10.5281/zenodo.4456315},
+      url          = {https://doi.org/10.5281/zenodo.4456315}
+    }
