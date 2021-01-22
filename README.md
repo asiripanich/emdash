@@ -16,9 +16,8 @@ maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www
 The goal of emdash is to provide a deployer dashboard for an e-mission
 deployment.
 
-|                                            |                                                                           |
-|--------------------------------------------|---------------------------------------------------------------------------|
 | **Tab**                                    | **Example**                                                               |
+|--------------------------------------------|---------------------------------------------------------------------------|
 | **Dashboard**                              | ![Screen Shot 2020-10-14 at 5 21 17 PM](man/figures/emdash_dashboard.gif) |
 | **Tables** (and interactive visualisation) | ![](man/figures/emdash_tables.gif)                                        |
 | **Map**                                    | ![](man/figures/emdash_map.gif)                                           |
