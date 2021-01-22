@@ -69,58 +69,33 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div id="emdash" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#emdash" class="anchor"></a>emdash</h1></div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p>The goal of emdash is to provide a deployer dashboard for an e-mission deployment.</p>
-<p>The dashboard is structured as follow:</p>
-<ul>
-<li>Dashboard
-<ul>
-<li>Value boxes
-<ul>
-<li>Number of users (+ daily)</li>
-<li>Number of active users today</li>
-<li>Number of trips (+ daily)</li>
-<li>Time since first user</li>
-</ul>
-</li>
-<li>Plots
-<ul>
-<li>Sign ups</li>
-<li>Trips</li>
-<li>Branch</li>
-<li>Platform</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="reference/figures/emdash_dashboard.gif"></p>
-<ul>
-<li>Tables
-<ul>
-<li>Interactive plot (linked with the tables)</li>
-<li>Tables (downloadable in various formats from the UI)
-<ul>
-<li>Participants</li>
-<li>Trips</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p><img src="reference/figures/emdash_tables.gif"></p>
-<ul>
-<li>Maps
-<ul>
-<li>Trips (with a data filter on the left side)</li>
-</ul>
-</li>
-</ul>
-<p><img src="reference/figures/emdash_map.gif"></p>
+<table class="table"><tbody>
+<tr class="odd">
+<td><strong>Tab</strong></td>
+<td><strong>Example</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Dashboard</strong></td>
+<td><img src="reference/figures/emdash_dashboard.gif" alt="Screen Shot 2020-10-14 at 5 21 17 PM"></td>
+</tr>
+<tr class="odd">
+<td>
+<strong>Tables</strong> (and interactive visualisation)</td>
+<td><img src="reference/figures/emdash_tables.gif"></td>
+</tr>
+<tr class="even">
+<td><strong>Map</strong></td>
+<td><img src="reference/figures/emdash_map.gif"></td>
+</tr>
+</tbody></table>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -193,6 +168,24 @@ ssh -L 27017:localhost:27017 ec2-user@123.12.12.1</code></pre>
 </div>
 </div>
 </div>
+<div id="citation" class="section level1">
+<h1 class="hasAnchor">
+<a href="#citation" class="anchor"></a>Citation</h1>
+<p>Use <code>emdash</code> in your work? Consider citing the package:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="op">@</span>software{siripanich_amarin_<span class="dv">2021</span>_<span class="dv">4456315</span>,</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  author       =<span class="st"> </span>{Siripanich, Amarin and</span>
+<span id="cb6-3"><a href="#cb6-3"></a>                  Rashidi, Taha and</span>
+<span id="cb6-4"><a href="#cb6-4"></a>                  Shankari, K},</span>
+<span id="cb6-5"><a href="#cb6-5"></a>  title        =<span class="st"> </span>{asiripanich<span class="op">/</span>emdash<span class="op">:</span><span class="st"> </span>v1.<span class="fl">2.3</span>},</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  month        =<span class="st"> </span>jan,</span>
+<span id="cb6-7"><a href="#cb6-7"></a>  year         =<span class="st"> </span><span class="dv">2021</span>,</span>
+<span id="cb6-8"><a href="#cb6-8"></a>  publisher    =<span class="st"> </span>{Zenodo},</span>
+<span id="cb6-9"><a href="#cb6-9"></a>  version      =<span class="st"> </span>{v1.<span class="fl">2.3</span>},</span>
+<span id="cb6-10"><a href="#cb6-10"></a>  doi          =<span class="st"> </span>{<span class="fl">10.5281</span><span class="op">/</span>zenodo<span class="fl">.4456315</span>},</span>
+<span id="cb6-11"><a href="#cb6-11"></a>  url          =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>doi.org<span class="op">/</span><span class="fl">10.5281</span><span class="op">/</span>zenodo<span class="fl">.4456315</span>}</span>
+<span id="cb6-12"><a href="#cb6-12"></a>}</span></code></pre></div>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -233,6 +226,7 @@ ssh -L 27017:localhost:27017 ec2-user@123.12.12.1</code></pre>
 <ul class="list-unstyled">
 <li><a href="https://github.com/asiripanich/emdash/actions"><img src="https://github.com/asiripanich/emdash/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="https://zenodo.org/badge/latestdoi/280847367"><img src="https://zenodo.org/badge/280847367.svg" alt="DOI"></a></li>
 </ul>
 </div>
 </div>
