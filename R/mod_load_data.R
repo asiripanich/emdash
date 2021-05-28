@@ -52,7 +52,6 @@ mod_load_data_server <- function(input, output, session, cons){
       summarise_trips(., data_r$trips) %>%
       summarise_server_calls(., data_r$server_calls)
     message("Finished loading participants")
-
     
     # output column names into R
     # data_r$trips %>% colnames() %>% dput()

@@ -23,6 +23,7 @@ app_ui <- function(request) {
       ),
       
       dashboardBody(
+        
         tabItems(
           # Dashboard -----------------------
           
@@ -37,18 +38,18 @@ app_ui <- function(request) {
                   ),
                   # Dashboard - boxes - end -----------------
                   # Dashboard - calendar - start -----------------
-                  
+
                   # Dashboard - calendar - end -----------------
                   # Dashboard - plots - start ----------------------------------
-                  fluidRow(
-                    box(
-                      title = "Sign-up Trend", 
-                      solidHeader = TRUE,
-                      collapsible = TRUE,
-                      width = 12,
-                      mod_ggplotly_ui("ggplotly_ui_signup_trend")
-                    )
-                  ),
+                    fluidRow(
+                      box(
+                        title = "Sign-up Trend",
+                        solidHeader = TRUE,
+                        collapsible = TRUE,
+                        width = 12,
+                        mod_ggplotly_ui("ggplotly_ui_signup_trend")
+                      )
+                   ),
                   fluidRow(
                     box(
                       title = "Trip Trend", 
@@ -88,7 +89,12 @@ app_ui <- function(request) {
                         id = "esquisse", 
                         header = FALSE, # dont display gadget title
                         choose_data = FALSE # dont display button to change data
-                      )), 
+                      ),
+                      
+                      # Override the default font size in esquisse with CSS
+                      tags$style(".container-drag-source, .box-dad {font-size: 12px;}")
+                      ), 
+                  
                   fluidRow(
                     tabBox(
                       id = "tabs",
