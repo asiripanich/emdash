@@ -13,20 +13,13 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app <- function(config_file,mongo_url, anon_locations = FALSE, ...
+run_app <- function(mongo_url, anon_locations = FALSE, ...
 ) {
   checkmate::assert_flag(anon_locations, na.ok = FALSE, null.ok = FALSE)
   if (!missing(mongo_url)) {
     checkmate::assert_string(mongo_url)
     options('emdash.mongo_url' = mongo_url)
   }
-  
-  message(getwd())
-  
-  # 'C:/Users/mallen2/emdash/R/config.yml'
-  config <- config::get(file = config_file)
-  options('emdash.disp_signup_trend' = config$display_signup_trend,
-          'emdash.cols_to_remove_from_participts_table' = config$cols_to_remove_from_participts_table)
   
   if (anon_locations) {
     options('emdash.anon_locations' = anon_locations)
