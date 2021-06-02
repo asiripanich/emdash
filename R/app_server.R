@@ -96,8 +96,12 @@ app_server <- function( input, output, session ) {
                            "first_put_call", 
                            "last_put_call", 
                            "first_diary_call", 
-                           "last_diary_call")
-  
+                           "last_diary_call",
+                           "client_app_version",
+                           "client_os_version",
+                           "phone_lang",
+                           "unconfirmed")
+
   # Human friendly names to set for the columns
   newColumnNames <- c('user id',
                       'last profile update',
@@ -114,7 +118,11 @@ app_server <- function( input, output, session ) {
                       'first data upload', 
                       'last data upload',
                       'first app launch',
-                      'last app launch')
+                      'last app launch',
+                      'smartphone app version',
+                      'android/iOS version',
+                      'language',
+                      'unlabeled')
   
   
   observeEvent(input$tabs, { 
@@ -122,7 +130,7 @@ app_server <- function( input, output, session ) {
       data_esquisse$data <- 
         data_r$participants %>%
         drop_list_columns() %>%
-        setnames(originalColumnNames,newColumnNames)
+        setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
     }
     if (input$tabs == "trips") {
       data_esquisse$data <- 
@@ -144,10 +152,11 @@ app_server <- function( input, output, session ) {
   # use these to generate lists of columns to inform which columns to remove
   # data_r$participants %>% colnames() %>% dput()
   # data_r$trips %>% colnames() %>% dput()
-
+  # POSSIBLE LINE: allNames[!(allNames %in% config$column_names)]
+  # cols_to_remove_from_participts_table <- c("first_trip_datetime", 
+  #                                            "last_trip_datetime")
   
-  cols_to_remove_from_participts_table <- c("first_trip_datetime", 
-                                              "last_trip_datetime")
+  cols_to_remove_from_participts_table <- getOption('emdash.cols_to_remove_from_participts_table')
   cols_to_remove_from_trips_table <- c("start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
                                        "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time", 
                                        "end_loc_coordinates", "start_loc_coordinates", 
@@ -157,7 +166,7 @@ app_server <- function( input, output, session ) {
     callModule(mod_DT_server, "DT_ui_participants", 
                data = data_r$participants %>%
                  dplyr::select(-dplyr::any_of(cols_to_remove_from_participts_table)) %>%
-                 setnames(originalColumnNames,newColumnNames)
+                 setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
                )
     callModule(mod_DT_server, "DT_ui_trips", 
                data = data_r$trips %>%
