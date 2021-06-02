@@ -11,7 +11,7 @@
 query_cleaned_locations <- function(cons) {
   # to implement later - query only for locations between a range of timestamps (as specified in map filter)
   # cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/recreated_location", "data.ts": {"$lte": range_end_ts, "$gte": range_start_ts}}') %>%
-  cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/recreated_location"}') %>%  
+  cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/recreated_location"}') %>%
     as.data.table() %>%
     normalise_uuid()
 }
@@ -88,7 +88,7 @@ query_stage_profiles <- function(cons) {
 #' @export
 normalise_uuid <- function(.data, keep_uuid = FALSE) {
   if (nrow(.data) == 0) {
-    return(.data);
+    return(.data)
   }
   # return(.data)
   if (!is.data.table(.data)) {
@@ -96,7 +96,7 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
   }
   if ("uuid" %in% names(.data)) {
     .data[, user_id := sapply(uuid, function(.x) paste0(unlist(.x), collapse = ""))]
-    if (!keep_uuid)  {
+    if (!keep_uuid) {
       .data[, uuid := NULL]
     }
   } else {
@@ -110,7 +110,7 @@ normalise_uuid <- function(.data, keep_uuid = FALSE) {
 #' @param .data a data.frame object
 #'
 #' @return .data with anonymized user_id
-#' @export 
+#' @export
 anonymize_uuid <- function(.data) {
   stopifnot(is.data.frame(.data))
   if (!"user_id" %in% names(.data)) {
@@ -128,7 +128,7 @@ anonymize_uuid_if_required <- function(.data, flag = getOption("emdash.anon_loca
   if (flag) {
     message("Anonymize trajectories")
     return(anonymize_uuid(.data))
-  } 
+  }
   .data
 }
 
@@ -142,6 +142,7 @@ anonymize_uuid_if_required <- function(.data, flag = getOption("emdash.anon_loca
 #' @export
 convert_datetime_string_to_datetime <- function(.data, cols, tz = "Australia/Sydney") {
   stopifnot(data.table::is.data.table(.data))
-  .data[, c(cols) := lapply(.SD, function(.x) {lubridate::as_datetime(.x, tz = tz)}), .SDcols = cols]
+  .data[, c(cols) := lapply(.SD, function(.x) {
+    lubridate::as_datetime(.x, tz = tz)
+  }), .SDcols = cols]
 }
-
