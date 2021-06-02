@@ -80,50 +80,11 @@ app_server <- function( input, output, session ) {
   # Tables ------------------------------------------------------------------
   data_esquisse <- reactiveValues(data = data.frame(), name = "data_esquisse")
   
-  # These are the column names we want to change
-  originalColumnNames <- c("user_id", 
-                           "update_ts",
-                           "client", 
-                           "curr_platform",
-                           "n_trips",
-                           "n_trips_today", 
-                           "n_active_days", 
-                           "first_trip_local_datetime", 
-                           "last_trip_local_datetime", 
-                           "n_days", 
-                           "first_get_call", 
-                           "last_get_call", 
-                           "first_put_call", 
-                           "last_put_call", 
-                           "first_diary_call", 
-                           "last_diary_call",
-                           "client_app_version",
-                           "client_os_version",
-                           "phone_lang",
-                           "unconfirmed")
-
-  # Human friendly names to set for the columns
-  newColumnNames <- c('user id',
-                      'last profile update',
-                      'UI channel',
-                      'android/iOS',
-                      'Total trips',
-                      'Trips today',
-                      'Number of days with at least one trip',
-                      'First trip date',
-                      'Last trip date',
-                      'Number of days since app install',
-                      'first app communication',
-                      'last app communication',
-                      'first data upload', 
-                      'last data upload',
-                      'first app launch',
-                      'last app launch',
-                      'smartphone app version',
-                      'android/iOS version',
-                      'language',
-                      'unlabeled')
-  
+  # Convert the config's label map to a named vector. 
+  # The names are the original labels, and the vector values are the new labels.
+  named_label_vector <- unlist(getOption('emdash.col_labels_for_participts'))
+  originalColumnNames <- names(named_label_vector)
+  newColumnNames <- unname(named_label_vector)
   
   observeEvent(input$tabs, { 
     if (input$tabs  == "participants") {
@@ -131,6 +92,7 @@ app_server <- function( input, output, session ) {
         data_r$participants %>%
         drop_list_columns() %>%
         setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
+        # setnames is from the data.table library
     }
     if (input$tabs == "trips") {
       data_esquisse$data <- 
@@ -167,6 +129,7 @@ app_server <- function( input, output, session ) {
                data = data_r$participants %>%
                  dplyr::select(-dplyr::any_of(cols_to_remove_from_participts_table)) %>%
                  setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
+                 # setnames is from the data.table library
                )
     callModule(mod_DT_server, "DT_ui_trips", 
                data = data_r$trips %>%

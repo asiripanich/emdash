@@ -26,7 +26,8 @@ run_app <- function(config_file,mongo_url, anon_locations = FALSE, ...
   # 'C:/Users/mallen2/emdash/R/config.yml'
   config <- config::get(file = config_file)
   options('emdash.disp_signup_trend' = config$display_signup_trend,
-          'emdash.cols_to_remove_from_participts_table' = config$cols_to_remove_from_participts_table)
+          'emdash.cols_to_remove_from_participts_table' = config$cols_to_remove_from_participts_table,
+          'emdash.col_labels_for_participts' = config$col_labels_for_participts)
   
   if (anon_locations) {
     options('emdash.anon_locations' = anon_locations)
