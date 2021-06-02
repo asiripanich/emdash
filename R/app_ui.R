@@ -96,7 +96,7 @@ app_ui <- function(request) {
                       ),
                       
                       # Override the default font size in esquisse with CSS
-                      tags$style(".container-drag-source, .box-dad {font-size: 12px;}")
+                      tags$style(".container-drag-source, .box-dad {font-size: 14px;}")
                       ), 
                   
                   fluidRow(
