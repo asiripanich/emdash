@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/asiripanich/emdash/workflows/R-CMD-check/badge.svg)](https://github.com/asiripanich/emdash/actions)
+[![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
 <!-- badges: end -->
 
 The goal of emdash is to provide a deployer dashboard for an e-mission
