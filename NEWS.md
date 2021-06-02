@@ -1,3 +1,7 @@
+# emdash 1.2.3
+
+- Updated the author list.
+
 # emdash 1.2.2
 
 - Added support for displaying the server communication status on the participant table.
