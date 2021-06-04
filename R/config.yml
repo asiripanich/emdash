@@ -1,10 +1,7 @@
-# c("user_id", "update_ts", "client", "curr_platform", "n_trips",
-# "n_trips_today", "n_active_days", "first_trip_datetime", "last_trip_datetime",
-# "first_trip_local_datetime", "last_trip_local_datetime", "n_days",
-# "first_get_call", "last_get_call", "first_put_call", "last_put_call",
-# "first_diary_call", "last_diary_call")
+# Use this file to set options for the app
 
 default:
+ anon_locations: false
  display_signup_trend: false
  cols_to_remove_from_participts_table:
   - first_trip_datetime
@@ -15,6 +12,34 @@ default:
   - first_get_call
   - first_put_call
   - first_diary_call
+  
+ cols_to_remove_from_trips_table:
+  - start_fmt_time0 
+  - start_local_dt_timezone"
+  - start_fmt_time
+  - end_fmt_time0
+  - end_local_dt_timezone
+  - end_fmt_time
+  - end_loc_coordinates
+  - start_loc_coordinates
+  - duration
+  - distance
+  - geometry
+  - source
+
+ cols_to_remove_from_map_popup:
+  - start_fmt_time0
+  - start_local_dt_timezone
+  - start_fmt_time
+  - end_fmt_time0
+  - end_local_dt_timezone
+  - end_fmt_time
+  - end_loc_coordinates
+  - start_loc_coordinates
+  - duration
+  - distance
+  - location_points
+  
   
  # Set the labels to display for the participant data 
  col_labels_for_participts:

@@ -91,8 +91,7 @@ app_server <- function( input, output, session ) {
       data_esquisse$data <- 
         data_r$participants %>%
         drop_list_columns() %>%
-        setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
-        # setnames is from the data.table library
+        data.table::setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
     }
     if (input$tabs == "trips") {
       data_esquisse$data <- 
@@ -119,17 +118,13 @@ app_server <- function( input, output, session ) {
   #                                            "last_trip_datetime")
   
   cols_to_remove_from_participts_table <- getOption('emdash.cols_to_remove_from_participts_table')
-  cols_to_remove_from_trips_table <- c("start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
-                                       "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time", 
-                                       "end_loc_coordinates", "start_loc_coordinates", 
-                                       "duration", "distance", "geometry", "source")
-  
+  cols_to_remove_from_trips_table <- getOption('emdash.cols_to_remove_trips_table')
+
   observeEvent(data_r$click, {
     callModule(mod_DT_server, "DT_ui_participants", 
                data = data_r$participants %>%
                  dplyr::select(-dplyr::any_of(cols_to_remove_from_participts_table)) %>%
-                 setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
-                 # setnames is from the data.table library
+                 data.table::setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
                )
     callModule(mod_DT_server, "DT_ui_trips", 
                data = data_r$trips %>%
@@ -167,10 +162,7 @@ app_server <- function( input, output, session ) {
       drop_ids = FALSE
     )
   
-  cols_to_remove_from_map_popup <- c("start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
-                                     "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time",
-                                     "end_loc_coordinates", "start_loc_coordinates", 
-                                     "duration", "distance", "location_points")
+  cols_to_remove_from_map_popup <- getOption('emdash.cols_to_remove_from_map_popup')
   
   observeEvent(filtered_trips$data_filtered(), {
     callModule(

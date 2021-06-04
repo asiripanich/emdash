@@ -43,16 +43,16 @@ app_ui <- function(request) {
                   # Dashboard - plots - start ----------------------------------
                   
                   # Display the signup trend if that option is chosen  
-                  if (getOption("emdash.disp_signup_trend")){
-                  fluidRow(
-                      box(
-                        title = "Sign-up Trend",
-                        solidHeader = TRUE,
-                        collapsible = TRUE,
-                        width = 12,
-                        mod_ggplotly_ui("ggplotly_ui_signup_trend")
-                      )
-                   )
+                  if (isTRUE(getOption("emdash.disp_signup_trend"))){
+                    fluidRow(
+                        box(
+                          title = "Sign-up Trend",
+                          solidHeader = TRUE,
+                          collapsible = TRUE,
+                          width = 12,
+                          mod_ggplotly_ui("ggplotly_ui_signup_trend")
+                        )
+                     )
                   },
                   fluidRow(
                     box(
