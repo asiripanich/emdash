@@ -41,7 +41,7 @@ mod_load_data_server <- function(input, output, session, cons){
     message("Finished loading locations")
 
     message("About to create trajectories within trips")
-    data_r$trips_with_trajectories <- generate_trajectories(data_r$trips, 
+    data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
                                                             data_r$locations,
                                                             project_crs = get_golem_config("project_crs"))
     message("Finished creating trajectories within trips")
@@ -52,6 +52,10 @@ mod_load_data_server <- function(input, output, session, cons){
       summarise_trips(., data_r$trips) %>%
       summarise_server_calls(., data_r$server_calls)
     message("Finished loading participants")
+    
+    message("About to load checkinout")
+    data_r$checkinout <- query_checkinout(cons) %>% data.table::setcolorder(c("user_id"))
+    message("Finished loading checkinout")
     
     # output column names into R
     # data_r$trips %>% colnames() %>% dput()

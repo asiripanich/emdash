@@ -40,6 +40,15 @@ query_cleaned_trips <- function(cons) {
 
 #' @rdname query
 #' @export
+query_checkinout <- function(cons){
+  # cons <- connect_stage_collections(url = getOption('emdash.mongo_url')) 
+  cons$Checkinout$find('{}') %>%
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#' @rdname query
+#' @export
 query_cleaned_place <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/cleaned_place"}') %>%
     as.data.table() %>%

@@ -126,10 +126,12 @@ app_server <- function( input, output, session ) {
                  dplyr::select(-dplyr::any_of(cols_to_remove_from_participts_table)) %>%
                  data.table::setnames(originalColumnNames,newColumnNames,skip_absent = TRUE)
                )
-    callModule(mod_DT_server, "DT_ui_trips", 
+    callModule(mod_DT_server, "DT_ui_trips",
                data = data_r$trips %>%
                  dplyr::select(-dplyr::any_of(cols_to_remove_from_trips_table)) %>%
                  sf::st_drop_geometry())
+    callModule(mod_DT_server,"DT_ui_checkinout",
+               data = data_r$checkinout)
   })
   
  

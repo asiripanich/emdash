@@ -114,6 +114,12 @@ app_ui <- function(request) {
                         title = "Trips",
                         value = "trips",
                         mod_DT_ui("DT_ui_trips")    
+                      ),
+                      tabPanel(
+                        status = "primary",
+                        title = "Bike Check In",
+                        value = "checkinout",
+                        mod_DT_ui("DT_ui_checkinout")
                       )
                     )
                   )
