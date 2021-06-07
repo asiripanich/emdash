@@ -22,8 +22,7 @@ tidy_participants <- function(stage_profiles, stage_uuids) {
   # print(cols_to_purge)
   merged %>%
     .[, eval(cols_to_purge) := NULL] %>%
-    data.table::setcolorder(c("user_email", "user_id")) %>%
-    .[, -"user_email"]
+    data.table::setcolorder(c("user_email", "user_id"))
 }
 
 #' Tidy the 'cleaned trips' data.frame into a sf object.
