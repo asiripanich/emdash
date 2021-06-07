@@ -27,17 +27,18 @@ run_app <- function(mongo_url, config_file, ...
   config <- config::get(file = config_file)
   checkmate::assert_flag(config$anon_locations, na.ok = FALSE, null.ok = FALSE)
   
-  options('emdash.disp_signup_trend' = config$display_signup_trend,
-          'emdash.cols_to_remove_from_participts_table' = config$cols_to_remove_from_participts_table,
-          'emdash.cols_to_remove_from_trips_table' = config$cols_to_remove_from_trips_table,
-          'emdash.cols_to_remove_from_map_popup' = config$cols_to_remove_from_map_popup,
-          'emdash.col_labels_for_participts' = config$col_labels_for_participts)
-  
   if (isTRUE(config$anon_locations)) {
     options('emdash.anon_locations' = anon_locations)
   } else {
     options('emdash.anon_locations' = FALSE)
   }
+  
+  options('emdash.disp_signup_trend' = config$display_signup_trend,
+          'emdash.cols_to_remove_from_participts_table' = config$cols_to_remove_from_participts_table,
+          'emdash.cols_to_remove_from_trips_table' = config$cols_to_remove_from_trips_table,
+          'emdash.cols_to_remove_from_map_popup' = config$cols_to_remove_from_map_popup,
+          'emdash.col_labels_for_participts' = config$col_labels_for_participts,
+          'emdash.supplementary_tables' = config$supplementary_tables)
   
   app <- with_golem_options(
     app = shinyApp(

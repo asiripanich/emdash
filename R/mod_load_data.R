@@ -53,9 +53,22 @@ mod_load_data_server <- function(input, output, session, cons){
       summarise_server_calls(., data_r$server_calls)
     message("Finished loading participants")
     
-    message("About to load checkinout")
-    data_r$checkinout <- query_checkinout(cons) %>% data.table::setcolorder(c("user_id"))
-    message("Finished loading checkinout")
+    table_list <- getOption('emdash.supplementary_tables')
+    
+    # For each supplementary table, run the server function
+    # that specifies table behavior
+    for (t in table_list){
+      table_type <- names(t)
+      table_title <- t[[table_type]]$tab_name
+      
+      message(paste("About to load",table_title))
+      data_r[[table_type]] <- query_supplementary(cons,table_type) %>% data.table::setcolorder(c("user_id"))
+      message(paste("Finished loading",table_title))
+    }
+    
+    # message("About to load checkinout")
+    # data_r$Checkinout <- query_checkinout(cons) %>% data.table::setcolorder(c("user_id"))
+    # message("Finished loading checkinout")
     
     # output column names into R
     # data_r$trips %>% colnames() %>% dput()

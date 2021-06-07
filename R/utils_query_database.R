@@ -49,6 +49,14 @@ query_checkinout <- function(cons){
 
 #' @rdname query
 #' @export
+query_supplementary <- function(cons, name) {
+  cons[[name]]$find('{}') %>%
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#' @rdname query
+#' @export
 query_cleaned_place <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/cleaned_place"}') %>%
     as.data.table() %>%

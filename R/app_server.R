@@ -130,8 +130,40 @@ app_server <- function( input, output, session ) {
                data = data_r$trips %>%
                  dplyr::select(-dplyr::any_of(cols_to_remove_from_trips_table)) %>%
                  sf::st_drop_geometry())
-    callModule(mod_DT_server,"DT_ui_checkinout",
-               data = data_r$checkinout)
+    # callModule(mod_DT_server,"DT_ui_checkinout",
+    #            data = data_r$checkinout)
+    
+    
+    tableList <- getOption('emdash.supplementary_tables')
+
+    # For each supplementary table, run the server function
+    # that specifies table behavior
+    for (t in tableList){
+      table_type <- names(t)
+
+      # Run mod_DT_server using data for the current table
+      callModule(module = mod_DT_server,
+                 id = paste0("DT_ui_",table_type),
+                 data = data_r[[table_type]] )
+    }
+    
+    
+    # output$supplementary_tabs <- renderUI({
+    #   tabPanel_list <- list()
+    #   j = 1
+    #   for (t in tableList){
+    #     table_type <- names(t)
+    #     table_title <- t[[table_type]]$tab_name
+    #     tabPanel_list[[j]] <- tabPanel( status = "primary",
+    #                                     title = table_title,
+    #                                     value = table_type,
+    #                                       #mod_DT_ui(id = paste0("DT_ui_",table_type))
+    #                                   )
+    #   }
+    #   do.call(tabsetPanel,tabPanel_list)
+    # })
+    
+    
   })
   
  
