@@ -1,4 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+
+# emdash 1.2.6
+
+- The map no longer shows detailed trajectories of the participants by default. See issues #29 and #40 related to this in problem.
+- Add some addition fields to ignore
+
 # emdash 1.2.5
 
 - Added minor cosmetic changes to the dashboard (#24)
