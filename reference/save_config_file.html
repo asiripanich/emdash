@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Normalise UUID — normalise_uuid • emdash</title>
+<title>Save the default app config file — save_config_file • emdash</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,10 @@
 
 
 
-<meta property="og:title" content="Normalise UUID — normalise_uuid" />
-<meta property="og:description" content="Normalise UUID" />
+<meta property="og:title" content="Save the default app config file — save_config_file" />
+<meta property="og:description" content="This function saves the default app configuration file required by [run_app()]. 
+Alternatively, you can download the file from 
+https://github.com/asiripanich/emdash/blob/master/inst/config-default.yml." />
 
 
 
@@ -111,33 +113,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Normalise UUID</h1>
-    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/utils_query_database.R'><code>R/utils_query_database.R</code></a></small>
-    <div class="hidden name"><code>normalise_uuid.Rd</code></div>
+    <h1>Save the default app config file</h1>
+    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/config.R'><code>R/config.R</code></a></small>
+    <div class="hidden name"><code>save_config_file.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Normalise UUID</p>
+    <p>This function saves the default app configuration file required by [run_app()]. 
+Alternatively, you can download the file from 
+https://github.com/asiripanich/emdash/blob/master/inst/config-default.yml.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>normalise_uuid</span><span class='op'>(</span><span class='va'>.data</span>, keep_uuid <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>save_config_file</span><span class='op'>(</span><span class='va'>dir_out</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>.data</th>
-      <td><p>a data.frame.</p></td>
-    </tr>
-    <tr>
-      <th>keep_uuid</th>
-      <td><p>logical.</p></td>
+      <th>dir_out</th>
+      <td><p>the directory to save the config file</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a data.frame</p>
+    <p>a logical value, `TRUE` if the file has been successfully saved.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

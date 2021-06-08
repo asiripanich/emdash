@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emdash</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.5</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@
     <p>Run the Shiny Application</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_app</span><span class='op'>(</span><span class='va'>mongo_url</span>, anon_locations <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>run_app</span><span class='op'>(</span><span class='va'>mongo_url</span>, <span class='va'>config_file</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,15 +129,14 @@
       <th>mongo_url</th>
       <td><p>address of the emisison mongodb server in mongo
 connection string [URI format](https://docs.mongodb.com/manual/reference/connection-string/).
-Defaut as `mongodb://localhost:27017`. If you are using the emdash docker container
+Default as `mongodb://localhost:27017`. If you are using the emdash docker container
 then this is set to `mongodb://host.docker.internal:27017`, however this may not
 work on Linux. If you are using Linux or Docker version prior to 18.03 you
 need to find the gateway ip of your Docker to connect to the database.</p></td>
     </tr>
     <tr>
-      <th>anon_locations</th>
-      <td><p>a Boolean value, default as FALSE. If TRUE, the UUIDs that are
-displayed on 'Maps' will be anonymized to 'user_1', 'user_2', etc.</p></td>
+      <th>config_file</th>
+      <td><p>path and file name of the YAML configuration file</p></td>
     </tr>
     <tr>
       <th>...</th>
