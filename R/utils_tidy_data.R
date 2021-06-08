@@ -1,28 +1,27 @@
 #' Create a tidied participant data.table
-#'
+#' 
 #'
 #' @param stage_profiles the output of `query_stage_profiles()`.
 #' @param stage_uuids the output of `query_stage_uuids()`.
 #'
-#' @note
-#'
+#' @note 
+#' 
 #' the `update_ts` field can be used to infer the signup datetime of each user.
-#'
+#' 
 #' @return a data.table
 #' @export
 tidy_participants <- function(stage_profiles, stage_uuids) {
-  merged <- merge(
-    x = stage_profiles,
-    y = stage_uuids[, c("update_ts") := NULL],
-    by = "user_id"
-  )
-  # print(names(merged))
+  merged <- merge(x = stage_profiles,
+        y = stage_uuids[, c("update_ts") := NULL],
+        by = "user_id")
+  #print(names(merged))
   max_cols_to_purge <- c("uuid", "source", "device_token", "mpg_array", "curr_sync_interval")
   cols_to_purge <- intersect(names(merged), max_cols_to_purge)
-  # print(cols_to_purge)
+  #print(cols_to_purge)
   merged %>%
     .[, eval(cols_to_purge) := NULL] %>%
-    data.table::setcolorder(c("user_email", "user_id"))
+    data.table::setcolorder(c("user_email", "user_id")) #%>%
+    #.[, -"user_email"]
 }
 
 #' Tidy the 'cleaned trips' data.frame into a sf object.
@@ -31,11 +30,11 @@ tidy_participants <- function(stage_profiles, stage_uuids) {
 #' @param project_crs a EPSG code. Default as 4326.
 #' @param smallest_rounding_digit an integer value.
 #'
-#' @return a spatial data.frame of class sf.
+#' @return a spatial data.frame of class sf. 
 #' @export
-tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_rounding_digit = 2) {
+tidy_cleaned_trips = function(cleaned_trips, project_crs = 4326, smallest_rounding_digit = 2) {
   message("Finished query, about to clean trips")
-  cleaned_trips_sf <-
+  cleaned_trips_sf =
     # flatten out names and remove unnecessary columns
     cleaned_trips %>%
     dplyr::select(-dplyr::contains(
@@ -50,7 +49,6 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
       )
     )) %>%
     setnames(gsub("data.", "", names(.))) %>%
-    setnames(gsub("user_input", "", names(.))) %>%
     janitor::clean_names() %>%
     dplyr::select(-metakey, -metaplatform) %>%
     dplyr::mutate(
@@ -58,8 +56,8 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
       end_fmt_time0 = end_fmt_time,
       start_fmt_time = lubridate::as_datetime(start_fmt_time0), # converts to UTC
       end_fmt_time = lubridate::as_datetime(end_fmt_time0), # converts to UTC
-      start_local_time = purrr::map2(start_fmt_time, start_local_dt_timezone, ~ format(.x, tz = .y, usetz = TRUE)), # a timestamp but has to be a string
-      end_local_time = purrr::map2(end_fmt_time, end_local_dt_timezone, ~ format(.x, tz = .y, usetz = TRUE)) # a timestamp but has to be a string
+      start_local_time = purrr::map2(start_fmt_time, start_local_dt_timezone, ~format(.x, tz = .y, usetz = TRUE)), # a timestamp but has to be a string
+      end_local_time = purrr::map2(end_fmt_time, end_local_dt_timezone, ~format(.x, tz = .y, usetz = TRUE)) # a timestamp but has to be a string
     ) %>%
     tidyr::unnest(c("start_local_time", "end_local_time")) %>%
     # convert to data.table for speed!
@@ -73,8 +71,7 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
         ncol = 2,
         byrow = T
       )))),
-      by = 1:nrow(.)
-    ] %>%
+      by = 1:nrow(.)] %>%
     # add lat and lon columns for both start and end locations
     dplyr::mutate(
       end_lat_lon = gsub("c\\(|\\)| ", "", paste(end_loc_coordinates)),
@@ -83,25 +80,24 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
     tidyr::separate(
       end_lat_lon,
       into = c("end_lon", "end_lat"),
-      sep = ",",
+      sep = ',',
       convert = TRUE
     ) %>%
     tidyr::separate(
       start_lat_lon,
       into = c("start_lon", "start_lat"),
-      sep = ",",
+      sep = ',',
       convert = TRUE
-    ) %>%
+    ) %>% 
     # convert into a sf object, this allows us to use spatial mapping functions
-    # from packages like `ggplot2` and `mapview`.
+    # from packages like `ggplot2` and `mapview`. 
     # this requires the curley brackets because we are re-using the placeholder
     # see: the section 'Re-using the placeholder for attributes' in
     # https://magrittr.tidyverse.org/
     {
       sf::st_sf(dplyr::select(., -geometry),
-        geometry = .[["geometry"]],
-        crs = project_crs
-      )
+                geometry = .[["geometry"]],
+                crs = project_crs)
     } %>%
     dplyr::select(-dplyr::starts_with(c("meta", "data_"))) %>%
     dplyr::select(-dplyr::ends_with(
@@ -113,7 +109,7 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
         "raw_trip",
         "_lat",
         "_lon"
-        # "_coordinates" # keep the start and end coordinates for later visualization
+        #"_coordinates" # keep the start and end coordinates for later visualization
       )
     )) %>%
     dplyr::select(
@@ -130,9 +126,9 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
     ) %>%
     # converting duration in seconds and distance in metres
     dplyr::mutate(
-      duration_min = round(duration / 60, smallest_rounding_digit),
-      distance_mi = round(distance / 1609, smallest_rounding_digit),
-      distance_km = round(distance / 1000, smallest_rounding_digit)
+      duration_min = round(duration/60, smallest_rounding_digit),
+      distance_mi = round(distance/1609, smallest_rounding_digit),
+      distance_km = round(distance/1000, smallest_rounding_digit)
     )
   message("Finished cleaning trips")
   return(cleaned_trips_sf)
@@ -145,15 +141,14 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
 #'
 #' @return a data.table.
 #' @export
-summarise_trips <- function(participants, trips) {
+summarise_trips = function(participants, trips) {
   summ_trips <-
     trips %>%
     sf::st_drop_geometry(.) %>%
     data.table::setDT(.) %>%
-    .[, date := lubridate::date(lubridate::as_datetime(start_local_time))] %>%
-    # adds the date of local datetime of trip
+    .[, date := lubridate::date(lubridate::as_datetime(start_local_time))] %>% # adds the date of local datetime of trip
     .[, .(
-      n_trips = .N,
+      n_trips = .N, 
       n_trips_today = sum(date == Sys.Date()), # compares date of local datetime of trip to date of local time of dashboard user
       n_active_days = data.table::uniqueN(date),
       first_trip_datetime = min(start_fmt_time), # in UTC
@@ -162,7 +157,7 @@ summarise_trips <- function(participants, trips) {
       last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
     ), by = user_id] %>%
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
-
+  
   merge(participants, summ_trips, by = "user_id", all.x = TRUE)
 }
 
@@ -173,20 +168,21 @@ summarise_trips <- function(participants, trips) {
 #'
 #' @return a data.table.
 #' @export
-summarise_server_calls <- function(participants, server_calls) {
+summarise_server_calls = function(participants, server_calls) {
+  
   summ_calls <-
     server_calls %>%
     data.table::setDT(.) %>%
     .[, date := format(lubridate::as_datetime(ts), usetz = FALSE)] # adds the date of local datetime of trip
 
-  usercache_get_summ <- summ_calls %>% .[name == "POST_/usercache/get", .(first_get_call = min(date), last_get_call = max(date)), by = user_id]
-  usercache_put_summ <- summ_calls %>% .[name == "POST_/usercache/put", .(first_put_call = min(date), last_put_call = max(date)), by = user_id]
-  diary_summ <- summ_calls %>% .[name == "POST_/pipeline/get_complete_ts", .(first_diary_call = min(date), last_diary_call = max(date)), by = user_id]
+  usercache_get_summ <- summ_calls %>% .[name == 'POST_/usercache/get', .(first_get_call = min(date), last_get_call = max(date)), by = user_id]
+  usercache_put_summ <- summ_calls %>% .[name == 'POST_/usercache/put', .(first_put_call = min(date), last_put_call = max(date)), by = user_id]
+  diary_summ <- summ_calls %>% .[name == 'POST_/pipeline/get_complete_ts', .(first_diary_call = min(date), last_diary_call = max(date)), by = user_id]
 
   message("merging ")
   # merge(participants, usercache_get_summ, usercache_put_summ, by = "user_id", all.x = TRUE)
   merge(participants, usercache_get_summ, by = "user_id", all.x = TRUE) %>%
-    merge(., usercache_put_summ, by = "user_id", all.x = TRUE) %>%
+   merge(., usercache_put_summ, by = "user_id", all.x = TRUE) %>%
     merge(., diary_summ, by = "user_id", all.x = TRUE)
 }
 
@@ -194,11 +190,11 @@ summarise_server_calls <- function(participants, server_calls) {
 #'
 #' @param cleaned_locations a data.table output from `query_cleaned_trips()`.
 #'
-#' @return a tibble.
+#' @return a tibble. 
 #' @export
-tidy_cleaned_locations <- function(cleaned_locations) {
+tidy_cleaned_locations = function(cleaned_locations) {
   message("Finished query, about to clean locations")
-  tidied_locations <-
+  tidied_locations =
     # flatten out names and select specific columns
     cleaned_locations %>%
     setnames(gsub("data.", "", names(.))) %>%
@@ -207,7 +203,7 @@ tidy_cleaned_locations <- function(cleaned_locations) {
     # convert datetime
     dplyr::mutate(
       fmt_time_utc = lubridate::as_datetime(fmt_time)
-    )
+    ) 
   message("Finished cleaning locations")
   return(tidied_locations)
 }
@@ -218,9 +214,9 @@ tidy_cleaned_locations <- function(cleaned_locations) {
 #'
 #' @return a tibble.
 #' @export
-tidy_server_calls <- function(server_calls) {
+tidy_server_calls = function(server_calls) {
   message("Finished query, about to tidy server calls")
-  tidied_server_calls <-
+  tidied_server_calls =
     # flatten out names and select specific columns
     server_calls %>%
     setnames(gsub("data.", "", names(.))) %>%
@@ -241,30 +237,30 @@ tidy_server_calls <- function(server_calls) {
 #' @param tidied_locations a tibble from `tidy_cleaned_locations()`.
 #' @param project_crs a EPSG code. Default as 4326.
 #'
-#' @return a data.frame of class sf.
+#' @return a data.frame of class sf. 
 #' @export
-generate_trajectories <- function(tidied_trips, tidied_locations, project_crs = 4326) {
+generate_trajectories = function(tidied_trips, tidied_locations, project_crs = 4326) {
   message("About to generate trajectories")
-
+  
   # drop trip geometries (just a line between OD) and set trips as data.table
   tidied_trips <- tidied_trips %>% sf::st_drop_geometry()
   data.table::setDT(tidied_trips)
   # set locations as data.table and duplicate location time to set an "interval"
-  data.table::setDT(tidied_locations)[, fmt_time_utc_end := fmt_time_utc]
+  data.table::setDT(tidied_locations)[, fmt_time_utc_end := fmt_time_utc] 
   # join locations to trips according to time interval overlap (all done in UTC time for consistency)
   data.table::setkey(tidied_locations, user_id, fmt_time_utc, fmt_time_utc_end)
   data.table::setkey(tidied_trips, user_id, start_fmt_time, end_fmt_time)
-  joined_trips_and_locs <- data.table::foverlaps(tidied_locations, tidied_trips, nomatch = NULL)
-
+  joined_trips_and_locs <- data.table::foverlaps(tidied_locations, tidied_trips, nomatch=NULL)
+  
   # convert locations to points
   trajectories <- joined_trips_and_locs %>%
     dplyr::mutate(location_points = purrr::map(loc_coordinates, sf::st_point)) %>%
     sf::st_sf(crs = project_crs) %>%
-    # cast linestrings between points of the same trips
+  # cast linestrings between points of the same trips
     dplyr::group_by(dplyr::across(colnames(tidied_trips))) %>%
     dplyr::summarise(do_union = FALSE) %>%
     sf::st_cast("LINESTRING")
-
+  
   message("Trajectories created")
   return(trajectories)
 }
@@ -279,7 +275,8 @@ generate_trajectories <- function(tidied_trips, tidied_locations, project_crs = 
 #' @return .data
 #' @export
 convert_columns_to_datetime <-
-  function(.data, cols, tz = "Australia/Sydney") {
+  function (.data, cols, tz = "Australia/Sydney")
+  {
     stopifnot(data.table::is.data.table(.data))
     .data[, `:=`(c(cols), lapply(.SD, function(.x) {
       lubridate::as_datetime(.x, tz = tz)
