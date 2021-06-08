@@ -4,20 +4,20 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd 
+#' @noRd
 #'
-#' @importFrom shiny NS tagList 
-mod_gauge_ui <- function(id){
+#' @importFrom shiny NS tagList
+mod_gauge_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    box(flexdashboard::gaugeOutput(ns("gauge")), title="gauge", width = 3)
+    box(flexdashboard::gaugeOutput(ns("gauge")), title = "gauge", width = 3)
   )
 }
-    
+
 #' gauge Server Function
 #'
-#' @noRd 
-mod_gauge_server <- function(input, output, session, value, max_value = 100, title = ""){
+#' @noRd
+mod_gauge_server <- function(input, output, session, value, max_value = 100, title = "") {
   ns <- session$ns
   # output$my_title <- title
   output$gauge <- flexdashboard::renderGauge({
@@ -25,7 +25,7 @@ mod_gauge_server <- function(input, output, session, value, max_value = 100, tit
       value,
       min = 0,
       max = max_value,
-      symbol = '%',
+      symbol = "%",
       label = paste("Test Label"),
       flexdashboard::gaugeSectors(
         success = c(100, 6),
@@ -36,10 +36,9 @@ mod_gauge_server <- function(input, output, session, value, max_value = 100, tit
     )
   })
 }
-    
+
 ## To be copied in the UI
 # mod_gauge_ui("gauge_ui_1")
-    
+
 ## To be copied in the server
 # callModule(mod_gauge_server, "gauge_ui_1")
- 

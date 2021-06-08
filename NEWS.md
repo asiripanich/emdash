@@ -1,3 +1,24 @@
+<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+
+# emdash 1.2.6.9000
+
+# emdash 1.2.6
+
+- The map no longer shows detailed trajectories of the participants by default. See issues #29 and #40 related to this in problem.
+- Add some addition fields to ignore
+
+# emdash 1.2.5
+
+- Added minor cosmetic changes to the dashboard (#24)
+- YAML file made to configure options for the dashboard.
+- Moved anon_locations and cols_to_remove_from_ (trips and map_popup) to the YAML
+- Added `save_config_file()` for saving the default app config file.
+- Added version number to the dashboard UI
+
+# emdash 1.2.4
+
+- Display user labels generically in the dashboard (#23, @shankari).
+
 # emdash 1.2.3
 
 - Updated the author list.
