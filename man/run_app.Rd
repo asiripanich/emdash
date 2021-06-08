@@ -17,9 +17,6 @@ need to find the gateway ip of your Docker to connect to the database.}
 \item{config_file}{path and file name of the YAML configuration file}
 
 \item{...}{A series of options to be used inside the app.}
-
-\item{anon_locations}{a Boolean value, default as FALSE. If TRUE, the UUIDs that are
-displayed on 'Maps' will be anonymized to 'user_1', 'user_2', etc.}
 }
 \description{
 Run the Shiny Application
