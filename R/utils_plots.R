@@ -4,8 +4,8 @@
 #'
 #' Plotting functions.
 #'
-#' @param participants
-#' @param trips
+#' @param participants a data.frame object.
+#' @param trips a data.frame object.
 #'
 #' @return a ggplot object
 #' @noRd
