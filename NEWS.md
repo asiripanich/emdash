@@ -1,3 +1,7 @@
+# emdash 1.2.4
+
+- Display user labels generically in the dashboard (#23, @shankari).
+
 # emdash 1.2.3
 
 - Updated the author list.

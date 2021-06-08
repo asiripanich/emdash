@@ -16,9 +16,9 @@ knitr::opts_chunk$set(
 # emdash
 
 <!-- badges: start -->
-
-[![R build status](https://github.com/asiripanich/emdash/workflows/R-CMD-check/badge.svg)](https://github.com/asiripanich/emdash/actions) [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing) [![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
-
+[![R-CMD-check](https://github.com/asiripanich/emdash/workflows/R-CMD-check/badge.svg)](https://github.com/asiripanich/emdash/actions)
+[![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
+[![Docker](https://img.shields.io/docker/pulls/amarins/emdash.svg)](https://hub.docker.com/repository/docker/amarins/emdash)
 <!-- badges: end -->
 
 The goal of emdash is to provide a deployer dashboard for an e-mission deployment.
