@@ -38,17 +38,17 @@ mod_load_data_server <- function(input, output, session, cons) {
       data_r$server_calls <- tidy_server_calls(query_server_calls(cons))
       message("Finished loading server calls")
 
-#       message("About to load locations")
-#       data_r$locations <- tidy_cleaned_locations(query_cleaned_locations(cons))
-#       message("Finished loading locations")
-# 
-#       message("About to create trajectories within trips")
-#       data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
-#         data_r$locations,
-#         project_crs = get_golem_config("project_crs")
-#       )
-#       message("Finished creating trajectories within trips")
- 
+      #       message("About to load locations")
+      #       data_r$locations <- tidy_cleaned_locations(query_cleaned_locations(cons))
+      #       message("Finished loading locations")
+      #
+      #       message("About to create trajectories within trips")
+      #       data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
+      #         data_r$locations,
+      #         project_crs = get_golem_config("project_crs")
+      #       )
+      #       message("Finished creating trajectories within trips")
+
       message("About to load participants")
       data_r$participants <-
         tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
@@ -56,13 +56,13 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_server_calls(., data_r$server_calls)
       message("Finished loading participants")
 
-#       message("About to create trajectories within trips")
-#       data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
-#         data_r$locations,
-#         project_crs = get_golem_config("project_crs")
-#       )
-#       message("Finished creating trajectories within trips")
-# 
+      #       message("About to create trajectories within trips")
+      #       data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
+      #         data_r$locations,
+      #         project_crs = get_golem_config("project_crs")
+      #       )
+      #       message("Finished creating trajectories within trips")
+      #
       message("About to load participants")
       data_r$participants <-
         tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
