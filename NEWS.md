@@ -4,7 +4,8 @@
 - Added minor cosmetic changes to the dashboard (#24)
 - YAML file made to configure options for the dashboard.
 - Moved anon_locations and cols_to_remove_from_ (trips and map_popup) to the YAML
-- Add `save_config_file()` for saving the default app config file.
+- Added `save_config_file()` for saving the default app config file.
+- Added version number to the dashboard UI
 
 # emdash 1.2.4
 
