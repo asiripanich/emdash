@@ -1,3 +1,11 @@
+<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+# emdash 1.2.5
+
+- Added minor cosmetic changes to the dashboard (#24)
+- YAML file made to configure options for the dashboard.
+- Moved anon_locations and cols_to_remove_from_ (trips and map_popup) to the YAML
+- Add `save_config_file()` for saving the default app config file.
+
 # emdash 1.2.4
 
 - Display user labels generically in the dashboard (#23, @shankari).
