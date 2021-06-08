@@ -56,69 +56,33 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_server_calls(., data_r$server_calls)
       message("Finished loading participants")
 
-      #       message("About to create trajectories within trips")
-      #       data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
-      #         data_r$locations,
-      #         project_crs = get_golem_config("project_crs")
-      #       )
-      #       message("Finished creating trajectories within trips")
-      #
-      message("About to load participants")
-      data_r$participants <-
-        tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
-        summarise_trips(., data_r$trips) %>%
-        summarise_server_calls(., data_r$server_calls)
-      message("Finished loading participants")
 
+      table_list <- getOption('emdash.supplementary_tables')
+      
+      # For each supplementary table, query the corresponding data
+      for (t in table_list){
+        table_type <- names(t)
+        table_title <- t[[table_type]]$tab_name
+        
+        message(paste("About to load",table_title))
+        data_r[[table_type]] <- query_supplementary(cons,table_type)
+        
+        if ("user_id" %in% colnames(data_r[[table_type]])){
+          data_r[[table_type]] %>% normalise_uuid() %>% data.table::setcolorder(c("user_id"))
+        }
+        message(paste("Finished loading",table_title))
+      }
+      
       # output column names into R
       # data_r$trips %>% colnames() %>% dput()
       # data_r$participants %>% colnames() %>% dput()
       # data_r$trips_with_trajectories %>% colnames() %>% dput()
-
+      
       data_r$click <- runif(1)
-    },
-    ignoreNULL = FALSE
-  )
-
-    message("About to create trajectories within trips")
-    data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
-                                                            data_r$locations,
-                                                            project_crs = get_golem_config("project_crs"))
-    message("Finished creating trajectories within trips")
-    
-    message("About to load participants")
-    data_r$participants <- 
-      tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
-      summarise_trips(., data_r$trips) %>%
-      summarise_server_calls(., data_r$server_calls)
-    message("Finished loading participants")
-    
-    table_list <- getOption('emdash.supplementary_tables')
-    
-    # For each supplementary table, query the corresponding data
-    for (t in table_list){
-      table_type <- names(t)
-      table_title <- t[[table_type]]$tab_name
-      
-      message(paste("About to load",table_title))
-      data_r[[table_type]] <- query_supplementary(cons,table_type)
-      
-      if ("user_id" %in% colnames(data_r[[table_type]])){
-        data_r[[table_type]] %>% normalise_uuid() %>% data.table::setcolorder(c("user_id"))
-      }
-      message(paste("Finished loading",table_title))
-    }
-    
-    # output column names into R
-    # data_r$trips %>% colnames() %>% dput()
-    # data_r$participants %>% colnames() %>% dput()
-    # data_r$trips_with_trajectories %>% colnames() %>% dput()
-    
-    data_r$click <- runif(1)
-  }, ignoreNULL = FALSE)
-
+    }, ignoreNULL = FALSE)
+  
   message("Running: mod_load_data_server")
-
+  
   return(data_r)
 }
 

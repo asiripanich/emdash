@@ -32,7 +32,7 @@ query_server_calls <- function(cons) {
 #' @rdname query
 #' @export
 query_cleaned_trips <- function(cons) {
-  cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/confirmed_trip"}') %>%
+  cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/cleaned_trip"}') %>%
     as.data.table() %>%
     normalise_uuid() %>%
     data.table::setorder(data.end_fmt_time)

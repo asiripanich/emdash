@@ -72,10 +72,6 @@ default:
        tab_name: "Bike Check in"
    - PolarBear:
        tab_name: "Polar Bear"
-   # - SuggestionSys:
-   #     tab_name: "Suggestions"
-   - Tier_Sys:
-       tab_name : "Leaderboard"
    
   
   
