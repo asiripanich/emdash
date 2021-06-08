@@ -13,7 +13,7 @@ save_config_file(dir_out)
 a logical value, `TRUE` if the file has been successfully saved.
 }
 \description{
-This function saves the default app configuration file required by [run_app()]. 
-Alternatively, you can download the file from 
+This function saves the default app configuration file required by [run_app()].
+Alternatively, you can download the file from
 https://github.com/asiripanich/emdash/blob/master/inst/config-default.yml.
 }
