@@ -1,10 +1,11 @@
 Package: emdash
 Title: e-mission dashboard built with the Shiny framework
-Version: 1.2.6
+Version: 1.2.6.9000
 Authors@R: c(
     person('Amarin', 'Siripanich', email = 'amarin.siri@gmail.com', role = c('cre', 'aut')),
     person("Taha", "Rashidi", role="aut"),
     person("K", "Shankari", role="aut"),
+    person("Michael", "Allen", role="aut"),
     person("Arthur", "Yip", role="ctb"))
 Description: e-mission dashboard built with the Shiny framework
 License: MIT + file LICENSE
