@@ -26,6 +26,7 @@ default:
   - distance
   - geometry
   - source
+  - cleaned_trip
 
  cols_to_remove_from_map_popup:
   - start_fmt_time0
@@ -39,6 +40,8 @@ default:
   - duration
   - distance
   - location_points
+  - source
+  - cleaned_trip
   
   
  # Set the labels to display for the participant data 
