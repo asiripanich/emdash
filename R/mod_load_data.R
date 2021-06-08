@@ -62,13 +62,14 @@ mod_load_data_server <- function(input, output, session, cons){
       table_title <- t[[table_type]]$tab_name
       
       message(paste("About to load",table_title))
-      data_r[[table_type]] <- query_supplementary(cons,table_type) %>% data.table::setcolorder(c("user_id"))
+      data_r[[table_type]] <- query_supplementary(cons,table_type)
+      
+      if ("user_id" %in% colnames(data_r[[table_type]])){
+        data_r[[table_type]] %>% normalise_uuid() %>% data.table::setcolorder(c("user_id"))
+      }
+      
       message(paste("Finished loading",table_title))
     }
-    
-    # message("About to load checkinout")
-    # data_r$Checkinout <- query_checkinout(cons) %>% data.table::setcolorder(c("user_id"))
-    # message("Finished loading checkinout")
     
     # output column names into R
     # data_r$trips %>% colnames() %>% dput()

@@ -136,34 +136,32 @@ app_server <- function( input, output, session ) {
     
     tableList <- getOption('emdash.supplementary_tables')
 
-    # For each supplementary table, run the server function
+    # For each supplementary table, append a new tabPanel and run the server function
     # that specifies table behavior
     for (t in tableList){
       table_type <- names(t)
-
+      table_title <- t[[table_type]]$tab_name
+      
+      new_tab <-  tabPanel(
+          status = "primary",
+          title = table_title,
+          value = table_type,
+          mod_DT_ui(id = paste0("DT_ui_",table_type))
+        )
+      
+      appendTab(
+        inputId = 'tabs',
+        tab = new_tab,
+        select = FALSE,
+        menuName = NULL,
+        session = getDefaultReactiveDomain()
+      )
+      
       # Run mod_DT_server using data for the current table
       callModule(module = mod_DT_server,
                  id = paste0("DT_ui_",table_type),
                  data = data_r[[table_type]] )
     }
-    
-    
-    # output$supplementary_tabs <- renderUI({
-    #   tabPanel_list <- list()
-    #   j = 1
-    #   for (t in tableList){
-    #     table_type <- names(t)
-    #     table_title <- t[[table_type]]$tab_name
-    #     tabPanel_list[[j]] <- tabPanel( status = "primary",
-    #                                     title = table_title,
-    #                                     value = table_type,
-    #                                       #mod_DT_ui(id = paste0("DT_ui_",table_type))
-    #                                   )
-    #   }
-    #   do.call(tabsetPanel,tabPanel_list)
-    # })
-    
-    
   })
   
  

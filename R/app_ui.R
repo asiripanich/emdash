@@ -114,45 +114,9 @@ app_ui <- function(request) {
                         title = "Trips",
                         value = "trips",
                         mod_DT_ui("DT_ui_trips")    
-                      ),
-                      
-                      # lapply(tableList <-  getOption('emdash.supplementary_tables'),
-                      #        makeTab <- function(t) {
-                      #          table_type <- names(t)
-                      #          table_title <- t[[table_type]]$tab_name
-                      #          
-                      #          tabPanel(
-                      #            status = "primary",
-                      #            title = table_title,
-                      #            value = table_type,
-                      #            mod_DT_ui(id = paste0("DT_ui_",table_type))
-                      #          )
-                      #        }
-                      # )
-
-                        # For each supplementary table, add a tabPanel to display the table
-                        # for (t in tableList){
-                        #   table_type <- names(t)
-                        #   table_title <- t[[table_type]]$tab_name
-                        #   
-                        #   tabPanel(
-                        #     status = "primary",
-                        #     title = table_title,
-                        #     value = table_type,
-                        #     mod_DT_ui(id = paste0("DT_ui_",table_type))
-                        #   )
-                        # }
-                      
-                      uiOutput('supplementary_tabs')
-
-                      # tabPanel(
-                      #   status = "primary",
-                      #   title = "Bike Check In",
-                      #   value = "Checkinout",
-                      #   mod_DT_ui("DT_ui_Checkinout")
-                      # )
-                    ) # tabBox end
-                  ) # fluidRow end
+                      )
+                    )      
+                  )        
           ),
           
           # Maps ----------------------

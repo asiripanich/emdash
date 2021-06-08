@@ -51,8 +51,10 @@ query_checkinout <- function(cons){
 #' @export
 query_supplementary <- function(cons, name) {
   cons[[name]]$find('{}') %>%
-    as.data.table() %>%
-    normalise_uuid()
+    as.data.table()
+  
+  # normalise_uuid() is done after this is called 
+  # within mod_load_data because Tier_Sys has no user_id column in the test data
 }
 
 #' @rdname query
