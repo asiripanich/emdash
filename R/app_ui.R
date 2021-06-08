@@ -10,7 +10,7 @@ app_ui <- function(request) {
     # List the first level UI elements here
     dashboardPage(
       skin = "green",
-      dashboardHeader(title = "emdash"),
+      dashboardHeader(title = paste0("emdash v", packageVersion("emdash"))),
 
       # Sidebar -----------------------------------------------------------------
       dashboardSidebar(
@@ -40,15 +40,19 @@ app_ui <- function(request) {
 
             # Dashboard - calendar - end -----------------
             # Dashboard - plots - start ----------------------------------
-            fluidRow(
-              box(
-                title = "Sign-up Trend",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                width = 12,
-                mod_ggplotly_ui("ggplotly_ui_signup_trend")
+
+            # Display the signup trend if that option is chosen
+            if (isTRUE(getOption("emdash.disp_signup_trend"))) {
+              fluidRow(
+                box(
+                  title = "Sign-up Trend",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  width = 12,
+                  mod_ggplotly_ui("ggplotly_ui_signup_trend")
+                )
               )
-            ),
+            },
             fluidRow(
               box(
                 title = "Trip Trend",
@@ -90,7 +94,10 @@ app_ui <- function(request) {
                 id = "esquisse",
                 header = FALSE, # dont display gadget title
                 choose_data = FALSE # dont display button to change data
-              )
+              ),
+
+              # Override the default font size in esquisse with CSS
+              tags$style(".container-drag-source, .box-dad {font-size: 14px;}")
             ),
             fluidRow(
               tabBox(

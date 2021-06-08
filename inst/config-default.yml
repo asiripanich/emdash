@@ -1,0 +1,70 @@
+# Use this file to set options for the app
+
+default:
+ anon_locations: false
+ display_signup_trend: false
+ cols_to_remove_from_participts_table:
+  - first_trip_datetime
+  - last_trip_datetime
+  # More to remove for this deployment:
+  - n_active_days
+  - first_trip_local_datetime
+  - first_get_call
+  - first_put_call
+  - first_diary_call
+  
+ cols_to_remove_from_trips_table:
+  - start_fmt_time0 
+  - start_local_dt_timezone"
+  - start_fmt_time
+  - end_fmt_time0
+  - end_local_dt_timezone
+  - end_fmt_time
+  - end_loc_coordinates
+  - start_loc_coordinates
+  - duration
+  - distance
+  - geometry
+  - source
+
+ cols_to_remove_from_map_popup:
+  - start_fmt_time0
+  - start_local_dt_timezone
+  - start_fmt_time
+  - end_fmt_time0
+  - end_local_dt_timezone
+  - end_fmt_time
+  - end_loc_coordinates
+  - start_loc_coordinates
+  - duration
+  - distance
+  - location_points
+  
+  
+ # Set the labels to display for the participant data 
+ col_labels_for_participts:
+   user_id:             user id
+   update_ts:           last profile update  
+   client:              UI channel 
+   client_app_version:  smartphone app version
+   client_os_version:   android/iOS version
+   curr_platform:       android/iOS 
+   phone_lang:          language
+   n_trips:             Total trips
+   n_trips_today:       Trips today
+   n_active_days:       Number of days with at least one trip
+   first_trip_local_datetime: First trip date
+   last_trip_local_datetime: Last trip date
+   n_days:         Number of days since app install   
+   unconfirmed:    unlabeled
+   first_get_call: first app communication
+   last_get_call:  last app communication
+   first_put_call: first data upload
+   last_put_call:  last data upload
+   first_diary_call: first app launch
+   last_diary_call:  last app launch
+  
+
+
+
+

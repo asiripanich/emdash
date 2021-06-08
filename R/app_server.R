@@ -86,11 +86,18 @@ app_server <- function(input, output, session) {
   # Tables ------------------------------------------------------------------
   data_esquisse <- reactiveValues(data = data.frame(), name = "data_esquisse")
 
+  # Convert the config's label map to a named vector.
+  # The names are the original labels, and the vector values are the new labels.
+  named_label_vector <- unlist(getOption("emdash.col_labels_for_participts"))
+  originalColumnNames <- names(named_label_vector)
+  new_column_names <- unname(named_label_vector)
+
   observeEvent(input$tabs, {
     if (input$tabs == "participants") {
       data_esquisse$data <-
         data_r$participants %>%
-        drop_list_columns()
+        drop_list_columns() %>%
+        data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
     }
     if (input$tabs == "trips") {
       data_esquisse$data <-
@@ -112,27 +119,19 @@ app_server <- function(input, output, session) {
   # use these to generate lists of columns to inform which columns to remove
   # data_r$participants %>% colnames() %>% dput()
   # data_r$trips %>% colnames() %>% dput()
-
-
-  cols_to_remove_from_participts_table <- c(
-    "first_trip_datetime",
-    "last_trip_datetime"
-  )
-  cols_to_remove_from_trips_table <- c(
-    "start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
-    "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time",
-    "end_loc_coordinates", "start_loc_coordinates",
-    "duration", "distance", "geometry", "source"
-  )
+  # POSSIBLE LINE: allNames[!(allNames %in% config$column_names)]
+  # cols_to_remove_from_participts_table <- c("first_trip_datetime",
+  #                                            "last_trip_datetime")
 
   observeEvent(data_r$click, {
     callModule(mod_DT_server, "DT_ui_participants",
       data = data_r$participants %>%
-        dplyr::select(-dplyr::any_of(cols_to_remove_from_participts_table))
+        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_participts_table"))) %>%
+        data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
     )
     callModule(mod_DT_server, "DT_ui_trips",
       data = data_r$trips %>%
-        dplyr::select(-dplyr::any_of(cols_to_remove_from_trips_table)) %>%
+        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_trips_table"))) %>%
         sf::st_drop_geometry()
     )
   })
@@ -167,19 +166,12 @@ app_server <- function(input, output, session) {
       drop_ids = FALSE
     )
 
-  cols_to_remove_from_map_popup <- c(
-    "start_fmt_time0", "start_local_dt_timezone", "start_fmt_time",
-    "end_fmt_time0", "end_local_dt_timezone", "end_fmt_time",
-    "end_loc_coordinates", "start_loc_coordinates",
-    "duration", "distance", "location_points"
-  )
-
   observeEvent(filtered_trips$data_filtered(), {
     callModule(
       mod_mapview_server,
       "mapview_trips",
       data_sf = filtered_trips$data_filtered() %>%
-        dplyr::select(-dplyr::any_of(cols_to_remove_from_map_popup))
+        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_map_popup")))
     )
   })
 
