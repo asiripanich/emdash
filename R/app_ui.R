@@ -22,81 +22,81 @@ app_ui <- function(request) {
         )
       ),
       dashboardBody(
-        tabItems(
-          # Dashboard -----------------------
-
-          tabItem(
-            tabName = "dashboard",
-
-            # Dashboard - boxes - start -----------------
-            fluidRow(
-              mod_value_box_ui("value_box_ui_unique_users"),
-              mod_value_box_ui("value_box_ui_active_users_today"),
-              mod_value_box_ui("value_box_ui_total_trips"),
-              mod_value_box_ui("value_box_ui_total_days")
-            ),
-            # Dashboard - boxes - end -----------------
-            # Dashboard - calendar - start -----------------
-
-            # Dashboard - calendar - end -----------------
-            # Dashboard - plots - start ----------------------------------
-
-            # Display the signup trend if that option is chosen
-            if (isTRUE(getOption("emdash.disp_signup_trend"))) {
-              fluidRow(
-                box(
-                  title = "Sign-up Trend",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  width = 12,
-                  mod_ggplotly_ui("ggplotly_ui_signup_trend")
-                )
-              )
-            },
-            fluidRow(
-              box(
-                title = "Trip Trend",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                mod_ggplotly_ui("ggplotly_ui_trip_trend")
-              ),
-              box(
-                title = "Participation Period",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                mod_ggplotly_ui("ggplotly_ui_participation_period")
-              ),
-              #                     box(
-              #                       title = "Branch",
-              #                       solidHeader = TRUE,
-              #                       collapsible = TRUE,
-              #                       mod_ggplotly_ui("ggplotly_ui_branch")
-              #                     ),
-              box(
-                title = "Platform",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                mod_ggplotly_ui("ggplotly_ui_platform")
-              )
-            )
-            # Dashboard - plots - end ----------------------------------
-          ),
+        # tabItems(
+        #   # Dashboard -----------------------
+        # 
+        #   tabItem(
+        #     tabName = "dashboard",
+        # 
+        #     # Dashboard - boxes - start -----------------
+        #     fluidRow(
+        #       mod_value_box_ui("value_box_ui_unique_users"),
+        #       mod_value_box_ui("value_box_ui_active_users_today"),
+        #       mod_value_box_ui("value_box_ui_total_trips"),
+        #       mod_value_box_ui("value_box_ui_total_days")
+        #     ),
+        #     # Dashboard - boxes - end -----------------
+        #     # Dashboard - calendar - start -----------------
+        # 
+        #     # Dashboard - calendar - end -----------------
+        #     # Dashboard - plots - start ----------------------------------
+        # 
+        #     # Display the signup trend if that option is chosen
+        #     if (isTRUE(getOption("emdash.disp_signup_trend"))) {
+        #       fluidRow(
+        #         box(
+        #           title = "Sign-up Trend",
+        #           solidHeader = TRUE,
+        #           collapsible = TRUE,
+        #           width = 12,
+        #           mod_ggplotly_ui("ggplotly_ui_signup_trend")
+        #         )
+        #       )
+        #     },
+        #     fluidRow(
+        #       box(
+        #         title = "Trip Trend",
+        #         solidHeader = TRUE,
+        #         collapsible = TRUE,
+        #         mod_ggplotly_ui("ggplotly_ui_trip_trend")
+        #       ),
+        #       box(
+        #         title = "Participation Period",
+        #         solidHeader = TRUE,
+        #         collapsible = TRUE,
+        #         mod_ggplotly_ui("ggplotly_ui_participation_period")
+        #       ),
+        #       #                     box(
+        #       #                       title = "Branch",
+        #       #                       solidHeader = TRUE,
+        #       #                       collapsible = TRUE,
+        #       #                       mod_ggplotly_ui("ggplotly_ui_branch")
+        #       #                     ),
+        #       box(
+        #         title = "Platform",
+        #         solidHeader = TRUE,
+        #         collapsible = TRUE,
+        #         mod_ggplotly_ui("ggplotly_ui_platform")
+        #       )
+        #     )
+        #     # Dashboard - plots - end ----------------------------------
+        #   ),
 
           # Tables ------------------------------------------------------------------
           tabItem(tabName = "tables",
-                  box(title = "Interactive plot - this panel is linked with the data tab below",
-                      solidHeader = TRUE,
-                      collapsible = TRUE,
-                      width = 12,
-                      esquisserUI(
-                        id = "esquisse", 
-                        header = FALSE, # dont display gadget title
-                        choose_data = FALSE # dont display button to change data
-                      ),
-                      
-                      # Override the default font size in esquisse with CSS
-                      tags$style(".container-drag-source, .box-dad {font-size: 14px;}")
-                      ), 
+                  # box(title = "Interactive plot - this panel is linked with the data tab below",
+                  #     solidHeader = TRUE,
+                  #     collapsible = TRUE,
+                  #     width = 12,
+                  #     esquisserUI(
+                  #       id = "esquisse", 
+                  #       header = FALSE, # dont display gadget title
+                  #       choose_data = FALSE # dont display button to change data
+                  #     ),
+                  #     
+                  #     # Override the default font size in esquisse with CSS
+                  #     tags$style(".container-drag-source, .box-dad {font-size: 14px;}")
+                  #     ), 
                   
                   fluidRow(
                     tabBox(
@@ -119,27 +119,27 @@ app_ui <- function(request) {
           ),
 
           # Maps ----------------------
-          tabItem(
-            tabName = "maps",
-            fluidRow(
-              column(
-                width = 3,
-                wellPanel(
-                  id = "tPanel",
-                  style = "overflow-y:scroll; max-height: 800px",
-                  esquisse::filterDF_UI("filtering")
-                )
-              ),
-              column(
-                width = 9,
-                mod_mapview_ui("mapview_trips", height = 800)
-              )
-            )
-          )
+          # tabItem(
+          #   tabName = "maps",
+          #   fluidRow(
+          #     column(
+          #       width = 3,
+          #       wellPanel(
+          #         id = "tPanel",
+          #         style = "overflow-y:scroll; max-height: 800px",
+          #         esquisse::filterDF_UI("filtering")
+          #       )
+          #     ),
+          #     column(
+          #       width = 9,
+          #       mod_mapview_ui("mapview_trips", height = 800)
+          #     )
+          #   )
+          # )
         )
       )
     )
-  )
+ # ) ################################################################
 }
 
 #' Add external Resources to the Application
