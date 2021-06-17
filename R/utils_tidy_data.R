@@ -134,8 +134,57 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
       distance_mi = round(distance / 1609, smallest_rounding_digit),
       distance_km = round(distance / 1000, smallest_rounding_digit)
     )
+  
   message("Finished cleaning trips")
   return(cleaned_trips_sf)
+}
+
+tidy_cleaned_trips_by_timestamp <- function(df) {
+  dt <- df[, c("user_id", "metadata")] %>% as.data.table()
+  data_df <- df[, c("data")]
+  data_df_without_user_input <- data_df[, !"user_input" == names(data_df)]
+  user_input_df <- df[, c("data")][, "user_input"] %>% as.data.table()
+  dt <- cbind(dt, data_df_without_user_input)
+  if (nrow(user_input_df) == 0) {
+    return(dt)
+  }
+  cbind(dt, user_input_df)
+}
+
+summarise_trips_without_trips <- function(participants,cons){
+  
+  date_query <- query_trip_dates(cons)
+  # Generate relevant date related information from the query
+  trip_dates <- lubridate::as_date(date_query$data$start_fmt_time) # converts to UTC
+  start_fmt_time = lubridate::as_datetime(date_query$data$start_fmt_time) # converts to UTC
+  end_fmt_time = lubridate::as_datetime(date_query$data$end_fmt_time) # converts to UTC
+  
+  start_local_time = purrr::map2(start_fmt_time, date_query$data$start_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+    as.character()
+  end_local_time = purrr::map2(end_fmt_time, date_query$data$end_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+    as.character() # a timestamp but has to be a string
+  
+  date_dt <- cbind(date_query,trip_dates) %>% .[, !names(.) %in% c("data") ] %>% as.data.table() %>% normalise_uuid()
+  first_trip_local_datetime = format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE)
+  
+  summ_trips <- 
+    date_dt %>%
+    .[, date :=  trip_dates] %>%
+    # adds the date of local datetime of trip
+    .[, .(
+      n_trips_today = sum(date == Sys.Date()),
+      n_active_days = data.table::uniqueN(date),
+      first_trip_datetime = min(start_fmt_time),
+      last_trip_datetime = max(start_fmt_time), # in UTC
+      first_trip_local_datetime = format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE),
+      last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
+    ), by = user_id] %>%
+    .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
+  
+  n_trips <- count_total_trips(cons)
+  summ_trips <- merge(n_trips, summ_trips, by = 'user_id')
+  
+  merge(participants, summ_trips, by = "user_id", all.x = TRUE)
 }
 
 #' Create a summary of trips in data.table format.
@@ -162,7 +211,7 @@ summarise_trips <- function(participants, trips) {
       last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
     ), by = user_id] %>%
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
-
+  
   merge(participants, summ_trips, by = "user_id", all.x = TRUE)
 }
 

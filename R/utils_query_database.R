@@ -18,6 +18,26 @@ query_cleaned_locations <- function(cons) {
 
 #' @rdname query
 #' @export
+query_cleaned_locations_by_timestamp <- function(cons,dates) {
+  # Convert the dates to timestamps
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
+  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
+  
+  qstring <- paste0('{\"metadata.key\": \"analysis/recreated_location\", ' ,
+                    '\"data.ts\":' , lower_stamp_string, upper_stamp_string,
+                    '}')
+  
+  # The query string should have this format
+  # {"metadata.key": "analysis/confirmed_trip", "data.ts":{"$gte": 1437544800,"$lte": 1451286000}}
+  
+  cons$Stage_analysis_timeseries$find(qstring) %>% 
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#' @rdname query
+#' @export
 query_server_calls <- function(cons) {
   # to implement later - query only for the API call patterns that are relevant
   # the problem is that if there aren't any entries (might happen if the user
@@ -31,11 +51,96 @@ query_server_calls <- function(cons) {
 
 #' @rdname query
 #' @export
+query_server_calls_by_timestamp <- function(cons,dates){
+  # Convert the dates to timestamps
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
+  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
+  
+  qstring <- paste0('{\"metadata.key\": \"stats/server_api_time\", ' ,
+                    '\"data.ts\":' , lower_stamp_string, upper_stamp_string,
+                    '}')
+  # servers$data.ts %>% min()
+  # [1] 1602635911
+  
+  cons$Stage_timeseries$find(qstring) %>%
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#' @rdname query
+#' @export
 query_cleaned_trips <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/confirmed_trip"}') %>%
     as.data.table() %>%
     normalise_uuid() %>%
     data.table::setorder(data.end_fmt_time)
+}
+
+#' @rdname query
+#' @export
+query_cleaned_trips_by_timestamp <- function(cons,dates) {
+  
+  # How do I handle empty queries?
+  
+  # Convert the dates to timestamps
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
+  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
+  
+  qstring <- paste0('{\"metadata.key\": \"analysis/confirmed_trip\", ' ,
+                    '\"data.end_ts\":' , lower_stamp_string, upper_stamp_string,
+                    '}')
+  
+  # The query string should have this format
+  # {"metadata.key": "analysis/confirmed_trip", "data.end_ts":{"$gte": 1437544800,"$lte": 1451286000}}
+  
+  cons$Stage_analysis_timeseries$find(qstring) %>%
+    tidy_cleaned_trips_by_timestamp() %>% normalise_uuid() %>%
+    data.table::setorder(end_fmt_time)
+  
+}
+
+count_total_trips <- function(cons){
+  
+  # for each user_id, count the number of documents associated with it
+  cons$Stage_analysis_timeseries$aggregate('[
+                    {"$match": {"metadata.key": "analysis/confirmed_trip"}},
+                    {"$group": {"_id":"$user_id","n_trips":{"$sum":1}}}
+                    ]'
+  ) %>% as.data.table() %>% setnames('_id','user_id') %>% normalise_uuid()
+}
+
+count_trips_today <- function(cons){
+  # want: n_trips_today
+  
+  # Get the time stamp associated with today's date
+  todays_time_stamp <- as.numeric(as.POSIXct(Sys.Date()))
+  
+  # Match by today's date
+  match_string <- paste0('{\"$match\":{\"metadata.key\": \"analysis/confirmed_trip\", ',
+                         '\"data.end_ts\": {\"$gte\": ', todays_time_stamp,'}}}')
+  
+  # Group by user id
+  group_string <-  '{\"$group\": {\"_id\":\"$user_id\",\"count\":{\"$sum\":1}}}'
+  
+  qstring <- paste0('[\n',match_string,  ','  ,
+                    group_string,'\n]')
+  
+  cons$Stage_analysis_timeseries$aggregate(qstring) %>% as.data.table() %>% normalise_uuid() 
+  # final query appearance:
+  # {"metadata.key": "analysis/confirmed_trip", "data.end_ts": {"$gte": 1623801600}}
+}
+
+query_trip_dates <- function(cons){
+  dateq <- cons$Stage_analysis_timeseries$find(
+                        query = '{"metadata.key": "analysis/confirmed_trip"}',
+                        fields = '{"data.start_local_dt":true,
+                                  "data.start_fmt_time":true,
+                                  "data.end_local_dt":true,
+                                  "data.end_fmt_time":true,
+                                  "user_id":true, "_id":false}')
+  return(dateq)
 }
 
 #' @rdname query

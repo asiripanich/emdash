@@ -15,7 +15,7 @@ default:
   
  cols_to_remove_from_trips_table:
   - start_fmt_time0 
-  - start_local_dt_timezone"
+  - start_local_dt_timezone
   - start_fmt_time
   - end_fmt_time0
   - end_local_dt_timezone
