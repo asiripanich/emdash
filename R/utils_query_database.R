@@ -27,13 +27,26 @@ query_cleaned_locations_by_timestamp <- function(cons,dates) {
   qstring <- paste0('{\"metadata.key\": \"analysis/recreated_location\", ' ,
                     '\"data.ts\":' , lower_stamp_string, upper_stamp_string,
                     '}')
+
+  query_results <- cons$Stage_analysis_timeseries$find(qstring) 
+  browser()
   
-  # The query string should have this format
-  # {"metadata.key": "analysis/confirmed_trip", "data.ts":{"$gte": 1437544800,"$lte": 1451286000}}
-  
-  cons$Stage_analysis_timeseries$find(qstring) %>% 
-    as.data.table() %>%
-    normalise_uuid()
+  # If the query is not empty, process it further
+  if(!is.null(query_results)){
+    out <- query_results %>% as.data.table() %>% 
+      normalise_uuid()
+  } else {
+    # Otherwise, query for the last trip and make an empty dataframe out of it
+    last_trip_end <- query_max_trip_timestamp(cons)
+    lower_stamp_string <- paste0('{\"$gte\": ',last_trip_end, ',')
+    upper_stamp_string <- paste0('\"$lte\": ',last_trip_end, '}')
+    
+    qstring <- paste0('{\"metadata.key\": \"analysis/recreated_location\", ' ,
+                      '\"data.ts\": {"$eq":' , last_trip_end,
+                      '}}')
+    out <- cons$Stage_analysis_timeseries$find(qstring) %>% .[FALSE,] %>% as.data.table() %>% normalise_uuid()
+  }
+  return(out)
 }
 
 #' @rdname query
@@ -52,6 +65,7 @@ query_server_calls <- function(cons) {
 #' @rdname query
 #' @export
 query_server_calls_by_timestamp <- function(cons,dates){
+  
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
   lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
@@ -80,9 +94,6 @@ query_cleaned_trips <- function(cons) {
 #' @rdname query
 #' @export
 query_cleaned_trips_by_timestamp <- function(cons,dates) {
-  
-  # How do I handle empty queries?
-  
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
   lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
@@ -95,10 +106,55 @@ query_cleaned_trips_by_timestamp <- function(cons,dates) {
   # The query string should have this format
   # {"metadata.key": "analysis/confirmed_trip", "data.end_ts":{"$gte": 1437544800,"$lte": 1451286000}}
   
-  cons$Stage_analysis_timeseries$find(qstring) %>%
-    tidy_cleaned_trips_by_timestamp() %>% normalise_uuid() %>%
-    data.table::setorder(end_fmt_time)
+  query_results <- cons$Stage_analysis_timeseries$find(qstring) 
   
+  # If the query has more than 0 rows and columns, process it further
+  if(sum(dim(query_results)) >  0){
+    out <- query_results %>%
+      tidy_cleaned_trips_by_timestamp() %>% normalise_uuid() %>%
+      data.table::setorder(end_fmt_time)
+  } else {
+    browser()
+    # Otherwise, query for the last trip and make an empty dataframe out of it
+    last_trip_end <- query_max_trip_timestamp(cons) 
+    lower_stamp_string <- paste0('{\"$gte\": ',last_trip_end, ',')
+    upper_stamp_string <- paste0('\"$lte\": ',last_trip_end, '}')
+    
+    qstring <- paste0('{\"metadata.key\": \"analysis/confirmed_trip\", ' ,
+                      '\"data.end_ts\": {"$eq":' , last_trip_end,
+                      '}}')
+    out <- cons$Stage_analysis_timeseries$find(qstring) %>% .[FALSE,] %>% as.data.table() %>% normalise_uuid()
+  }
+  return(out)
+  
+}
+
+query_max_trip_timestamp <- function(cons){
+  # Finds the maximum end timestamp. Returns a 1 by 1 dataframe.
+  cons$Stage_analysis_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "analysis/confirmed_trip"}},
+      { "$group":
+          {
+            "_id": {},
+            "max_ts": { "$max": "$data.end_ts" }
+          }
+      }]'
+  ) %>% unlist() %>% unname() %>% return()
+}
+
+query_min_trip_timestamp <- function(cons){
+  # Finds the minimum start timestamp. Returns a 1 by 1 dataframe.
+  cons$Stage_analysis_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "analysis/confirmed_trip"}},
+      { "$group":
+          {
+            "_id": {},
+            "min_ts": { "$min": "$data.start_ts" }
+          }
+      }]'
+  ) %>% unlist() %>% unname() %>% return()
 }
 
 count_total_trips <- function(cons){

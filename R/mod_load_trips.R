@@ -9,18 +9,26 @@
 #' @importFrom shiny NS tagList
 mod_load_trips_ui <- function(id) {
   ns <- NS(id)
+  cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
+  last_trip <- query_max_trip_timestamp(cons) %>% 
+    lubridate::as_datetime(.) %>% as.Date(.)
+  
+  message(last_trip)
+  first_trip <- query_min_trip_timestamp(cons) %>% 
+    lubridate::as_datetime(.) %>% as.Date(.)
+  message(first_trip)
   
   tagList(
     dateRangeInput(ns("dates"),
                    "Select the range of dates for trip data", 
-                   start = "2015-07-22",
-                   end = "2015-09-10", #"2016-08-11",
-                   min = "2015-07-22",
-                   max = "2016-08-11"),
-    textOutput('Documents'),
-    
+                   # start = "2016-01-05",
+                   # end = "2016-01-05"),
+                   start = last_trip - 30,
+                   end = last_trip,
+                   min = first_trip,
+                   max = last_trip),
+    textOutput(ns('load_display')),
     actionButton(inputId = ns('reload_trips'), label = 'Reload trips data'),
-    textOutput(ns('load_box')),
     textOutput(ns("last_load_datetime"))
   )
 }
@@ -31,39 +39,28 @@ mod_load_trips_ui <- function(id) {
 mod_load_trips_server <- function(input, output, session, cons) {
   ns <- session$ns
   
-  max_window <- 1000  # 1 month
+  max_window <- 31  # 1 month
 
-  # window_width <- reactive({   
-  #   
-  #   # Find the number of days between the two selected dates
-  #   width <- abs(as.numeric(difftime(input$dates[1],input$dates[2]))) + 1  # include first date
-  #   message(width)
-  #   return(width)
-  #   # Eventually, count the number of documents between those selected dates
-  # })
-  # 
-  # load_allowed <- reactive({
-  #   allow <- (window_width() < max_window)
-  #   browser()
-  #   message(allow)
-  #   return(allow)
-  # })
+  load_allowed <- reactive({
+    window_width <- abs(as.numeric(difftime(input$dates[1],input$dates[2]))) + 1  # include first date
+    message(paste("Window_width is",window_width))
+    allow <- (window_width <= max_window)
+    return(allow)
+  })
   
-  # disp_n_docs <- reactive({
-  #   n_docs <- 500 + window_width()
-  #   message(n_docs)
-  #   
-  #   if (load_allowed()) {
-  #     out <- glue::glue('There are {n_docs} documents matching those dates')
-  #     
-  #   } else {
-  #     out <- "The chosen date range is too wide. Please enter a new one."
-  #   }
-  #   return(cat(out))  # use cat to avoid the extra printed [1]
-  # })
+  disp_load_status <- reactive({
+    
+    if (load_allowed()) {
+      #out <- glue::glue('There are {n_docs} documents matching those dates')
+      out <- ''
+    } else {
+      out <- "The selected date range is too wide."
+    }
+    return(cat(out))  # use cat to avoid the extra printed [1]
+  })
   
   # #When referring to reactives, remember to use parentheses
-  #output$Documents <- renderPrint(disp_n_docs())
+  output$load_display <- renderPrint(disp_load_status())
   
   data_geogr <- reactiveValues(data = data.frame(), name = "data")
   
@@ -72,12 +69,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
   
   observeEvent(input$reload_trips,{
 
-                  # start = "2015-07-22",
-                  # end = "2015-09-10", #"2016-08-11
-
-                 if (TRUE) {
-                   load_display <- 'Loading data'
-
+                 if (load_allowed()) {
                    message("About to load trips")
                    data_geogr$trips <- tidy_cleaned_trips(query_cleaned_trips_by_timestamp(cons,input$dates),
                                                           project_crs = get_golem_config("project_crs")
@@ -101,12 +93,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
                    # data_geogr$trips_with_trajectories %>% colnames() %>% dput()
                    
                    data_geogr$click <- runif(1)
-                   
-                 } else {
-                   load_display <- 'The chosen date range is too wide to load the data.'
                  }
-                 
-                 output$load_box <- renderPrint(cat(load_display))
                },
                ignoreNULL = FALSE
   )
