@@ -28,25 +28,9 @@ query_cleaned_locations_by_timestamp <- function(cons,dates) {
                     '\"data.ts\":' , lower_stamp_string, upper_stamp_string,
                     '}')
 
-  query_results <- cons$Stage_analysis_timeseries$find(qstring) 
-  browser()
-  
-  # If the query is not empty, process it further
-  if(!is.null(query_results)){
-    out <- query_results %>% as.data.table() %>% 
+  cons$Stage_analysis_timeseries$find(qstring) %>% 
+      as.data.table() %>% 
       normalise_uuid()
-  } else {
-    # Otherwise, query for the last trip and make an empty dataframe out of it
-    last_trip_end <- query_max_trip_timestamp(cons)
-    lower_stamp_string <- paste0('{\"$gte\": ',last_trip_end, ',')
-    upper_stamp_string <- paste0('\"$lte\": ',last_trip_end, '}')
-    
-    qstring <- paste0('{\"metadata.key\": \"analysis/recreated_location\", ' ,
-                      '\"data.ts\": {"$eq":' , last_trip_end,
-                      '}}')
-    out <- cons$Stage_analysis_timeseries$find(qstring) %>% .[FALSE,] %>% as.data.table() %>% normalise_uuid()
-  }
-  return(out)
 }
 
 #' @rdname query
@@ -58,26 +42,6 @@ query_server_calls <- function(cons) {
   # Fixes for downstream calls are in a patch in the PR
   # cons$Stage_timeseries$find('{"metadata.key": "stats/server_api_time", "data.name": {"$regex": "/usercache|get_complete_ts/", "$options": ""}}') %>%
   cons$Stage_timeseries$find('{"metadata.key": "stats/server_api_time"}') %>%
-    as.data.table() %>%
-    normalise_uuid()
-}
-
-#' @rdname query
-#' @export
-query_server_calls_by_timestamp <- function(cons,dates){
-  
-  # Convert the dates to timestamps
-  time_stamps <- as.numeric(as.POSIXct(dates))
-  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
-  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
-  
-  qstring <- paste0('{\"metadata.key\": \"stats/server_api_time\", ' ,
-                    '\"data.ts\":' , lower_stamp_string, upper_stamp_string,
-                    '}')
-  # servers$data.ts %>% min()
-  # [1] 1602635911
-  
-  cons$Stage_timeseries$find(qstring) %>%
     as.data.table() %>%
     normalise_uuid()
 }
@@ -106,31 +70,13 @@ query_cleaned_trips_by_timestamp <- function(cons,dates) {
   # The query string should have this format
   # {"metadata.key": "analysis/confirmed_trip", "data.end_ts":{"$gte": 1437544800,"$lte": 1451286000}}
   
-  query_results <- cons$Stage_analysis_timeseries$find(qstring) 
-  
-  # If the query has more than 0 rows and columns, process it further
-  if(sum(dim(query_results)) >  0){
-    out <- query_results %>%
+  cons$Stage_analysis_timeseries$find(qstring) %>%
       tidy_cleaned_trips_by_timestamp() %>% normalise_uuid() %>%
       data.table::setorder(end_fmt_time)
-  } else {
-    browser()
-    # Otherwise, query for the last trip and make an empty dataframe out of it
-    last_trip_end <- query_max_trip_timestamp(cons) 
-    lower_stamp_string <- paste0('{\"$gte\": ',last_trip_end, ',')
-    upper_stamp_string <- paste0('\"$lte\": ',last_trip_end, '}')
-    
-    qstring <- paste0('{\"metadata.key\": \"analysis/confirmed_trip\", ' ,
-                      '\"data.end_ts\": {"$eq":' , last_trip_end,
-                      '}}')
-    out <- cons$Stage_analysis_timeseries$find(qstring) %>% .[FALSE,] %>% as.data.table() %>% normalise_uuid()
-  }
-  return(out)
-  
 }
 
 query_max_trip_timestamp <- function(cons){
-  # Finds the maximum end timestamp. Returns a 1 by 1 dataframe.
+  # Finds the maximum trip end timestamp.
   cons$Stage_analysis_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "analysis/confirmed_trip"}},
@@ -144,7 +90,7 @@ query_max_trip_timestamp <- function(cons){
 }
 
 query_min_trip_timestamp <- function(cons){
-  # Finds the minimum start timestamp. Returns a 1 by 1 dataframe.
+  # Finds the minimum trip start timestamp.
   cons$Stage_analysis_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "analysis/confirmed_trip"}},
@@ -167,27 +113,6 @@ count_total_trips <- function(cons){
   ) %>% as.data.table() %>% setnames('_id','user_id') %>% normalise_uuid()
 }
 
-count_trips_today <- function(cons){
-  # want: n_trips_today
-  
-  # Get the time stamp associated with today's date
-  todays_time_stamp <- as.numeric(as.POSIXct(Sys.Date()))
-  
-  # Match by today's date
-  match_string <- paste0('{\"$match\":{\"metadata.key\": \"analysis/confirmed_trip\", ',
-                         '\"data.end_ts\": {\"$gte\": ', todays_time_stamp,'}}}')
-  
-  # Group by user id
-  group_string <-  '{\"$group\": {\"_id\":\"$user_id\",\"count\":{\"$sum\":1}}}'
-  
-  qstring <- paste0('[\n',match_string,  ','  ,
-                    group_string,'\n]')
-  
-  cons$Stage_analysis_timeseries$aggregate(qstring) %>% as.data.table() %>% normalise_uuid() 
-  # final query appearance:
-  # {"metadata.key": "analysis/confirmed_trip", "data.end_ts": {"$gte": 1623801600}}
-}
-
 query_trip_dates <- function(cons){
   dateq <- cons$Stage_analysis_timeseries$find(
                         query = '{"metadata.key": "analysis/confirmed_trip"}',
@@ -197,6 +122,30 @@ query_trip_dates <- function(cons){
                                   "data.end_fmt_time":true,
                                   "user_id":true, "_id":false}')
   return(dateq)
+}
+
+#' @rdname query
+#' @export
+#' @description Returns the number of cleaned trip documents in between two dates
+get_query_size <- function(cons,dates){
+  
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
+  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
+  
+  # Match by today's date
+  match_string <- paste0('{\"$match\":{\"metadata.key\": \"analysis/confirmed_trip\", ',
+                         '\"data.end_ts\":' , lower_stamp_string, upper_stamp_string, 
+                         '}}')
+  
+  # Group by user id
+  group_string <-  '{\"$group\": {\"_id\": {},\"n_trips\":{\"$sum\":1}}}'
+  
+  qstring <- paste0('[\n',match_string,  ','  ,
+                    group_string,'\n]')
+  
+  # for each user_id, count the number of documents associated with it
+  cons$Stage_analysis_timeseries$aggregate(qstring) %>% .$n_trips
 }
 
 #' @rdname query

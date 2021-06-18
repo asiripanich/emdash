@@ -44,22 +44,40 @@ mod_load_trips_server <- function(input, output, session, cons) {
   load_allowed <- reactive({
     window_width <- abs(as.numeric(difftime(input$dates[1],input$dates[2]))) + 1  # include first date
     message(paste("Window_width is",window_width))
-    allow <- (window_width <= max_window)
+    
+    good_window <- (window_width <= max_window)
+    
+    if (good_window) {
+      n_trips <- get_query_size(cons,input$dates)
+      too_small <- is.null(n_trips)
+      if (too_small){
+        # When the window is too small, don't load data
+        allow <- -1
+      } else {
+        # The date range is good. Load the data.
+        allow <- 0
+      }
+    } else {
+      # When the window is too large, don't load data
+      allow <- 1
+    }
+    
     return(allow)
   })
   
   disp_load_status <- reactive({
     
-    if (load_allowed()) {
-      #out <- glue::glue('There are {n_docs} documents matching those dates')
-      out <- ''
-    } else {
+    if (load_allowed() == 0) {
+      out <- ' '
+    } else if (load_allowed() == 1) {
       out <- "The selected date range is too wide."
+    } else {
+      out <- "There are no trips in that range."
     }
     return(cat(out))  # use cat to avoid the extra printed [1]
   })
   
-  # #When referring to reactives, remember to use parentheses
+  # When referring to reactives, remember to use parentheses
   output$load_display <- renderPrint(disp_load_status())
   
   data_geogr <- reactiveValues(data = data.frame(), name = "data")
@@ -69,7 +87,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
   
   observeEvent(input$reload_trips,{
 
-                 if (load_allowed()) {
+                 if (load_allowed() == 0) {
                    message("About to load trips")
                    data_geogr$trips <- tidy_cleaned_trips(query_cleaned_trips_by_timestamp(cons,input$dates),
                                                           project_crs = get_golem_config("project_crs")

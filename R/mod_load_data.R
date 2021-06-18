@@ -28,26 +28,9 @@ mod_load_data_server <- function(input, output, session, cons) {
 
   observeEvent(input$reload_data,
     {
-      # message("About to load trips")
-      # data_r$trips <- tidy_cleaned_trips(query_cleaned_trips(cons),
-      #   project_crs = get_golem_config("project_crs")
-      # )
-      # message("Finished loading trips")
-
       message("About to load server calls")
       data_r$server_calls <- tidy_server_calls(query_server_calls(cons))
       message("Finished loading server calls")
-
-      #       message("About to load locations")
-      #       data_r$locations <- tidy_cleaned_locations(query_cleaned_locations(cons))
-      #       message("Finished loading locations")
-      #
-      #       message("About to create trajectories within trips")
-      #       data_r$trips_with_trajectories <- generate_trajectories(data_r$trips,
-      #         data_r$locations,
-      #         project_crs = get_golem_config("project_crs")
-      #       )
-      #       message("Finished creating trajectories within trips")
 
       message("About to load participants")
       data_r$participants <-
@@ -56,7 +39,6 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_server_calls(., data_r$server_calls)
       message("Finished loading participants")
       
-
       # output column names into R
       # data_r$trips %>% colnames() %>% dput()
       # data_r$participants %>% colnames() %>% dput()
@@ -66,16 +48,6 @@ mod_load_data_server <- function(input, output, session, cons) {
     },
     ignoreNULL = FALSE
   )
-  
-  # observeEvent(load_trips, {
-  #   # load trips with specific query
-  #   # summarise trips again.
-  #   
-  #   message("About to load trips")
-  #   data_r$trips <- tidy_cleaned_trips_by_timestamp(query_cleaned_trips(cons,input$dates or dates?),
-  #                                      # project_crs = get_golem_config("project_crs")
-  #   )
-  # })
 
   message("Running: mod_load_data_server")
 
