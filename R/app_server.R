@@ -130,6 +130,9 @@ app_server <- function(input, output, session) {
         dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_participts_table"))) %>%
         data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
     )
+  })
+    
+  observeEvent(data_geogr$click, {
     callModule(mod_DT_server, "DT_ui_trips",
       data = data_geogr$trips %>%
         dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_trips_table"))) %>%
@@ -146,7 +149,7 @@ app_server <- function(input, output, session) {
   # data_geogr$trips_with_trajectories %>% colnames() %>% dput()
 
   cols_to_include_in_map_filter <- reactive({
-    data_geogr$trips %>%
+    data_geogr$trips_with_trajectories %>%
       colnames() %>%
       # specify columns to remove here
       setdiff(c(
@@ -161,7 +164,7 @@ app_server <- function(input, output, session) {
     callModule(
       module = esquisse::filterDF,
       id = "filtering",
-      data_table = reactive(anonymize_uuid_if_required(data_geogr$trips)),
+      data_table = reactive(anonymize_uuid_if_required(data_geogr$trips_with_trajectories)),
       data_name = reactive("data"),
       data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
       drop_ids = FALSE

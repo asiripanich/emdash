@@ -11,12 +11,12 @@ mod_load_trips_ui <- function(id) {
   ns <- NS(id)
   
   tagList(
-    dateRangeInput("dates",
-                   "Select the range of dates to look at data for.", 
+    dateRangeInput(ns("dates"),
+                   "Select the range of dates for trip data", 
                    start = "2015-07-22",
                    end = "2015-09-10", #"2016-08-11",
                    min = "2015-07-22",
-                   max = "2015-09-10"),
+                   max = "2016-08-11"),
     textOutput('Documents'),
     
     actionButton(inputId = ns('reload_trips'), label = 'Reload trips data'),
@@ -31,7 +31,7 @@ mod_load_trips_ui <- function(id) {
 mod_load_trips_server <- function(input, output, session, cons) {
   ns <- session$ns
   
-  max_window <- 60  # 1 month
+  max_window <- 1000  # 1 month
 
   # window_width <- reactive({   
   #   
@@ -71,40 +71,29 @@ mod_load_trips_server <- function(input, output, session, cons) {
     renderText(paste0("Last loaded: ", as.character(Sys.time())))
   
   observeEvent(input$reload_trips,{
-                  dates <- reactive({
-                    if (!is.null(input$dates)){
-                      out_dates <- input$dates
-                    } else {
-                      out_dates <- c("2015-07-22","2015-09-10")
-                    }
-                    return(out_dates)
-                    }
-                  )
-    message("But dates is:")
-    message(dates())
+
                   # start = "2015-07-22",
                   # end = "2015-09-10", #"2016-08-11
 
                  if (TRUE) {
-                   browser()
                    load_display <- 'Loading data'
 
                    message("About to load trips")
-                   data_geogr$trips <- tidy_cleaned_trips(query_cleaned_trips_by_timestamp(cons,dates()),
+                   data_geogr$trips <- tidy_cleaned_trips(query_cleaned_trips_by_timestamp(cons,input$dates),
                                                           project_crs = get_golem_config("project_crs")
                    )
                    message("Finished loading trips")
                    
-                   # message("About to load locations")
-                   # data_geogr$locations <- tidy_cleaned_locations(query_cleaned_locations_by_timestamp(cons,input$dates))
-                   # message("Finished loading locations")
-                   # 
-                   # message("About to create trajectories within trips")
-                   # data_geogr$trips_with_trajectories <- generate_trajectories(data_geogr$trips,
-                   #   data_geogr$locations,
-                   #   project_crs = get_golem_config("project_crs")
-                   # )
-                   # message("Finished creating trajectories within trips")
+                   message("About to load locations")
+                   data_geogr$locations <- tidy_cleaned_locations(query_cleaned_locations_by_timestamp(cons,input$dates))
+                   message("Finished loading locations")
+
+                   message("About to create trajectories within trips")
+                   data_geogr$trips_with_trajectories <- generate_trajectories(data_geogr$trips,
+                     data_geogr$locations,
+                     project_crs = get_golem_config("project_crs")
+                   )
+                   message("Finished creating trajectories within trips")
                    
                    # output column names into R
                    # data_geogr$trips %>% colnames() %>% dput()
