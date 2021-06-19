@@ -70,8 +70,8 @@ default:
  supplementary_tables:
    - Checkinout:
        tab_name: "Bike Check in"
-   # - PolarBear:
-   #     tab_name: "Polar Bear"
+   - PolarBear:
+       tab_name: "Polar Bear"
    
   
   
