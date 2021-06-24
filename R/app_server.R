@@ -131,7 +131,7 @@ app_server <- function(input, output, session) {
     )
     callModule(mod_DT_server, "DT_ui_trips",
       data = data_r$trips %>%
-        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_trips_table"))) %>%
+        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_trips_table"))) %>%
         sf::st_drop_geometry()
     )
   })
