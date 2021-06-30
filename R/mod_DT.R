@@ -26,7 +26,6 @@ mod_DT_server <- function(input, output, session, data) {
   req(data)
 
   # button_list <- list(list(extend='colvis', columns=c()))
-
   output$DTtable <- DT::renderDataTable({
     DT::datatable(
       data,

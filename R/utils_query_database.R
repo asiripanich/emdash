@@ -50,9 +50,19 @@ query_checkinout <- function(cons){
 #' @rdname query
 #' @export
 query_supplementary <- function(cons, name) {
-  cons[[name]]$find('{}') %>%
-    as.data.table()
+  new_table <- cons[[name]]$find('{}') %>% as.data.table()
   
+  if ('ts' %in% colnames(new_table)){
+    date_time_name <- ifelse(name == 'Checkinout', 'Checkout_time','Datetime')
+    
+    # Convert the timestamp to a character and append the timezone, 
+    # since we want it in the system timezone but DT::datatable displays POSIXct objects in UTC.
+    temp_datetime <- lubridate::as_datetime(new_table$ts, tz = Sys.timezone())
+    tzone <- attr(temp_datetime,"tzone")
+    new_table[[date_time_name]] <- paste(as.character(temp_datetime),tzone)
+  }
+  return(new_table)
+
   # normalise_uuid() is done after this is called 
   # within mod_load_data because Tier_Sys has no user_id column in the test data
 }

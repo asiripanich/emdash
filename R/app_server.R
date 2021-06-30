@@ -15,72 +15,72 @@ app_server <- function(input, output, session) {
 
   # Dashboard ---------------------------------------------------------------
   # Dashboard - boxes - start ----------
-  # callModule(
-  #   mod_value_box_server,
-  #   "value_box_ui_unique_users",
-  #   value = paste0(
-  #     nrow(data_r$participants),
-  #     " (+", sum(data_r$participants$update_ts == Sys.Date(), na.rm = T), ")"
-  #   ),
-  #   subtitle = "unique users (new today)",
-  #   icon = icon("users")
-  # )
-  # callModule(
-  #   mod_value_box_server,
-  #   "value_box_ui_active_users_today",
-  #   value = sum(data_r$participants$n_trips_today != 0, na.rm = T),
-  #   subtitle = "active users today",
-  #   icon = icon("walking")
-  # )
-  # callModule(
-  #   mod_value_box_server,
-  #   "value_box_ui_total_trips",
-  #   value = paste0(
-  #     sum(data_r$participants$n_trips, na.rm = T),
-  #     " (+", sum(data_r$participants$n_trips_today, na.rm = T), ")"
-  #   ),
-  #   subtitle = "trips total (new today)",
-  #   icon = icon("route")
-  # )
-  # callModule(
-  #   mod_value_box_server,
-  #   "value_box_ui_total_days",
-  #   value = difftime(Sys.Date(), as.Date(min(data_r$participants$update_ts)), units = "days"),
-  #   subtitle = sprintf(
-  #     "days since the first user\n(%s to %s)",
-  #     as.Date(min(data_r$participants$update_ts)), Sys.Date()
-  #   ),
-  #   icon = icon("calendar-plus")
-  # )
-  # 
+  callModule(
+    mod_value_box_server,
+    "value_box_ui_unique_users",
+    value = paste0(
+      nrow(data_r$participants),
+      " (+", sum(data_r$participants$update_ts == Sys.Date(), na.rm = T), ")"
+    ),
+    subtitle = "unique users (new today)",
+    icon = icon("users")
+  )
+  callModule(
+    mod_value_box_server,
+    "value_box_ui_active_users_today",
+    value = sum(data_r$participants$n_trips_today != 0, na.rm = T),
+    subtitle = "active users today",
+    icon = icon("walking")
+  )
+  callModule(
+    mod_value_box_server,
+    "value_box_ui_total_trips",
+    value = paste0(
+      sum(data_r$participants$n_trips, na.rm = T),
+      " (+", sum(data_r$participants$n_trips_today, na.rm = T), ")"
+    ),
+    subtitle = "trips total (new today)",
+    icon = icon("route")
+  )
+  callModule(
+    mod_value_box_server,
+    "value_box_ui_total_days",
+    value = difftime(Sys.Date(), as.Date(min(data_r$participants$update_ts)), units = "days"),
+    subtitle = sprintf(
+      "days since the first user\n(%s to %s)",
+      as.Date(min(data_r$participants$update_ts)), Sys.Date()
+    ),
+    icon = icon("calendar-plus")
+  )
+
   # # Dashboard - boxes - end ----------
   # 
   # # Dashboard - plots - start ----------
-  # callModule(
-  #   mod_ggplotly_server,
-  #   "ggplotly_ui_signup_trend",
-  #   utils_plot_signup_trend(data_r$participants)
-  # )
-  # callModule(
-  #   mod_ggplotly_server,
-  #   "ggplotly_ui_trip_trend",
-  #   utils_plot_trip_trend(data_r$trips)
-  # )
-  # callModule(
-  #   mod_ggplotly_server,
-  #   "ggplotly_ui_participation_period",
-  #   utils_plot_participation_period(data_r$participants)
-  # )
-  # callModule(
-  #   mod_ggplotly_server,
-  #   "ggplotly_ui_branch",
-  #   utils_plot_branch(data_r$participants)
-  # )
-  # callModule(
-  #   mod_ggplotly_server,
-  #   "ggplotly_ui_platform",
-  #   utils_plot_platform(data_r$participants)
-  # )
+  callModule(
+    mod_ggplotly_server,
+    "ggplotly_ui_signup_trend",
+    utils_plot_signup_trend(data_r$participants)
+  )
+  callModule(
+    mod_ggplotly_server,
+    "ggplotly_ui_trip_trend",
+    utils_plot_trip_trend(data_r$trips)
+  )
+  callModule(
+    mod_ggplotly_server,
+    "ggplotly_ui_participation_period",
+    utils_plot_participation_period(data_r$participants)
+  )
+  callModule(
+    mod_ggplotly_server,
+    "ggplotly_ui_branch",
+    utils_plot_branch(data_r$participants)
+  )
+  callModule(
+    mod_ggplotly_server,
+    "ggplotly_ui_platform",
+    utils_plot_platform(data_r$participants)
+  )
 
   # Dashboard - plots - end ----------
   # Tables ------------------------------------------------------------------
@@ -92,20 +92,20 @@ app_server <- function(input, output, session) {
   originalColumnNames <- names(named_label_vector)
   new_column_names <- unname(named_label_vector)
 
-  # observeEvent(input$tabs, {
-  #   if (input$tabs == "participants") {
-  #     data_esquisse$data <-
-  #       data_r$participants %>%
-  #       drop_list_columns() %>%
-  #       data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
-  #   }
-  #   if (input$tabs == "trips") {
-  #     data_esquisse$data <-
-  #       data_r$trips %>%
-  #       drop_list_columns() %>%
-  #       sf::st_drop_geometry()
-  #   }
-  # })
+  observeEvent(input$tabs, {
+    if (input$tabs == "participants") {
+      data_esquisse$data <-
+        data_r$participants %>%
+        drop_list_columns() %>%
+        data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
+    }
+    if (input$tabs == "trips") {
+      data_esquisse$data <-
+        data_r$trips %>%
+        drop_list_columns() %>%
+        sf::st_drop_geometry()
+    }
+  })
 
   # INTERACTIVE PLOT PANEL
   callModule(
@@ -143,20 +143,40 @@ app_server <- function(input, output, session) {
       table_type <- names(t)
       table_title <- t[[table_type]]$tab_name
       
-      message('About to make a panel with uiOutput')
-      
       # If the table is Bike Check In, use dtedit
       if (table_type == 'Checkinout') {
+        
+        # Define the callback functions used by dtedit
+        #' Insert a row. "Create"
+        #' @param data the data including your inserted row
+        #' @param row the row where you made the change
+        insert_callback <- function(data, row) {
+          db_insert(cons,"Checkinout",data[row,])
+          return(data)
+        }
+        
+        #' Update a row
+        #' @param data the data including your updated row
+        update_callback <- function(data, olddata, row) {
+          db_update(cons,"Checkinout",data[row,])
+          data
+        }
+        
+        #' Delete a row
+        delete_callback <- function(data, row) {
+          db_delete(cons,"Checkinout",data[row,])
+          return(data[-row, ])
+        }
+        
         # Make status a list so you can set false as one of the options in the event of all trues
         data_for_dtedit <- data_r[[table_type]]
         data_for_dtedit$status <- as.factor(data_for_dtedit$status)
-        message(class(data_for_dtedit$status))
         
         editable_table_tab <-  tabPanel(
           status = "primary",
           title = table_title,
           value = table_type,
-          uiOutput(outputId = paste0("DTedit_ui_",table_type))  # Later: mod_DTedit_ui(id = paste0("DTedit_ui_",table_type)) #
+          uiOutput(outputId = paste0("DTedit_ui_",table_type))  # Maybe Later: mod_DTedit_ui(id = paste0("DTedit_ui_",table_type)) #
         )
         
         appendTab(
@@ -174,13 +194,14 @@ app_server <- function(input, output, session) {
                        edit.label.cols = c('status'),
                        input.types = c(status = "selectInput"),
                        input.choices = list(status = c('TRUE','FALSE')),
-                       view.cols = c('user_id','status', 'bikeLabel','ts'),
+                       view.cols = c('user_id','status', 'bikeLabel','ts','Checkout_time'),
                        callback.update = update_callback,   # defined in utils_update_insert_delete.R
                        callback.insert = insert_callback,
                        callback.delete = delete_callback,
                        show.insert = FALSE,
                        show.update = FALSE,
                        show.copy = FALSE,
+                       label.delete = 'Delete Row',
                        datatable.options = list(
                          scrollX = TRUE,
                          pageLength = 50,
@@ -222,36 +243,36 @@ app_server <- function(input, output, session) {
 
   # data_r$trips_with_trajectories %>% colnames() %>% dput()
 
-  # cols_to_include_in_map_filter <- reactive({
-  #   data_r$trips %>%
-  #     colnames() %>%
-  #     # specify columns to remove here
-  #     setdiff(c(
-  #       "start_fmt_time0", "start_local_dt_timezone", "start_local_time",
-  #       "end_fmt_time0", "end_local_dt_timezone", "end_local_time",
-  #       "end_loc_coordinates", "start_loc_coordinates", "duration", "distance",
-  #       "location_points", "source"
-  #     ))
-  # })
-  # 
-  # filtered_trips <-
-  #   callModule(
-  #     module = esquisse::filterDF,
-  #     id = "filtering",
-  #     data_table = reactive(anonymize_uuid_if_required(data_r$trips)),
-  #     data_name = reactive("data"),
-  #     data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
-  #     drop_ids = FALSE
-  #   )
-  # 
-  # observeEvent(filtered_trips$data_filtered(), {
-  #   callModule(
-  #     mod_mapview_server,
-  #     "mapview_trips",
-  #     data_sf = filtered_trips$data_filtered() %>%
-  #       dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_map_popup")))
-  #   )
-  # })
+  cols_to_include_in_map_filter <- reactive({
+    data_r$trips %>%
+      colnames() %>%
+      # specify columns to remove here
+      setdiff(c(
+        "start_fmt_time0", "start_local_dt_timezone", "start_local_time",
+        "end_fmt_time0", "end_local_dt_timezone", "end_local_time",
+        "end_loc_coordinates", "start_loc_coordinates", "duration", "distance",
+        "location_points", "source"
+      ))
+  })
+
+  filtered_trips <-
+    callModule(
+      module = esquisse::filterDF,
+      id = "filtering",
+      data_table = reactive(anonymize_uuid_if_required(data_r$trips)),
+      data_name = reactive("data"),
+      data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
+      drop_ids = FALSE
+    )
+
+  observeEvent(filtered_trips$data_filtered(), {
+    callModule(
+      mod_mapview_server,
+      "mapview_trips",
+      data_sf = filtered_trips$data_filtered() %>%
+        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_map_popup")))
+    )
+  })
 
   # On exit -----------------------------------------------------------------
   session$onSessionEnded(function() {
