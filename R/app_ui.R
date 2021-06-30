@@ -118,26 +118,26 @@ app_ui <- function(request) {
                 )
               )
             )
-          ),
+          )
 
           # Maps ----------------------
-          tabItem(
-            tabName = "maps",
-            fluidRow(
-              column(
-                width = 3,
-                wellPanel(
-                  id = "tPanel",
-                  style = "overflow-y:scroll; max-height: 800px",
-                  esquisse::filterDF_UI("filtering")
-                )
-              ),
-              column(
-                width = 9,
-                mod_mapview_ui("mapview_trips", height = 800)
-              )
-            )
-          )
+          # tabItem(
+          #   tabName = "maps",
+          #   fluidRow(
+          #     column(
+          #       width = 3,
+          #       wellPanel(
+          #         id = "tPanel",
+          #         style = "overflow-y:scroll; max-height: 800px",
+          #         esquisse::filterDF_UI("filtering")
+          #       )
+          #     ),
+          #     column(
+          #       width = 9,
+          #       mod_mapview_ui("mapview_trips", height = 800)
+          #     )
+          #   )
+          # )
         )
       )
     )

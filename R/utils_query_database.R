@@ -130,6 +130,7 @@ query_trip_dates <- function(cons){
 get_query_size <- function(cons,dates){
   
   time_stamps <- as.numeric(as.POSIXct(dates))
+  message(time_stamps)
   lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
   upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
   
