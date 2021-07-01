@@ -187,6 +187,7 @@ app_server <- function(input, output, session) {
           session = getDefaultReactiveDomain()
         )
 
+        
         #' @import DTedit
         DTedit::dtedit(input, output,
                        name = paste0("DTedit_ui_",table_type),
@@ -195,7 +196,7 @@ app_server <- function(input, output, session) {
                        edit.label.cols = c('status'),
                        input.types = c(status = "selectInput"),
                        input.choices = list(status = c('TRUE','FALSE')),
-                       view.cols = c('user_id','status', 'bikeLabel','ts','Checkout_time'),
+                       view.cols = colnames(data_for_dtedit),
                        callback.update = update_callback,   # defined in utils_update_insert_delete.R
                        callback.insert = insert_callback,
                        callback.delete = delete_callback,
