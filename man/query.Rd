@@ -5,6 +5,8 @@
 \alias{query_cleaned_locations}
 \alias{query_server_calls}
 \alias{query_cleaned_trips}
+\alias{query_checkinout}
+\alias{query_supplementary}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
 \alias{query_raw_trips}
@@ -17,6 +19,10 @@ query_cleaned_locations(cons)
 query_server_calls(cons)
 
 query_cleaned_trips(cons)
+
+query_checkinout(cons)
+
+query_supplementary(cons, name)
 
 query_cleaned_place(cons)
 
