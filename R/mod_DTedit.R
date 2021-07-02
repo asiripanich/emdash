@@ -51,7 +51,7 @@ mod_DTedit_server <- function(input, output, session, data) {
   # new_data <- data.table::data.table(user_id,other_var)
   
   message('DTedit is running')
-  message(glue::glue('Class of the data is: {class(data)}\n'))
+  message(sprintf('Class of the data is: %s', class(data)))
   message(colnames(data))
   #message(print(data))
   DTedit::dtedit(input, output,
