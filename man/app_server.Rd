@@ -8,7 +8,8 @@ app_server(input, output, session)
 }
 \arguments{
 \item{input, output, session}{Internal parameters for {shiny}.
-DO NOT REMOVE.}
+    DO NOT REMOVE.
+Insert a row. "Create"}
 
 \item{row}{the row where you made the change
 Update a row}

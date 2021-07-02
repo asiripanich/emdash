@@ -4,7 +4,7 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd
+#' @noRd 
 #'
 #' @importFrom shiny NS tagList
 mod_DTedit_ui <- function(id) {
@@ -16,12 +16,13 @@ mod_DTedit_ui <- function(id) {
   uiOutput(outputId = ns("DTedit_table"))
 }
 
-#' DTedit Server Function
-#'
+#' @title DTedit Server Function
+#' @description 
+#' 
+#' DTedit server module.
+#'  
 #' @param data a data.frame
 #' @param tab_name table name
-#'
-#' @noRd
 mod_DTedit_server <- function(input, output, session, data) {
   ns <- session$ns #("DTedit_table")
   req(data)

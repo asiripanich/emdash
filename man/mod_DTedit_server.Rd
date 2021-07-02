@@ -9,8 +9,11 @@ mod_DTedit_server(input, output, session, data)
 \arguments{
 \item{data}{a data.frame}
 
-\item{tab_name}{table name}
+\item{tab_name}{table name
+Insert a row. "Create"
+Update a row
+Delete a row}
 }
 \description{
-DTedit Server Function
+DTedit server module.
 }
