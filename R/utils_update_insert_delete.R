@@ -16,20 +16,20 @@ db_update <- function(cons,collection_name,df_row){
   
   set_string <- paste0('{\"$set":{\"status\":',logic_string,'}}') # %>% cat
   
-  cons$Checkinout$update(user_id_string,set_string)
+  cons[[collection_name]]$update(user_id_string,set_string)
 }
 
 
 #' Deletes a document from Checkinout corresponding to df_row
 db_delete <- function(cons,collection_name,df_row){
-
+  browser()
   if (df_row$user_id == '') {
     # In case the entry has no user id
     user_id_string <- paste0('{\"user_id\": {\"$exists\" : "false" }, ','\"bikeLabel\": \"',df_row$bikeLabel, '\"}') 
     cons$Checkinout$remove(user_id_string, just_one = TRUE)
   } else {
     user_id_string <- paste0('{\"user_id\": \"',df_row$user_id,'\", ','\"bikeLabel\": \"',df_row$bikeLabel, '\"}') 
-    cons$Checkinout$remove(user_id_string, just_one = TRUE)
+    cons[[collection_name]]$remove(user_id_string, just_one = TRUE)
   }
 }
 

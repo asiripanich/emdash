@@ -142,8 +142,19 @@ app_server <- function(input, output, session) {
       table_type <- names(t)
       table_title <- t[[table_type]]$tab_name
       
-      # If the table is Bike Check In, use dtedit
-      if (table_type == 'Checkinout') {
+      # If the table is Bike Check In and there is an 'editable' field, use dtedit
+      if (table_type == 'Checkinout' & 'editable' %in% names(t$Checkinout)) {
+
+        db_operations <- t$Checkinout$editable$operations
+        allow_delete <- 'D' %in% db_operations
+        allow_update <- 'U' %in% db_operations
+        allow_insert <- FALSE  #'C' %in% db_operations
+        
+        if ('edit_columns' %in% names(t$Checkinout$editable)){
+          edit_columns <- t$Checkinout$editable$edit_columns
+        } else {
+          edit_columns <- 'status'
+        }
         
         # Define the callback functions used by dtedit
         #' Insert a row. "Create"
@@ -163,7 +174,7 @@ app_server <- function(input, output, session) {
         
         #' Delete a row
         delete_callback <- function(data, row) {
-          db_delete(cons,"Checkinout",data[row,])
+          db_delete(cons,"Checkinout", data[row,])   # table_type updates to PolarBear before any CUD functions are called
           return(data[-row, ])
         }
         
@@ -189,16 +200,17 @@ app_server <- function(input, output, session) {
         DTedit::dtedit(input, output,
                        name = paste0("DTedit_ui_",table_type),
                        thedata = data_for_dtedit,
-                       edit.cols = c('status'),
-                       edit.label.cols = c('status'),
-                       input.types = c(status = "selectInput"),
-                       input.choices = list(status = c('TRUE','FALSE')),
+                       edit.cols = edit_columns,
+                       # edit.label.cols = c('status'),
+                       # input.types = c(status = "selectInput"),
+                       # input.choices = list(status = c('TRUE','FALSE')),
                        view.cols = colnames(data_for_dtedit),
-                       callback.update = update_callback,   # defined in utils_update_insert_delete.R
+                       callback.update = update_callback,   # db operations defined in utils_update_insert_delete.R
                        callback.insert = insert_callback,
                        callback.delete = delete_callback,
-                       show.insert = FALSE,
-                       show.update = FALSE,
+                       show.insert = allow_insert,
+                       show.update = allow_update,
+                       show.delete = allow_delete,
                        show.copy = FALSE,
                        label.delete = 'Delete Row',
                        datatable.options = list(
