@@ -19,16 +19,16 @@ mod_load_trips_ui <- function(id) {
     lubridate::as_datetime(.) %>% as.Date(.)
   message(paste('Last trip: ',last_trip))
   
-  thirty_before_last <- last_trip - 30
+  thirty_before_last_date <- last_trip - 30
 
   tagList(
     dateRangeInput(ns("dates"),
                    "Select the range of dates for trip data", 
                    # start = "2016-01-05",
                    # end = "2016-01-05"),
-                   start = thirty_before_last,
+                   start = thirty_before_last_date,
                    end = last_trip,
-                   min = min(thirty_before_last,first_trip),
+                   min = min(thirty_before_last_date,first_trip),
                    max = last_trip),
     textOutput(ns('load_display')),
     actionButton(inputId = ns('reload_trips'), label = 'Reload trips data'),
@@ -42,8 +42,12 @@ mod_load_trips_ui <- function(id) {
 mod_load_trips_server <- function(input, output, session, cons) {
   ns <- session$ns
   
-  max_window <- 32  # 1 month
+  max_window <- 31  # 1 month
   
+  # Add one day to the final date because we want the date range to include the final date.
+  # Converting these dates to timestamps gives us the timestamp at the beginning of the first user selected date,
+  # and the timestamp at the end of the second user selected date = timestamp for the day after.
+  # The timestamp for a given date is for the beginning of the day.
   dates <- reactive(c(input$dates[1],input$dates[2] + 1))
 
   load_allowed <- reactive({
@@ -73,8 +77,8 @@ mod_load_trips_server <- function(input, output, session, cons) {
     return(allow)
   })
   
-  disp_load_status <- reactive({
-    
+  # When there is a change in load_allowed(), change the displayed message
+  disp_load_status <- reactive({ 
     if (load_allowed() == 0) {
       out <- ' '
     } else if (load_allowed() == 1) {
@@ -102,16 +106,16 @@ mod_load_trips_server <- function(input, output, session, cons) {
                    )
                    message("Finished loading trips")
                    
-                   # message("About to load locations")
-                   # data_geogr$locations <- tidy_cleaned_locations(query_cleaned_locations_by_timestamp(cons,dates()))
-                   # message("Finished loading locations")
-                   # 
-                   # message("About to create trajectories within trips")
-                   # data_geogr$trips_with_trajectories <- generate_trajectories(data_geogr$trips,
-                   #   data_geogr$locations,
-                   #   project_crs = get_golem_config("project_crs")
-                   # )
-                   # message("Finished creating trajectories within trips")
+                   message("About to load locations")
+                   data_geogr$locations <- tidy_cleaned_locations(query_cleaned_locations_by_timestamp(cons,dates()))
+                   message("Finished loading locations")
+
+                   message("About to create trajectories within trips")
+                   data_geogr$trips_with_trajectories <- generate_trajectories(data_geogr$trips,
+                     data_geogr$locations,
+                     project_crs = get_golem_config("project_crs")
+                   )
+                   message("Finished creating trajectories within trips")
                    
                    # output column names into R
                    # data_geogr$trips %>% colnames() %>% dput()

@@ -28,15 +28,11 @@ mod_load_data_server <- function(input, output, session, cons) {
 
   observeEvent(input$reload_data,
     {
-      message("About to load server calls")
-      data_r$server_calls <- tidy_server_calls(query_server_calls(cons))
-      message("Finished loading server calls")
-
       message("About to load participants")
       data_r$participants <-
         tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
         summarise_trips_without_trips(., cons) %>%
-        summarise_server_calls(., data_r$server_calls)
+        summarise_server_calls(., cons)
       message("Finished loading participants")
       
       # output column names into R

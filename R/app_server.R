@@ -152,36 +152,36 @@ app_server <- function(input, output, session) {
 
   # data_geogr$trips_with_trajectories %>% colnames() %>% dput()
 
-  # cols_to_include_in_map_filter <- reactive({
-  #   data_geogr$trips_with_trajectories %>%
-  #     colnames() %>%
-  #     # specify columns to remove here
-  #     setdiff(c(
-  #       "start_fmt_time0", "start_local_dt_timezone", "start_local_time",
-  #       "end_fmt_time0", "end_local_dt_timezone", "end_local_time",
-  #       "end_loc_coordinates", "start_loc_coordinates", "duration", "distance",
-  #       "location_points", "source"
-  #     ))
-  # })
-  # 
-  # filtered_trips <-
-  #   callModule(
-  #     module = esquisse::filterDF,
-  #     id = "filtering",
-  #     data_table = reactive(anonymize_uuid_if_required(data_geogr$trips_with_trajectories)),
-  #     data_name = reactive("data"),
-  #     data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
-  #     drop_ids = FALSE
-  #   )
-  # 
-  # observeEvent(filtered_trips$data_filtered(), {
-  #   callModule(
-  #     mod_mapview_server,
-  #     "mapview_trips",
-  #     data_sf = filtered_trips$data_filtered() %>%
-  #       dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_map_popup")))
-  #   )
-  # })
+  cols_to_include_in_map_filter <- reactive({
+    data_geogr$trips_with_trajectories %>%
+      colnames() %>%
+      # specify columns to remove here
+      setdiff(c(
+        "start_fmt_time0", "start_local_dt_timezone", "start_local_time",
+        "end_fmt_time0", "end_local_dt_timezone", "end_local_time",
+        "end_loc_coordinates", "start_loc_coordinates", "duration", "distance",
+        "location_points", "source"
+      ))
+  })
+
+  filtered_trips <-
+    callModule(
+      module = esquisse::filterDF,
+      id = "filtering",
+      data_table = reactive(anonymize_uuid_if_required(data_geogr$trips_with_trajectories)),
+      data_name = reactive("data"),
+      data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
+      drop_ids = FALSE
+    )
+
+  observeEvent(filtered_trips$data_filtered(), {
+    callModule(
+      mod_mapview_server,
+      "mapview_trips",
+      data_sf = filtered_trips$data_filtered() %>%
+        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_map_popup")))
+    )
+  })
 
   # On exit -----------------------------------------------------------------
   session$onSessionEnded(function() {

@@ -48,6 +48,84 @@ query_server_calls <- function(cons) {
 
 #' @rdname query
 #' @export
+#' Finds the first and last get calls for each user.
+query_usercache_get_summ <- function(cons){
+  
+  cons$Stage_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/usercache/get"}},
+      { "$group":
+          {
+            "_id": "$user_id",
+            "first_get_call": { "$min": "$data.ts" },
+            "last_get_call": {"$max": "$data.ts" }
+          }
+      },
+      { "$project": {
+            "user_id": "$_id",
+            "_id": 0,
+            "first_get_call": 1,
+            "last_get_call": 1} 
+      }
+    ]'
+  ) %>% as.data.table() %>% normalise_uuid() %>% 
+    return() 
+}
+
+#' @rdname query
+#' @export
+#' Finds the first and last put calls for each user.
+query_usercache_put_summ <- function(cons){
+  
+  cons$Stage_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/usercache/put"}},
+      { "$group":
+          {
+            "_id": "$user_id",
+            "first_put_call": { "$min": "$data.ts" },
+            "last_put_call": {"$max": "$data.ts" }
+          }
+      },
+      { "$project": {
+            "user_id": "$_id",
+            "_id": 0,
+            "first_put_call": 1,
+            "last_put_call": 1} 
+      }
+    ]'
+  ) %>% as.data.table() %>% normalise_uuid() %>% 
+    return()
+}
+
+#' @rdname query
+#' @export
+#' Finds the first and last diary calls for each user.
+query_diary_summ <- function(cons){
+  
+  cons$Stage_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/pipeline/get_complete_ts"}},
+      { "$group":
+          {
+            "_id": "$user_id",
+            "first_diary_call": { "$min": "$data.ts" },
+            "last_diary_call": {"$max": "$data.ts" }
+          }
+      },
+      { "$project": {
+            "user_id": "$_id",
+            "_id": 0,
+            "first_diary_call": 1,
+            "last_diary_call": 1} 
+      }
+    ]'
+  ) %>% as.data.table() %>% normalise_uuid() %>% 
+    return()
+}
+
+#' @rdname query
+#' @export
 query_cleaned_trips <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/confirmed_trip"}') %>%
     as.data.table() %>%
@@ -130,16 +208,17 @@ query_trip_dates <- function(cons){
 get_query_size <- function(cons,dates){
   
   time_stamps <- as.numeric(as.POSIXct(dates))
-  message(time_stamps)
+  message('get_query_size: The time stamps for that date range are:')
+  message(paste0(time_stamps[1], ', ', time_stamps[2]))
   lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
   upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
   
-  # Match by today's date
+  # Match by the time stamps of the dates
   match_string <- paste0('{\"$match\":{\"metadata.key\": \"analysis/confirmed_trip\", ',
                          '\"data.end_ts\":' , lower_stamp_string, upper_stamp_string, 
                          '}}')
   
-  # Group by user id
+  # Group by all user_ids
   group_string <-  '{\"$group\": {\"_id\": {},\"n_trips\":{\"$sum\":1}}}'
   
   qstring <- paste0('[\n',match_string,  ','  ,
