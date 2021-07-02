@@ -186,8 +186,6 @@ app_server <- function(input, output, session) {
           session = getDefaultReactiveDomain()
         )
 
-        
-        #' @import DTedit
         DTedit::dtedit(input, output,
                        name = paste0("DTedit_ui_",table_type),
                        thedata = data_for_dtedit,

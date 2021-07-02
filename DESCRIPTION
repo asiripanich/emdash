@@ -7,7 +7,7 @@ Authors@R: c(
     person("K", "Shankari", role="aut"),
     person("Michael", "Allen", role="aut"),
     person("Arthur", "Yip", role="ctb"))
-Description: e-mission dashboard built with the Shiny framework
+Description: e-mission dashboard built with the Shiny framework.
 License: MIT + file LICENSE
 Imports: 
     config,
