@@ -156,9 +156,7 @@ tidy_cleaned_trips_by_timestamp <- function(df) {
   
   # If there are no user inputs, only return dt without user input columns
   if (nrow(user_input_df) == 0) {
-    mode_confirm <- rep(NA,nrow(dt))
-    purpose_confirm <- rep(NA,nrow(dt))
-    dt <- cbind(dt,mode_confirm,purpose_confirm)
+    message('There are no user inputs in the time range')
     return(dt)
   }
   cbind(dt, user_input_df)
