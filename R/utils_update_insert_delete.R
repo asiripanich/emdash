@@ -22,7 +22,7 @@ db_update <- function(cons,collection_name,df_row){
 
 #' Deletes a document from Checkinout corresponding to df_row
 db_delete <- function(cons,collection_name,df_row){
-  browser()
+
   if (df_row$user_id == '') {
     # In case the entry has no user id
     user_id_string <- paste0('{\"user_id\": {\"$exists\" : "false" }, ','\"bikeLabel\": \"',df_row$bikeLabel, '\"}') 
