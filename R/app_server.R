@@ -145,39 +145,6 @@ app_server <- function(input, output, session) {
       
       # If the table is Bike Check In and there is an 'editable' field, use dtedit
       if (table_type == 'Checkinout' & 'editable' %in% names(t$Checkinout)) {
-
-        db_operations <- t$Checkinout$editable$operations
-        allow_delete <- 'D' %in% db_operations
-        allow_update <- 'U' %in% db_operations
-        allow_insert <- FALSE  #'C' %in% db_operations
-        
-        if ('edit_columns' %in% names(t$Checkinout$editable)){
-          edit_columns <- t$Checkinout$editable$edit_columns
-        } else {
-          edit_columns <- 'status'
-        }
-        
-        # Define the callback functions used by dtedit
-        #' Insert a row. "Create"
-        #' @param data the data including your inserted row
-        #' @param row the row where you made the change
-        insert_callback <- function(data, row) {
-          db_insert(cons,"Checkinout",data[row,])
-          return(data)
-        }
-        
-        #' Update a row
-        #' @param data the data including your updated row
-        update_callback <- function(data, olddata, row) {
-          db_update(cons,"Checkinout",data[row,])
-          data
-        }
-        
-        #' Delete a row
-        delete_callback <- function(data, row) {
-          db_delete(cons,"Checkinout", data[row,])   # table_type updates to PolarBear before any CUD functions are called
-          return(data[-row, ])
-        }
         
         # Get the data and make status a factor so you can use selectInput for editing status
         data_for_dtedit <- data_r[[table_type]]
@@ -187,7 +154,7 @@ app_server <- function(input, output, session) {
           status = "primary",
           title = table_title,
           value = table_type,
-          uiOutput(outputId = paste0("DTedit_ui_",table_type))  # Maybe Later: mod_DTedit_ui(id = paste0("DTedit_ui_",table_type)) #
+          mod_DTedit_ui(id = paste0("DTedit_",table_type))
         )
         
         appendTab(
@@ -197,30 +164,12 @@ app_server <- function(input, output, session) {
           menuName = NULL,
           session = getDefaultReactiveDomain()
         )
-
-        DTedit::dtedit(input, output,
-                       name = paste0("DTedit_ui_",table_type),
-                       thedata = data_for_dtedit,
-                       edit.cols = edit_columns,
-                       # edit.label.cols = c('status'),
-                       # input.types = c(status = "selectInput"),
-                       # input.choices = list(status = c('TRUE','FALSE')),
-                       view.cols = colnames(data_for_dtedit),
-                       callback.update = update_callback,   # db operations defined in utils_update_insert_delete.R
-                       callback.insert = insert_callback,
-                       callback.delete = delete_callback,
-                       show.insert = allow_insert,
-                       show.update = allow_update,
-                       show.delete = allow_delete,
-                       show.copy = FALSE,
-                       label.delete = 'Delete Row',
-                       datatable.options = list(
-                         scrollX = TRUE,
-                         pageLength = 50,
-                         dom = "Bfrtip",
-                         buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-                       )
-                     ) 
+        
+        callModule(module = mod_DTedit_server,
+                   id = paste0("DTedit_",table_type),
+                   table_data = data_for_dtedit,
+                   suppl_table_sublist = t,
+                   cons)
       }  
       # For other supplementary tables, use mod_DT  
        else {
