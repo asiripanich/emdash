@@ -99,11 +99,12 @@ app_ui <- function(request) {
                       ),
                   
                   # Use Javascript to get the client's time zone offset for displaying times in the viewer's timezone.
+                  # getTimezoneOffset() returns a number of minutes that is positive if the local time zone is behind UTC, 
+                  # and negative if the local time zone is ahead of UTC. For example, for UTC+10, -600 will be returned
                   HTML('<input type="text" id="client_time_zone_offset" name="client_time_zone_offset" style="display: none;"> '),
                   tags$script('
                               $(function() {
                                 var time_now = new Date()
-                                //$("input#client_time").val(time_now.getTime())
                                 $("input#client_time_zone_offset").val(time_now.getTimezoneOffset())
                               });    
                             '),
