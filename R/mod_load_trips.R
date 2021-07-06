@@ -44,10 +44,10 @@ mod_load_trips_server <- function(input, output, session, cons) {
   
   max_window <- 31  # 1 month
   
-  # Add one day to the final date because we want the date range to include the final date.
-  # Converting these dates to timestamps gives us the timestamp at the beginning of the first user selected date,
-  # and the timestamp at the end of the second user selected date = timestamp for the day after.
+  # Add one day to the final date because we want the date range to include the final date in the date range.
   # The timestamp for a given date is for the beginning of the day.
+  # Looking one day later than the final date and converting to timestamp,
+  # we get the time stamp at the end of the final day, which is the same as the beginning of the day after.
   dates <- reactive(c(input$dates[1],input$dates[2] + 1))
 
   load_allowed <- reactive({
@@ -61,14 +61,15 @@ mod_load_trips_server <- function(input, output, session, cons) {
     
     if (good_window) {
       n_trips <- get_query_size(cons,dates())
-      too_small <- is.null(n_trips)
-      if (too_small){
-        # When the window is too small, don't load data
+      message(paste('Number of trips is:',n_trips))
+      no_trips <- is.null(n_trips)
+      if (no_trips){
+        # When the window contains no trips, don't load data
         allow <- -1
       } else {
         # The date range is good. Load the data.
         allow <- 0
-      }  # inner if else end
+      }  # inner 'if-else' end
     } else {
       # When the window is too large, don't load data
       allow <- 1
@@ -104,11 +105,16 @@ mod_load_trips_server <- function(input, output, session, cons) {
                    data_geogr$trips <- tidy_cleaned_trips(query_cleaned_trips_by_timestamp(cons,dates()),
                                                           project_crs = get_golem_config("project_crs")
                    )
+                   
+                   get_size_kb <- function(x) {object.size(x)/1000}
                    message("Finished loading trips")
+                   message(paste('Trips size is: ',get_size_kb(data_geogr$trips)))
                    
                    message("About to load locations")
                    data_geogr$locations <- tidy_cleaned_locations(query_cleaned_locations_by_timestamp(cons,dates()))
                    message("Finished loading locations")
+                   
+                   message(paste('Locations size is: ',get_size_kb(data_geogr$locations)))
 
                    message("About to create trajectories within trips")
                    data_geogr$trips_with_trajectories <- generate_trajectories(data_geogr$trips,
@@ -116,6 +122,8 @@ mod_load_trips_server <- function(input, output, session, cons) {
                      project_crs = get_golem_config("project_crs")
                    )
                    message("Finished creating trajectories within trips")
+                   
+                   message(paste('Trips with traj. size is: ',get_size_kb(data_geogr$trips_with_trajectories)))
                    
                    # output column names into R
                    # data_geogr$trips %>% colnames() %>% dput()
