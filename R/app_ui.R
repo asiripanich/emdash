@@ -98,15 +98,6 @@ app_ui <- function(request) {
                       tags$style(".container-drag-source, .box-dad {font-size: 14px;}")
                       ),
                   
-                  # Use Javascript to get the client's time zone offset for displaying times in the viewer's timezone.
-                  HTML('<input type="text" id="client_time_zone_offset" name="client_time_zone_offset" style="display: none;"> '),
-                  tags$script('
-                              $(function() {
-                                var time_now = new Date()
-                                //$("input#client_time").val(time_now.getTime())
-                                $("input#client_time_zone_offset").val(time_now.getTimezoneOffset())
-                              });    
-                            '),
                   fluidRow(
                     tabBox(
                       id = "tabs",

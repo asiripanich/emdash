@@ -5,11 +5,10 @@
 app_server <- function(input, output, session) {
   # List the first level callModules here
 
+
   # prepare data ------------------------------------------------------------
-  # Get the client's timezone offset.
-  time_zone_offset <- reactive(as.numeric(input$client_time_zone_offset) * 60 ) # in s 
   cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
-  data_r <- callModule(mod_load_data_server, "load_data_ui", cons,time_zone_offset())
+  data_r <- callModule(mod_load_data_server, "load_data_ui", cons)
 
   # Side bar ----------------------------------------------------------------
 
@@ -179,7 +178,7 @@ app_server <- function(input, output, session) {
           return(data[-row, ])
         }
         
-        # Get the data and make status a factor so you can use selectInput for editing status
+        # Make status a list so you can set false as one of the options in the event of all trues
         data_for_dtedit <- data_r[[table_type]]
         data_for_dtedit$status <- as.factor(data_for_dtedit$status)
         
