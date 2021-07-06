@@ -18,7 +18,7 @@ mod_load_data_ui <- function(id) {
 #' load_data Server Function
 #'
 #' @noRd
-mod_load_data_server <- function(input, output, session, cons) {
+mod_load_data_server <- function(input, output, session, cons, time_zone_offset) {
   ns <- session$ns
 
   data_r <- reactiveValues(data = data.frame(), name = "data")
@@ -65,7 +65,7 @@ mod_load_data_server <- function(input, output, session, cons) {
         table_title <- t[[table_type]]$tab_name
         
         message(paste("About to load",table_title))
-        data_r[[table_type]] <- query_supplementary(cons,table_type)
+        data_r[[table_type]] <- query_supplementary(cons,table_type,time_zone_offset)
         
         if ("user_id" %in% colnames(data_r[[table_type]])){
           data_r[[table_type]] %>% normalise_uuid() %>% data.table::setcolorder(c("user_id"))
