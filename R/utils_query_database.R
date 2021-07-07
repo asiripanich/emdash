@@ -135,6 +135,8 @@ query_cleaned_trips <- function(cons) {
 
 #' @rdname query
 #' @export
+#' @description queries trips data between the start timestamp of the first date 
+#'              and the start timestamp of the second date.
 query_cleaned_trips_by_timestamp <- function(cons,dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
@@ -148,9 +150,7 @@ query_cleaned_trips_by_timestamp <- function(cons,dates) {
   # The query string should have this format
   # {"metadata.key": "analysis/confirmed_trip", "data.end_ts":{"$gte": 1437544800,"$lte": 1451286000}}
   
-  cons$Stage_analysis_timeseries$find(qstring) %>%
-      tidy_cleaned_trips_by_timestamp() %>% normalise_uuid() %>%
-      data.table::setorder(end_fmt_time)
+  cons$Stage_analysis_timeseries$find(qstring)
 }
 
 query_max_trip_timestamp <- function(cons){

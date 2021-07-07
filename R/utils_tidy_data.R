@@ -142,7 +142,7 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
 tidy_cleaned_trips_by_timestamp <- function(df) {
   # Within trips, metadata and data are list columns with multiple fields.
   # user_input is a list column found in data
-  
+
   # Make a data table out of user_id and meta data.
   dt <- df[, c("user_id", "metadata")] %>% as.data.table()
   

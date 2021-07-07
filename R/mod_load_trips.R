@@ -101,9 +101,11 @@ mod_load_trips_server <- function(input, output, session, cons) {
                  message('Reload_trips observed')
                  if (load_allowed() == 0) {
                    message("About to load trips")
-                   data_geogr$trips <- tidy_cleaned_trips(query_cleaned_trips_by_timestamp(cons,dates()),
-                                                          project_crs = get_golem_config("project_crs")
-                   )
+                   data_geogr$trips <- query_cleaned_trips_by_timestamp(cons,dates()) %>% 
+                                          tidy_cleaned_trips_by_timestamp(.) %>%
+                                          normalise_uuid() %>%
+                                          data.table::setorder(end_fmt_time) %>% 
+                                          tidy_cleaned_trips(., project_crs = get_golem_config("project_crs"))
                    message("Finished loading trips")
                    
                    message("About to load locations")

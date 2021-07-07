@@ -1,34 +1,50 @@
-test_that("tidy_*", {
+# Give each test file a context call to provide a brief description of file contents
+context('Test tidy_* functions')
+
+# test_that("name", {
+#   expect("actual result", "what you expect")
+# })
+
+cons <- connect_stage_collections()
+
+# The test name completes the sentence 'Test that ... <function behavior>'
+test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when there are no user inputs.", {
   testthat::skip_on_ci()
 
-  cons <- connect_stage_collections(getOption('emdash.mongo_url'))
-
   # Use the date range below within test-data to get empty user_inputs
-  dates <- c('2015-08-23','2015-08-27')
-  tidied_cleaned_trips <-
-    query_cleaned_trips_by_timestamp(cons,dates)
-
-  tidied_participants <-
-    tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons))
+  dates <- c('2015-08-23','2015-08-24')
+  queried_trips <-query_cleaned_trips_by_timestamp(cons,dates) 
+  tidied_trips <- queried_trips %>% tidy_cleaned_trips_by_timestamp(.) 
   
-  # Make sure tidy_cleaned_trips_by_timestamp generated all user_input fields.
-  trip_user_inputs <- 'mode_confirm' %in% colnames(tidied_cleaned_trips)
-                    # should the check for all user_input columns be wrapped in one check?
-  expect_true(trip_user_inputs, 'tidy_cleaned_trips_by_timestamp did not generate all user_input fields')
+  #%>% tidy_cleaned_trips(.)
+
+  # load the file containing trips data without user input.
+  #load(file = './test-data/trips_with_empty_user_input.Rdata')  
+  # tidied_trips <- tidy_cleaned_trips_by_timestamp(trips_with_empty_user_input)
+  
+  expect_true(is.data.table(tidied_trips))
+  expect_true(nrow(tidied_trips) >= 1)
+  expect_true(ncol(tidied_trips) >= 1)
+})
+
+# Generate tidied participants for the next two tests.
+tidied_participants <-
+  tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons))
+
+test_that("summarise_trips_without_trips returns a nonempty data.table",{
 
   summary_df <- summarise_trips_without_trips(tidied_participants,cons)
-
+  
   expect_true(is.data.table(summary_df))
   expect_true(nrow(summary_df) >= 1)
   expect_true(ncol(summary_df) >= 1)
 })
 
-# Some starter tests:
-# query_cleaned_trips_by_timestamp
-#       tidy_cleaned_trips_by_timestamp
-#       make sure it handles when there are no user inputs
-# save a dataframe for testing tidy_cleaned_trips_by_timestamp?
-# test load_allowed and get_query_size when there is only one day selected and no trips
+test_that("summarise_server_calls returns a nonempty data.table", {
 
-# test specifically whether a function does what it is supposed to?
+    summary_df <- summarise_server_calls(tidied_participants, cons)
+    expect_true(is.data.table(summary_df))
+    expect_true(nrow(summary_df) >= 1)
+    expect_true(ncol(summary_df) >= 1)
+})
 
