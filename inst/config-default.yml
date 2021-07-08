@@ -3,6 +3,7 @@
 default:
  anon_locations: false
  display_signup_trend: false
+ max_windows_for_mod_load_trips: 31 # ~ 1 month
  cols_to_remove_from_participts_table:
   - first_trip_datetime
   - last_trip_datetime
@@ -15,7 +16,7 @@ default:
   
  cols_to_remove_from_trips_table:
   - start_fmt_time0 
-  - start_local_dt_timezone"
+  - start_local_dt_timezone
   - start_fmt_time
   - end_fmt_time0
   - end_local_dt_timezone

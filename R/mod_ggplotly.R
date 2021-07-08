@@ -22,6 +22,7 @@ mod_ggplotly_ui <- function(id) {
 #' @noRd
 mod_ggplotly_server <- function(input, output, session, a_ggplot, plotly.hovermode = NULL) {
   ns <- session$ns
+
   output$plot <- plotly::renderPlotly({
     if (!is.null(plotly.hovermode)) {
       return(
