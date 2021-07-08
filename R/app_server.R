@@ -142,13 +142,54 @@ app_server <- function(input, output, session) {
       table_type <- names(t)
       table_title <- t[[table_type]]$tab_name
       
+      suppl_table <- data_r[[table_type]]
+      
+      # Set the options used by DT::renderDataTable within dtedit and mod_DT
+      datatable_options <- list(
+        scrollX = TRUE,
+        pageLength = 50,
+        dom = "Bfrtip",
+        buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
+      )
+
+      # If the table has a timestamp, make a copy of the timestamp column called fmt_time
+      if ('ts' %in% colnames(suppl_table)){
+        suppl_table[['fmt_time']] <- suppl_table[['ts']]
+        fmt_time_index <- which(names(suppl_table) == 'fmt_time')
+        
+        # Add columnDefs to datatable options to convert fmt_time to a Date
+        datatable_options[['columnDefs']] <- list(list(
+          # target column indices start from 0. 
+          # However, DT adds a row number column to the display as the 0th column
+          targets = fmt_time_index,    
+          render = JS(
+            "function(data, type, row) {",
+            "return new Date(data*1000);",
+            "}")
+        ))
+      }
+      
       # If the table is Bike Check In and there is an 'editable' field, use dtedit
       if (table_type == 'Checkinout' & 'editable' %in% names(t$Checkinout)) {
 
+        # If we are rendering fmt_time, adjust the target indices because DTedit 
+        # does not display a row number column
+        # Target column indices start from 0
+        if ('columnDefs' %in% names(datatable_options)){
+          datatable_options$columnDefs[[1]]$targets <- datatable_options$columnDefs[[1]]$targets - 1
+        }
+        
+        # Store the correct datatable options to use.
+        # Without this, dtedit looks at the most recent datatable options meant for the final supplementary table
+        DTedit_datatable_options <- datatable_options
+        
         db_operations <- t$Checkinout$editable$operations
         allow_delete <- 'D' %in% db_operations
         allow_update <- 'U' %in% db_operations
         allow_insert <- FALSE  #'C' %in% db_operations
+        
+        # Make status a factor so you can use selectInput
+        suppl_table$status <- as.factor(suppl_table$status)
         
         if ('edit_columns' %in% names(t$Checkinout$editable)){
           edit_columns <- t$Checkinout$editable$edit_columns
@@ -177,16 +218,12 @@ app_server <- function(input, output, session) {
           db_delete(cons,"Checkinout", data[row,])   # table_type updates to PolarBear before any CUD functions are called
           return(data[-row, ])
         }
-        
-        # Make status a list so you can set false as one of the options in the event of all trues
-        data_for_dtedit <- data_r[[table_type]]
-        data_for_dtedit$status <- as.factor(data_for_dtedit$status)
-        
+
         editable_table_tab <-  tabPanel(
           status = "primary",
           title = table_title,
           value = table_type,
-          uiOutput(outputId = paste0("DTedit_ui_",table_type))  # Maybe Later: mod_DTedit_ui(id = paste0("DTedit_ui_",table_type)) #
+          uiOutput(outputId = paste0("DTedit_ui_",table_type))  # Maybe Later: mod_DTedit_ui(id = paste0("DTedit_ui_",table_type))
         )
         
         appendTab(
@@ -199,12 +236,12 @@ app_server <- function(input, output, session) {
 
         DTedit::dtedit(input, output,
                        name = paste0("DTedit_ui_",table_type),
-                       thedata = data_for_dtedit,
+                       thedata = suppl_table,
                        edit.cols = edit_columns,
                        # edit.label.cols = c('status'),
                        # input.types = c(status = "selectInput"),
                        # input.choices = list(status = c('TRUE','FALSE')),
-                       view.cols = colnames(data_for_dtedit),
+                       view.cols = names(suppl_table),
                        callback.update = update_callback,   # db operations defined in utils_update_insert_delete.R
                        callback.insert = insert_callback,
                        callback.delete = delete_callback,
@@ -213,17 +250,11 @@ app_server <- function(input, output, session) {
                        show.delete = allow_delete,
                        show.copy = FALSE,
                        label.delete = 'Delete Row',
-                       datatable.options = list(
-                         scrollX = TRUE,
-                         pageLength = 50,
-                         dom = "Bfrtip",
-                         buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-                       )
+                       datatable.options = DTedit_datatable_options
                      ) 
       }  
       # For other supplementary tables, use mod_DT  
        else {
-         browser
         regular_tab <-  tabPanel(
           status = "primary",
           title = table_title,
@@ -237,10 +268,12 @@ app_server <- function(input, output, session) {
           menuName = NULL,
           session = getDefaultReactiveDomain()
         ) 
+
         # Run mod_DT_server using data for the current table
         callModule(module = mod_DT_server,
                    id = paste0("DT_ui_",table_type),
-                   data = data_r[[table_type]] )
+                   data = suppl_table,
+                   DT_options = datatable_options)
        }
       }
     
