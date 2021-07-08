@@ -14,6 +14,7 @@ test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when ther
 
 
 test_that("summarise_trips_without_trips returns a nonempty data.table", {
+  testthat::skip_on_ci()
   tidied_participants <-
     summary_df <-
     tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
@@ -25,6 +26,7 @@ test_that("summarise_trips_without_trips returns a nonempty data.table", {
 })
 
 test_that("summarise_server_calls returns a nonempty data.table", {
+  testthat::skip_on_ci()
   summary_df <-
     tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
     summarise_server_calls(cons)
