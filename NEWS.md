@@ -1,6 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
-# emdash 1.2.6.9000
+# emdash 1.3.0
+
+- Trips can be filtered using the date range selector from the sidebar. This only affects the "Trip Trend" plot in the Dashboard panel and the trips displayed on the Maps panel. By default, only trips from the last 30 days since the last recorded trips are selected. Also, the max number of days the user can select must not be more than the `max_windows_for_mod_load_trips` option in your config file.
+- Fix minor issue with filtering trip table entries using the config.yml.
+
 
 # emdash 1.2.6
 
