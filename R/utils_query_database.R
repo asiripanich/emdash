@@ -166,7 +166,7 @@ query_cleaned_trips_by_timestamp <- function(cons, dates) {
 
 #' Finds the maximum trip end timestamp.
 #' @rdname query
-#' @export 
+#' @export
 query_max_trip_timestamp <- function(cons) {
   cons$Stage_analysis_timeseries$aggregate(
     '[
@@ -185,7 +185,7 @@ query_max_trip_timestamp <- function(cons) {
 
 #' Finds the minimum trip start timestamp.
 #' @rdname query
-#' @export 
+#' @export
 query_min_trip_timestamp <- function(cons) {
   cons$Stage_analysis_timeseries$aggregate(
     '[
