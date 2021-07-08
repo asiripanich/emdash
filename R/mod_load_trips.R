@@ -45,8 +45,6 @@ mod_load_trips_ui <- function(id) {
 mod_load_trips_server <- function(input, output, session, cons) {
   ns <- session$ns
 
-  max_window <- 31 # 1 month
-
   # Add one day to the final date because we want the date range to include the final date.
   # Converting these dates to timestamps gives us the timestamp at the beginning of the first user selected date,
   # and the timestamp at the end of the second user selected date = timestamp for the day after.
@@ -66,7 +64,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
       as.numeric()
     message(sprintf("Window_width is %s days", window_width))
 
-    good_window <- (window_width <= max_window)
+    good_window <- (window_width <= getOption("emdash.max_windows_for_mod_load_trips"))
 
     if (good_window) {
       n_trips <- get_query_size(cons, dates())
