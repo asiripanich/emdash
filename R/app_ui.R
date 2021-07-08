@@ -18,7 +18,8 @@ app_ui <- function(request) {
           menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
           menuItem("Tables", tabName = "tables", icon = icon("table")),
           menuItem("Maps", tabName = "maps", icon = icon("globe")),
-          mod_load_data_ui("load_data_ui")
+          mod_load_data_ui("load_data_ui"),
+          mod_load_trips_ui("load_trips_ui")
         )
       ),
       dashboardBody(

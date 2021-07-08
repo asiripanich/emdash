@@ -25,16 +25,8 @@ run_app <- function(mongo_url, config_file, ...) {
     config_file <- app_sys("config-default.yml")
   }
   config <- config::get(file = config_file)
-
-  options(
-    "emdash.disp_signup_trend" = config$display_signup_trend,
-    "emdash.cols_to_remove_from_participts_table" = config$cols_to_remove_from_participts_table,
-    "emdash.cols_to_remove_from_trips_table" = config$cols_to_remove_from_trips_table,
-    "emdash.cols_to_remove_from_map_popup" = config$cols_to_remove_from_map_popup,
-    "emdash.col_labels_for_participts" = config$col_labels_for_participts,
-    "emdash.anon_locations" = config$anon_locations,
-    'emdash.supplementary_tables' = config$supplementary_tables
-  )
+  names(config) <- paste0("emdash.", names(config))
+  options(config)
 
   app <- with_golem_options(
     app = shinyApp(

@@ -4,12 +4,12 @@
 \alias{summarise_server_calls}
 \title{Create a summary of server calls in data.table format.}
 \usage{
-summarise_server_calls(participants, server_calls)
+summarise_server_calls(participants, cons)
 }
 \arguments{
 \item{participants}{the output from `tidy_participants()`.}
 
-\item{server_calls}{the output from `tidy_server_calls()`.}
+\item{cons}{the connection to mongodb.}
 }
 \value{
 a data.table.
