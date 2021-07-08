@@ -10,6 +10,8 @@
 \alias{query_diary_summ}
 \alias{query_cleaned_trips}
 \alias{query_cleaned_trips_by_timestamp}
+\alias{query_max_trip_timestamp}
+\alias{query_min_trip_timestamp}
 \alias{get_query_size}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
@@ -34,6 +36,10 @@ query_cleaned_trips(cons)
 
 query_cleaned_trips_by_timestamp(cons, dates)
 
+query_max_trip_timestamp(cons)
+
+query_min_trip_timestamp(cons)
+
 get_query_size(cons, dates)
 
 query_cleaned_place(cons)
@@ -55,14 +61,14 @@ Dates must be in this format "yyyy-mm-dd".}
 \value{
 a data.frame/data.table.
 
-`query_usercache_put_summ()` returns the first and last 
+`query_usercache_put_summ()` returns the first and last
  put calls for each user.
 
-`query_cleaned_trips_by_timestamp()` trips data 
- between the start timestamp of the first date 
+`query_cleaned_trips_by_timestamp()` trips data
+ between the start timestamp of the first date
  and the start timestamp of the second date.
 
-`get_query_size()` returns the number of cleaned 
+`get_query_size()` returns the number of cleaned
  trip documents in between two dates
 }
 \description{
@@ -71,4 +77,8 @@ Query functions
 Finds the first and last get calls for each user.
 
 Finds the first and last diary calls for each user.
+
+Finds the maximum trip end timestamp.
+
+Finds the minimum trip start timestamp.
 }
