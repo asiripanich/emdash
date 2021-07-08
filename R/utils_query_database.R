@@ -46,9 +46,9 @@ query_server_calls <- function(cons) {
     normalise_uuid()
 }
 
+#' Finds the first and last get calls for each user.
 #' @rdname query
 #' @export
-#' Finds the first and last get calls for each user.
 query_usercache_get_summ <- function(cons){
   
   cons$Stage_timeseries$aggregate(
@@ -72,9 +72,9 @@ query_usercache_get_summ <- function(cons){
     return() 
 }
 
+#' Finds the first and last put calls for each user.
 #' @rdname query
 #' @export
-#' Finds the first and last put calls for each user.
 query_usercache_put_summ <- function(cons){
   
   cons$Stage_timeseries$aggregate(
@@ -98,9 +98,9 @@ query_usercache_put_summ <- function(cons){
     return()
 }
 
+#' Finds the first and last diary calls for each user.
 #' @rdname query
 #' @export
-#' Finds the first and last diary calls for each user.
 query_diary_summ <- function(cons){
   
   cons$Stage_timeseries$aggregate(
@@ -153,8 +153,8 @@ query_cleaned_trips_by_timestamp <- function(cons,dates) {
   cons$Stage_analysis_timeseries$find(qstring)
 }
 
+#' Finds the maximum trip end timestamp.
 query_max_trip_timestamp <- function(cons){
-  # Finds the maximum trip end timestamp.
   cons$Stage_analysis_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "analysis/confirmed_trip"}},
@@ -167,8 +167,8 @@ query_max_trip_timestamp <- function(cons){
   ) %>% unlist() %>% unname() %>% return()
 }
 
+#' Finds the minimum trip start timestamp.
 query_min_trip_timestamp <- function(cons){
-  # Finds the minimum trip start timestamp.
   cons$Stage_analysis_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "analysis/confirmed_trip"}},

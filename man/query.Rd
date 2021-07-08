@@ -3,8 +3,14 @@
 \name{query}
 \alias{query}
 \alias{query_cleaned_locations}
+\alias{query_cleaned_locations_by_timestamp}
 \alias{query_server_calls}
+\alias{query_usercache_get_summ}
+\alias{query_usercache_put_summ}
+\alias{query_diary_summ}
 \alias{query_cleaned_trips}
+\alias{query_cleaned_trips_by_timestamp}
+\alias{get_query_size}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
 \alias{query_raw_trips}
@@ -14,9 +20,21 @@
 \usage{
 query_cleaned_locations(cons)
 
+query_cleaned_locations_by_timestamp(cons, dates)
+
 query_server_calls(cons)
 
+query_usercache_get_summ(cons)
+
+query_usercache_put_summ(cons)
+
+query_diary_summ(cons)
+
 query_cleaned_trips(cons)
+
+query_cleaned_trips_by_timestamp(cons, dates)
+
+get_query_size(cons, dates)
 
 query_cleaned_place(cons)
 
@@ -35,5 +53,8 @@ query_stage_profiles(cons)
 a data.frame/data.table.
 }
 \description{
-Query functions
+queries trips data between the start timestamp of the first date 
+             and the start timestamp of the second date.
+
+Returns the number of cleaned trip documents in between two dates
 }
