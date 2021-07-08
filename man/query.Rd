@@ -48,13 +48,27 @@ query_stage_profiles(cons)
 }
 \arguments{
 \item{cons}{a list of connections created with [connect_stage_collections()].}
+
+\item{dates}{a date range, a character vector of length two.
+Dates must be in this format "yyyy-mm-dd".}
 }
 \value{
 a data.frame/data.table.
+
+`query_usercache_put_summ()` returns the first and last 
+ put calls for each user.
+
+`query_cleaned_trips_by_timestamp()` trips data 
+ between the start timestamp of the first date 
+ and the start timestamp of the second date.
+
+`get_query_size()` returns the number of cleaned 
+ trip documents in between two dates
 }
 \description{
-queries trips data between the start timestamp of the first date 
-             and the start timestamp of the second date.
+Query functions
 
-Returns the number of cleaned trip documents in between two dates
+Finds the first and last get calls for each user.
+
+Finds the first and last diary calls for each user.
 }

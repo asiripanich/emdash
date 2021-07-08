@@ -1,6 +1,8 @@
 #' Query functions
 #'
 #' @param cons a list of connections created with [connect_stage_collections()].
+#' @param dates a date range, a character vector of length two.
+#'  Dates must be in this format "yyyy-mm-dd".
 #'
 #' @return a data.frame/data.table.
 #' @name query
@@ -72,11 +74,11 @@ query_usercache_get_summ <- function(cons){
     return() 
 }
 
-#' Finds the first and last put calls for each user.
 #' @rdname query
+#' @return `query_usercache_put_summ()` returns the first and last 
+#'  put calls for each user.
 #' @export
 query_usercache_put_summ <- function(cons){
-  
   cons$Stage_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/usercache/put"}},
@@ -135,9 +137,10 @@ query_cleaned_trips <- function(cons) {
 
 #' @rdname query
 #' @export
-#' @description queries trips data between the start timestamp of the first date 
-#'              and the start timestamp of the second date.
-query_cleaned_trips_by_timestamp <- function(cons,dates) {
+#' @returns `query_cleaned_trips_by_timestamp()` trips data 
+#'  between the start timestamp of the first date 
+#'  and the start timestamp of the second date.
+query_cleaned_trips_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
   lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
@@ -203,8 +206,9 @@ query_trip_dates <- function(cons){
 }
 
 #' @rdname query
+#' @return `get_query_size()` returns the number of cleaned 
+#'  trip documents in between two dates
 #' @export
-#' @description Returns the number of cleaned trip documents in between two dates
 get_query_size <- function(cons,dates){
   
   time_stamps <- as.numeric(as.POSIXct(dates))
