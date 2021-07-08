@@ -64,40 +64,22 @@ mod_load_trips_server <- function(input, output, session, cons) {
       as.numeric()
     message(sprintf("Window_width is %s days", window_width))
 
-    good_window <- (window_width <= getOption("emdash.max_windows_for_mod_load_trips"))
+    n_trips <- get_query_size(cons, dates())
 
-    if (good_window) {
-      n_trips <- get_query_size(cons, dates())
-      too_small <- is.null(n_trips)
-      if (too_small) {
-        # When the window is too small, don't load data
-        allow <- -1
-      } else {
-        # The date range is good. Load the data.
-        allow <- 0
-      } # inner if else end
-    } else {
-      # When the window is too large, don't load data
-      allow <- 1
+    if (window_width > getOption("emdash.max_windows_for_mod_load_trips")) {
+      return("The date range is too wide.")
     }
 
-    return(allow)
-  })
-
-  # When there is a change in load_allowed(), change the displayed message
-  disp_load_status <- reactive({
-    if (load_allowed() == 0) {
-      out <- " "
-    } else if (load_allowed() == 1) {
-      out <- "The selected date range is too wide."
-    } else {
-      out <- "There are no trips in that range."
+    if (is.null(n_trips)) {
+      return("No trips in the selected date range.")
     }
-    return(cat(out)) # use cat to avoid the extra printed [1]
+
+    TRUE
   })
 
   # When referring to reactives, remember to use parentheses
-  output$load_display <- renderPrint(disp_load_status())
+  output$load_display <-
+    renderPrint(ifelse(isTRUE(load_allowed()), "", load_allowed()))
 
   data_geogr <- reactiveValues(data = data.frame(), name = "data")
 
@@ -107,13 +89,13 @@ mod_load_trips_server <- function(input, output, session, cons) {
   observeEvent(input$reload_trips,
     {
       message("Reload_trips observed")
-      if (load_allowed() == 0) {
+      if (isTRUE(load_allowed())) {
         message("About to load trips")
         data_geogr$trips <- query_cleaned_trips_by_timestamp(cons, dates()) %>%
-          tidy_cleaned_trips_by_timestamp(.) %>%
+          tidy_cleaned_trips_by_timestamp() %>%
           normalise_uuid() %>%
           data.table::setorder(end_fmt_time) %>%
-          tidy_cleaned_trips(., project_crs = get_golem_config("project_crs"))
+          tidy_cleaned_trips(project_crs = get_golem_config("project_crs"))
         message("Finished loading trips")
 
         message("About to load locations")
