@@ -160,6 +160,7 @@ app_server <- function(input, output, session) {
         buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
       )
 
+      #' @importFrom htmlwidgets JS
       # If the table has a timestamp, make a copy of the timestamp column called fmt_time
       if ('ts' %in% colnames(suppl_table)){
         suppl_table[['fmt_time']] <- suppl_table[['ts']]
@@ -170,7 +171,7 @@ app_server <- function(input, output, session) {
           # target column indices start from 0. 
           # However, DT adds a row number column to the display as the 0th column
           targets = fmt_time_index,    
-          render = JS(
+          render = htmlwidgets::JS(
             "function(data, type, row) {",
             "return new Date(data*1000);",
             "}")
