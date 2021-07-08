@@ -306,12 +306,12 @@ query_trip_dates <- function(cons) {
 
 #' @rdname query
 #' @export
-#' @return `get_query_size()` returns the number of cleaned
+#' @return `get_n_trips_in_query()` returns the number of cleaned
 #'  trip documents in between two dates
 #' @export
 get_n_trips_in_query <- function(cons,dates){
     time_stamps <- as.numeric(as.POSIXct(dates))
-    message("get_query_size: The time stamps for that date range are:")
+    message("get_n_trips_in_query: The time stamps for that date range are:")
     message(paste0(time_stamps[1], ", ", time_stamps[2]))
     lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
     upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")

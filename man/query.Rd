@@ -12,7 +12,8 @@
 \alias{query_cleaned_trips_by_timestamp}
 \alias{query_max_trip_timestamp}
 \alias{query_min_trip_timestamp}
-\alias{get_query_size}
+\alias{get_n_trips_in_query}
+\alias{get_n_locations_in_query}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
 \alias{query_raw_trips}
@@ -32,6 +33,12 @@ query_usercache_put_summ(cons)
 
 query_diary_summ(cons)
 
+query_usercache_get_summ(cons)
+
+query_usercache_put_summ(cons)
+
+query_diary_summ(cons)
+
 query_cleaned_trips(cons)
 
 query_cleaned_trips_by_timestamp(cons, dates)
@@ -40,7 +47,9 @@ query_max_trip_timestamp(cons)
 
 query_min_trip_timestamp(cons)
 
-get_query_size(cons, dates)
+get_n_trips_in_query(cons, dates)
+
+get_n_locations_in_query(cons, dates)
 
 query_cleaned_place(cons)
 
@@ -68,17 +77,9 @@ a data.frame/data.table.
  between the start timestamp of the first date
  and the start timestamp of the second date.
 
-`get_query_size()` returns the number of cleaned
+`get_n_trips_in_query()` returns the number of cleaned
  trip documents in between two dates
 }
 \description{
-Query functions
-
-Finds the first and last get calls for each user.
-
-Finds the first and last diary calls for each user.
-
-Finds the maximum trip end timestamp.
-
-Finds the minimum trip start timestamp.
+Returns the number of cleaned locations documents in between two dates
 }

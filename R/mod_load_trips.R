@@ -64,7 +64,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
       as.numeric()
     message(sprintf("Window_width is %s days", window_width))
 
-    n_trips <- get_query_size(cons, dates())
+    n_trips <- get_n_trips_in_query(cons, dates())
 
     if (window_width > getOption("emdash.max_windows_for_mod_load_trips")) {
       return("The date range is too wide.")
@@ -79,7 +79,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
 
   # When referring to reactives, remember to use parentheses
   output$load_display <-
-    renderPrint(ifelse(isTRUE(load_allowed()), "", load_allowed()))
+    renderPrint(cat(ifelse(isTRUE(load_allowed()), "", load_allowed())))
 
   data_geogr <- reactiveValues(data = data.frame(), name = "data")
 
