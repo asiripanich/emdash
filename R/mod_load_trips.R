@@ -54,11 +54,17 @@ mod_load_trips_server <- function(input, output, session, cons) {
   dates <- reactive(c(input$dates[1], input$dates[2] + 1))
 
   load_allowed <- reactive({
-    message("The dates reactive values are:")
-    message(dates()[1])
-    message(dates()[2])
-    window_width <- abs(as.numeric(difftime(dates()[1], dates()[2])))
-    message(paste("Window_width is", window_width))
+    message(
+      sprintf(
+        "The dates reactive values are: %s to %s",
+        dates()[1],
+        dates()[2]
+      )
+    )
+    window_width <-
+      difftime(dates()[2], dates()[1], units = "days") %>%
+      as.numeric()
+    message(sprintf("Window_width is %s days", window_width))
 
     good_window <- (window_width <= max_window)
 
