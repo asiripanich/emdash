@@ -3,16 +3,16 @@ test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when ther
   testthat::skip_on_ci()
 
   # Use the date range below within test-data to get empty user_inputs
-  dates <- c('2015-08-23','2015-08-24')
-  queried_trips <-query_cleaned_trips_by_timestamp(cons,dates) 
-  tidied_trips <- queried_trips %>% tidy_cleaned_trips_by_timestamp(.) 
-  
-  #%>% tidy_cleaned_trips(.)
+  dates <- c("2015-08-23", "2015-08-24")
+  queried_trips <- query_cleaned_trips_by_timestamp(cons, dates)
+  tidied_trips <- queried_trips %>% tidy_cleaned_trips_by_timestamp(.)
+
+  # %>% tidy_cleaned_trips(.)
 
   # load the file containing trips data without user input.
-  #load(file = './test-data/trips_with_empty_user_input.Rdata')  
+  # load(file = './test-data/trips_with_empty_user_input.Rdata')
   # tidied_trips <- tidy_cleaned_trips_by_timestamp(trips_with_empty_user_input)
-  
+
   expect_true(is.data.table(tidied_trips))
   expect_true(nrow(tidied_trips) >= 1)
   expect_true(ncol(tidied_trips) >= 1)
@@ -22,20 +22,17 @@ test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when ther
 tidied_participants <-
   tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons))
 
-test_that("summarise_trips_without_trips returns a nonempty data.table",{
+test_that("summarise_trips_without_trips returns a nonempty data.table", {
+  summary_df <- summarise_trips_without_trips(tidied_participants, cons)
 
-  summary_df <- summarise_trips_without_trips(tidied_participants,cons)
-  
   expect_true(is.data.table(summary_df))
   expect_true(nrow(summary_df) >= 1)
   expect_true(ncol(summary_df) >= 1)
 })
 
 test_that("summarise_server_calls returns a nonempty data.table", {
-
-    summary_df <- summarise_server_calls(tidied_participants, cons)
-    expect_true(is.data.table(summary_df))
-    expect_true(nrow(summary_df) >= 1)
-    expect_true(ncol(summary_df) >= 1)
+  summary_df <- summarise_server_calls(tidied_participants, cons)
+  expect_true(is.data.table(summary_df))
+  expect_true(nrow(summary_df) >= 1)
+  expect_true(ncol(summary_df) >= 1)
 })
-

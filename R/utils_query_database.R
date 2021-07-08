@@ -20,19 +20,21 @@ query_cleaned_locations <- function(cons) {
 
 #' @rdname query
 #' @export
-query_cleaned_locations_by_timestamp <- function(cons,dates) {
+query_cleaned_locations_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
-  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
-  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
-  
-  qstring <- paste0('{\"metadata.key\": \"analysis/recreated_location\", ' ,
-                    '\"data.ts\":' , lower_stamp_string, upper_stamp_string,
-                    '}')
+  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
+  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
 
-  cons$Stage_analysis_timeseries$find(qstring) %>% 
-      as.data.table() %>% 
-      normalise_uuid()
+  qstring <- paste0(
+    '{\"metadata.key\": \"analysis/recreated_location\", ',
+    '\"data.ts\":', lower_stamp_string, upper_stamp_string,
+    "}"
+  )
+
+  cons$Stage_analysis_timeseries$find(qstring) %>%
+    as.data.table() %>%
+    normalise_uuid()
 }
 
 #' @rdname query
@@ -51,8 +53,7 @@ query_server_calls <- function(cons) {
 #' Finds the first and last get calls for each user.
 #' @rdname query
 #' @export
-query_usercache_get_summ <- function(cons){
-  
+query_usercache_get_summ <- function(cons) {
   cons$Stage_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/usercache/get"}},
@@ -67,18 +68,20 @@ query_usercache_get_summ <- function(cons){
             "user_id": "$_id",
             "_id": 0,
             "first_get_call": 1,
-            "last_get_call": 1} 
+            "last_get_call": 1}
       }
     ]'
-  ) %>% as.data.table() %>% normalise_uuid() %>% 
-    return() 
+  ) %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
+    return()
 }
 
 #' @rdname query
-#' @return `query_usercache_put_summ()` returns the first and last 
+#' @return `query_usercache_put_summ()` returns the first and last
 #'  put calls for each user.
 #' @export
-query_usercache_put_summ <- function(cons){
+query_usercache_put_summ <- function(cons) {
   cons$Stage_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/usercache/put"}},
@@ -93,18 +96,19 @@ query_usercache_put_summ <- function(cons){
             "user_id": "$_id",
             "_id": 0,
             "first_put_call": 1,
-            "last_put_call": 1} 
+            "last_put_call": 1}
       }
     ]'
-  ) %>% as.data.table() %>% normalise_uuid() %>% 
+  ) %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
     return()
 }
 
 #' Finds the first and last diary calls for each user.
 #' @rdname query
 #' @export
-query_diary_summ <- function(cons){
-  
+query_diary_summ <- function(cons) {
   cons$Stage_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/pipeline/get_complete_ts"}},
@@ -119,10 +123,12 @@ query_diary_summ <- function(cons){
             "user_id": "$_id",
             "_id": 0,
             "first_diary_call": 1,
-            "last_diary_call": 1} 
+            "last_diary_call": 1}
       }
     ]'
-  ) %>% as.data.table() %>% normalise_uuid() %>% 
+  ) %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
     return()
 }
 
@@ -137,27 +143,29 @@ query_cleaned_trips <- function(cons) {
 
 #' @rdname query
 #' @export
-#' @returns `query_cleaned_trips_by_timestamp()` trips data 
-#'  between the start timestamp of the first date 
+#' @returns `query_cleaned_trips_by_timestamp()` trips data
+#'  between the start timestamp of the first date
 #'  and the start timestamp of the second date.
 query_cleaned_trips_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
-  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
-  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
-  
-  qstring <- paste0('{\"metadata.key\": \"analysis/confirmed_trip\", ' ,
-                    '\"data.end_ts\":' , lower_stamp_string, upper_stamp_string,
-                    '}')
-  
+  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
+  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
+
+  qstring <- paste0(
+    '{\"metadata.key\": \"analysis/confirmed_trip\", ',
+    '\"data.end_ts\":', lower_stamp_string, upper_stamp_string,
+    "}"
+  )
+
   # The query string should have this format
   # {"metadata.key": "analysis/confirmed_trip", "data.end_ts":{"$gte": 1437544800,"$lte": 1451286000}}
-  
+
   cons$Stage_analysis_timeseries$find(qstring)
 }
 
 #' Finds the maximum trip end timestamp.
-query_max_trip_timestamp <- function(cons){
+query_max_trip_timestamp <- function(cons) {
   cons$Stage_analysis_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "analysis/confirmed_trip"}},
@@ -167,11 +175,14 @@ query_max_trip_timestamp <- function(cons){
             "max_ts": { "$max": "$data.end_ts" }
           }
       }]'
-  ) %>% unlist() %>% unname() %>% return()
+  ) %>%
+    unlist() %>%
+    unname() %>%
+    return()
 }
 
 #' Finds the minimum trip start timestamp.
-query_min_trip_timestamp <- function(cons){
+query_min_trip_timestamp <- function(cons) {
   cons$Stage_analysis_timeseries$aggregate(
     '[
       { "$match": {"metadata.key": "analysis/confirmed_trip"}},
@@ -181,53 +192,62 @@ query_min_trip_timestamp <- function(cons){
             "min_ts": { "$min": "$data.start_ts" }
           }
       }]'
-  ) %>% unlist() %>% unname() %>% return()
+  ) %>%
+    unlist() %>%
+    unname() %>%
+    return()
 }
 
-count_total_trips <- function(cons){
-  
+count_total_trips <- function(cons) {
+
   # for each user_id, count the number of documents associated with it
   cons$Stage_analysis_timeseries$aggregate('[
                     {"$match": {"metadata.key": "analysis/confirmed_trip"}},
                     {"$group": {"_id":"$user_id","n_trips":{"$sum":1}}}
-                    ]'
-  ) %>% as.data.table() %>% setnames('_id','user_id') %>% normalise_uuid()
+                    ]') %>%
+    as.data.table() %>%
+    setnames("_id", "user_id") %>%
+    normalise_uuid()
 }
 
-query_trip_dates <- function(cons){
+query_trip_dates <- function(cons) {
   dateq <- cons$Stage_analysis_timeseries$find(
-                        query = '{"metadata.key": "analysis/confirmed_trip"}',
-                        fields = '{"data.start_local_dt":true,
+    query = '{"metadata.key": "analysis/confirmed_trip"}',
+    fields = '{"data.start_local_dt":true,
                                   "data.start_fmt_time":true,
                                   "data.end_local_dt":true,
                                   "data.end_fmt_time":true,
-                                  "user_id":true, "_id":false}')
+                                  "user_id":true, "_id":false}'
+  )
   return(dateq)
 }
 
 #' @rdname query
-#' @return `get_query_size()` returns the number of cleaned 
+#' @return `get_query_size()` returns the number of cleaned
 #'  trip documents in between two dates
 #' @export
-get_query_size <- function(cons,dates){
-  
+get_query_size <- function(cons, dates) {
   time_stamps <- as.numeric(as.POSIXct(dates))
-  message('get_query_size: The time stamps for that date range are:')
-  message(paste0(time_stamps[1], ', ', time_stamps[2]))
-  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
-  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
-  
+  message("get_query_size: The time stamps for that date range are:")
+  message(paste0(time_stamps[1], ", ", time_stamps[2]))
+  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
+  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
+
   # Match by the time stamps of the dates
-  match_string <- paste0('{\"$match\":{\"metadata.key\": \"analysis/confirmed_trip\", ',
-                         '\"data.end_ts\":' , lower_stamp_string, upper_stamp_string, 
-                         '}}')
-  
+  match_string <- paste0(
+    '{\"$match\":{\"metadata.key\": \"analysis/confirmed_trip\", ',
+    '\"data.end_ts\":', lower_stamp_string, upper_stamp_string,
+    "}}"
+  )
+
   # Group by all user_ids
-  group_string <-  '{\"$group\": {\"_id\": {},\"n_trips\":{\"$sum\":1}}}'
-  
-  qstring <- paste0('[\n',match_string,  ','  ,
-                    group_string,'\n]')
-  
+  group_string <- '{\"$group\": {\"_id\": {},\"n_trips\":{\"$sum\":1}}}'
+
+  qstring <- paste0(
+    "[\n", match_string, ",",
+    group_string, "\n]"
+  )
+
   # for each user_id, count the number of documents associated with it
   cons$Stage_analysis_timeseries$aggregate(qstring) %>% .$n_trips
 }
