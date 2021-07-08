@@ -40,7 +40,11 @@
 
 
 <meta property="og:title" content="Query functions — query" />
-<meta property="og:description" content="Query functions" />
+<meta property="og:description" content="Query functions
+Finds the first and last get calls for each user.
+Finds the first and last diary calls for each user.
+Finds the maximum trip end timestamp.
+Finds the minimum trip start timestamp." />
 
 
 
@@ -118,13 +122,33 @@
 
     <div class="ref-description">
     <p>Query functions</p>
+<p>Finds the first and last get calls for each user.</p>
+<p>Finds the first and last diary calls for each user.</p>
+<p>Finds the maximum trip end timestamp.</p>
+<p>Finds the minimum trip start timestamp.</p>
     </div>
 
     <pre class="usage"><span class='fu'>query_cleaned_locations</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
 
+<span class='fu'>query_cleaned_locations_by_timestamp</span><span class='op'>(</span><span class='va'>cons</span>, <span class='va'>dates</span><span class='op'>)</span>
+
 <span class='fu'>query_server_calls</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
 
+<span class='fu'>query_usercache_get_summ</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
+
+<span class='fu'>query_usercache_put_summ</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
+
+<span class='fu'>query_diary_summ</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
+
 <span class='fu'>query_cleaned_trips</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
+
+<span class='fu'>query_cleaned_trips_by_timestamp</span><span class='op'>(</span><span class='va'>cons</span>, <span class='va'>dates</span><span class='op'>)</span>
+
+<span class='fu'>query_max_trip_timestamp</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
+
+<span class='fu'>query_min_trip_timestamp</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
+
+<span class='fu'>get_query_size</span><span class='op'>(</span><span class='va'>cons</span>, <span class='va'>dates</span><span class='op'>)</span>
 
 <span class='fu'>query_cleaned_place</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
 
@@ -143,11 +167,23 @@
       <th>cons</th>
       <td><p>a list of connections created with [connect_stage_collections()].</p></td>
     </tr>
+    <tr>
+      <th>dates</th>
+      <td><p>a date range, a character vector of length two.
+Dates must be in this format "yyyy-mm-dd".</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a data.frame/data.table.</p>
+<p>`query_usercache_put_summ()` returns the first and last
+ put calls for each user.</p>
+<p>`query_cleaned_trips_by_timestamp()` trips data
+ between the start timestamp of the first date
+ and the start timestamp of the second date.</p>
+<p>`get_query_size()` returns the number of cleaned
+ trip documents in between two dates</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
