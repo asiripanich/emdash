@@ -134,7 +134,6 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
       distance_mi = round(distance / 1609, smallest_rounding_digit),
       distance_km = round(distance / 1000, smallest_rounding_digit)
     )
-  
   message("Finished cleaning trips")
   return(cleaned_trips_sf)
 }
@@ -142,45 +141,47 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
 tidy_cleaned_trips_by_timestamp <- function(df) {
   # Within trips, metadata and data are list columns with multiple fields.
   # user_input is a list column found in data
-  
+
   # Make a data table out of user_id and meta data.
   dt <- df[, c("user_id", "metadata")] %>% as.data.table()
-  
+
   # Make a dataframe containing just the 'data' list-column
   data_df <- df[, c("data")]
   data_df_without_user_input <- data_df[, !"user_input" == names(data_df)]
   user_input_df <- df[, c("data")][, "user_input"] %>% as.data.table()
-  
-  # Combine the user_id/metadata data table with the 'data' dataframe. 
+
+  # Combine the user_id/metadata data table with the 'data' dataframe.
   dt <- cbind(dt, data_df_without_user_input)
-  
+
   # If there are no user inputs, only return dt without user input columns
   if (nrow(user_input_df) == 0) {
-    message('There are no user inputs in the time range')
+    message("There are no user inputs in the time range")
     return(dt)
   }
   cbind(dt, user_input_df)
 }
 
-summarise_trips_without_trips <- function(participants,cons){
-  
+summarise_trips_without_trips <- function(participants, cons) {
   date_query <- query_trip_dates(cons)
   # Generate relevant date related information from the query
   trip_dates <- lubridate::as_date(date_query$data$start_fmt_time) # converts to UTC
-  start_fmt_time = lubridate::as_datetime(date_query$data$start_fmt_time) # converts to UTC
-  end_fmt_time = lubridate::as_datetime(date_query$data$end_fmt_time) # converts to UTC
-  
-  start_local_time = purrr::map2(start_fmt_time, date_query$data$start_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+  start_fmt_time <- lubridate::as_datetime(date_query$data$start_fmt_time) # converts to UTC
+  end_fmt_time <- lubridate::as_datetime(date_query$data$end_fmt_time) # converts to UTC
+
+  start_local_time <- purrr::map2(start_fmt_time, date_query$data$start_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
     as.character()
-  end_local_time = purrr::map2(end_fmt_time, date_query$data$end_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+  end_local_time <- purrr::map2(end_fmt_time, date_query$data$end_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
     as.character() # a timestamp but has to be a string
-  
-  date_dt <- cbind(date_query,trip_dates) %>% .[, !names(.) %in% c("data") ] %>% as.data.table() %>% normalise_uuid()
-  first_trip_local_datetime = format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE)
-  
-  summ_trips <- 
+
+  date_dt <- cbind(date_query, trip_dates) %>%
+    .[, !names(.) %in% c("data")] %>%
+    as.data.table() %>%
+    normalise_uuid()
+  first_trip_local_datetime <- format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE)
+
+  summ_trips <-
     date_dt %>%
-    .[, date :=  trip_dates] %>%
+    .[, date := trip_dates] %>%
     # adds the date of local datetime of trip
     .[, .(
       n_trips_today = sum(date == Sys.Date()),
@@ -191,11 +192,11 @@ summarise_trips_without_trips <- function(participants,cons){
       last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
     ), by = user_id] %>%
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
-  
+
   n_trips <- count_total_trips(cons)
-  summ_trips <- merge(n_trips, summ_trips, by = 'user_id')
-  
-  message('merging trip summaries with participants')
+  summ_trips <- merge(n_trips, summ_trips, by = "user_id")
+
+  message("merging trip summaries with participants")
   merge(participants, summ_trips, by = "user_id", all.x = TRUE)
 }
 
@@ -235,25 +236,24 @@ summarise_trips <- function(participants, trips) {
 #' @return a data.table.
 #' @export
 summarise_server_calls <- function(participants, cons) {
-  
   # Get all of the relevant server calls
   usercache_get_summ <- query_usercache_get_summ(cons)
   usercache_put_summ <- query_usercache_put_summ(cons)
   diary_summ <- query_diary_summ(cons)
-  
+
   # Get the column names that are in participants before merging.
   particpt_cols <- names(participants)
-  
-  
+
+
   # Merge each nonempty summary table with participants
   # Current columns to be added to participants: (first/last)_(get/put/diary)_call
-  message('merging server call summaries with participants')
+  message("merging server call summaries with participants")
   merged <- FALSE
   if (nrow(usercache_get_summ > 0)) {
     participants <- merge(participants, usercache_get_summ, by = "user_id", all.x = TRUE)
     merged <- TRUE
   }
-  if (nrow(usercache_put_summ > 0)){
+  if (nrow(usercache_put_summ > 0)) {
     participants <- merge(participants, usercache_put_summ, by = "user_id", all.x = TRUE)
     merged <- TRUE
   }
@@ -261,9 +261,9 @@ summarise_server_calls <- function(participants, cons) {
     participants <- merge(participants, diary_summ, by = "user_id", all.x = TRUE)
     merged <- TRUE
   }
-  
-  message(ifelse(merged,'Finished merging server calls', 'No server calls to merge'))
-  
+
+  message(ifelse(merged, "Finished merging server calls", "No server calls to merge"))
+
   all_cols <- names(participants)
   subset_cols <- all_cols[!all_cols %in% particpt_cols] # get the columns not in the original participants columns. a[!a %in% b] = "a without b"
 

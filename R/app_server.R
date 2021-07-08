@@ -10,8 +10,8 @@ app_server <- function(input, output, session) {
   # prepare data ------------------------------------------------------------
   cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
   data_r <- callModule(mod_load_data_server, "load_data_ui", cons)
-  data_geogr <- callModule(mod_load_trips_server,"load_trips_ui",cons)
-  
+  data_geogr <- callModule(mod_load_trips_server, "load_trips_ui", cons)
+
   # Side bar ----------------------------------------------------------------
 
   # Dashboard ---------------------------------------------------------------
@@ -62,7 +62,7 @@ app_server <- function(input, output, session) {
     "ggplotly_ui_signup_trend",
     utils_plot_signup_trend(data_r$participants)
   )
-  
+
   observeEvent(data_geogr$click, {
     callModule(
       mod_ggplotly_server,
@@ -70,7 +70,7 @@ app_server <- function(input, output, session) {
       utils_plot_trip_trend(data_geogr$trips)
     )
   })
-  
+
   callModule(
     mod_ggplotly_server,
     "ggplotly_ui_participation_period",
@@ -135,7 +135,7 @@ app_server <- function(input, output, session) {
         data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
     )
   })
-    
+
   observeEvent(data_geogr$click, {
     callModule(mod_DT_server, "DT_ui_trips",
       data = data_geogr$trips %>%
