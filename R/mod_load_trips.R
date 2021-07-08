@@ -57,23 +57,17 @@ mod_load_trips_server <- function(input, output, session, cons) {
     window_width <- abs(as.numeric(difftime(dates()[1],dates()[2])))
     message(paste("Window_width is",window_width))
     
-    good_window <- (window_width <= max_window)
-    
-    if (good_window) {
       n_trips <- get_query_size(cons,dates())
       message(paste('Number of trips is:',n_trips))
       no_trips <- is.null(n_trips)
       if (no_trips){
         # When the window contains no trips, don't load data
         allow <- -1
+      } else if (12*n_trips > 100000) {
+        allow <- 1  # too much data
       } else {
-        # The date range is good. Load the data.
         allow <- 0
-      }  # inner 'if-else' end
-    } else {
-      # When the window is too large, don't load data
-      allow <- 1
-    }
+      }
     
     return(allow)
   })

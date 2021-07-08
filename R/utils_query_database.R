@@ -181,6 +181,7 @@ query_min_trip_timestamp <- function(cons){
   ) %>% unlist() %>% unname() %>% return()
 }
 
+#' @description Counts the total number of trips in the database
 count_total_trips <- function(cons){
   
   # for each user_id, count the number of documents associated with it
@@ -205,7 +206,7 @@ query_trip_dates <- function(cons){
 #' @rdname query
 #' @export
 #' @description Returns the number of cleaned trip documents in between two dates
-get_query_size <- function(cons,dates){
+get_n_trips_in_query <- function(cons,dates){
   
   time_stamps <- as.numeric(as.POSIXct(dates))
   message('get_query_size: The time stamps for that date range are:')
@@ -226,6 +227,32 @@ get_query_size <- function(cons,dates){
   
   # for each user_id, count the number of documents associated with it
   cons$Stage_analysis_timeseries$aggregate(qstring) %>% .$n_trips
+}
+
+#' @rdname query
+#' @export
+#' @description Returns the number of cleaned locations documents in between two dates
+get_n_locations_in_query <- function(cons,dates){
+  
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  message('get_query_size: The time stamps for that date range are:')
+  message(paste0(time_stamps[1], ', ', time_stamps[2]))
+  lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
+  upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')
+  
+  # Match by the time stamps of the dates
+  match_string <- paste0('{\"$match\":{\"metadata.key\": \"analysis/recreated_location\", ',
+                         '\"data.ts\":' , lower_stamp_string, upper_stamp_string, 
+                         '}}')
+  
+  # Group by all user_ids
+  group_string <-  '{\"$group\": {\"_id\": {},\"n_locations\":{\"$sum\":1}}}'
+  
+  qstring <- paste0('[\n',match_string,  ','  ,
+                    group_string,'\n]')
+  
+  # for each user_id, count the number of documents associated with it
+  cons$Stage_analysis_timeseries$aggregate(qstring) %>% .$n_locations
 }
 
 #' @rdname query
