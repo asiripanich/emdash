@@ -1,12 +1,3 @@
-# Give each test file a context call to provide a brief description of file contents
-context('Test tidy_* functions')
-
-# test_that("name", {
-#   expect("actual result", "what you expect")
-# })
-
-cons <- connect_stage_collections()
-
 # The test name completes the sentence 'Test that ... <function behavior>'
 test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when there are no user inputs.", {
   testthat::skip_on_ci()

@@ -1,6 +1,3 @@
-context("Test query functions")
-cons <- connect_stage_collections()
-
 test_that("get_query_size is empty when the dates are the same", {
   testthat::skip_on_ci()
   dates <- c('2015-08-23','2015-08-23')
