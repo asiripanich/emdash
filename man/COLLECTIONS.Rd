@@ -5,7 +5,7 @@
 \alias{COLLECTIONS}
 \title{Collections in an e-mission MongoDB database}
 \format{
-An object of class \code{character} of length 7.
+An object of class \code{character} of length 12.
 }
 \usage{
 COLLECTIONS

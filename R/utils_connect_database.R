@@ -40,13 +40,18 @@ create_connection <- function(db, collection, url) {
 #' @export
 "COLLECTIONS"
 
-COLLECTIONS <-
-  c(
+
+COLLECTIONS <- 
+  c("CarbonUsage",
+    "Checkinout",
+    "New_tier",
+    "PolarBear",
     "Stage_Profiles",
     "Stage_analysis_timeseries",
     "Stage_pipeline_state",
     "Stage_timeseries",
     "Stage_timeseries_error",
     "Stage_usercache",
-    "Stage_uuids"
-  )
+    "Stage_uuids",
+    "Tier_Sys"
+    )

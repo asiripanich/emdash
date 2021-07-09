@@ -143,6 +143,13 @@ query_cleaned_trips <- function(cons) {
 
 #' @rdname query
 #' @export
+query_supplementary <- function(cons, name) {
+  cons[[name]]$find('{}') %>% as.data.table()
+
+  # normalise_uuid() is done after this is called 
+  # within mod_load_data because Tier_Sys has no user_id column in the test data
+}
+
 #' @returns `query_cleaned_trips_by_timestamp()` trips data
 #'  between the start timestamp of the first date
 #'  and the start timestamp of the second date.
