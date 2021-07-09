@@ -160,7 +160,6 @@ app_server <- function(input, output, session) {
         buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
       )
 
-      #' @importFrom htmlwidgets JS
       # If the table has a timestamp, make a copy of the timestamp column called fmt_time
       if ('ts' %in% colnames(suppl_table)){
         suppl_table[['fmt_time']] <- suppl_table[['ts']]
