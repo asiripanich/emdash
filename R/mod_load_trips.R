@@ -51,7 +51,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
   # The timestamp for a given date is for the beginning of the day.
   dates <- reactive(c(input$dates[1], input$dates[2] + 1))
 
-  load_allowed <- reactive({
+  load_trips_allowed <- reactive({
     message(
       sprintf(
         "The dates reactive values are: %s to %s",
@@ -65,8 +65,12 @@ mod_load_trips_server <- function(input, output, session, cons) {
     message(sprintf("Window_width is %s days", window_width))
 
     n_trips <- get_n_trips_in_query(cons, dates())
+    n_locations <- get_n_locations_in_query(cons,dates())
+    
+    message(sprintf('There are %s trips and %s locations in the date range',
+                    n_trips,n_locations))
 
-    if (window_width > getOption("emdash.max_windows_for_mod_load_trips")) {
+    if (n_trips > getOption("emdash.max_documents_for_mod_load_trips")) {
       return("The date range is too wide.")
     }
 
@@ -74,12 +78,13 @@ mod_load_trips_server <- function(input, output, session, cons) {
       return("No trips in the selected date range.")
     }
 
+    data_geogr$locations_allowed <- TRUE
     TRUE
   })
 
   # When referring to reactives, remember to use parentheses
   output$load_display <-
-    renderPrint(cat(ifelse(isTRUE(load_allowed()), "", load_allowed())))
+    renderPrint(cat(ifelse(isTRUE(load_trips_allowed()), "", load_trips_allowed())))
 
   data_geogr <- reactiveValues(data = data.frame(), name = "data")
 
@@ -89,7 +94,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
   observeEvent(input$reload_trips,
     {
       message("Reload_trips observed")
-      if (isTRUE(load_allowed())) {
+      if (isTRUE(load_trips_allowed())) {
         
         get_size_kb <- function(x) {object.size(x)/1000}
         

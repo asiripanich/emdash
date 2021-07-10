@@ -279,7 +279,8 @@ query_min_trip_timestamp <- function(cons) {
     unname() %>%
     return()
 }
-#' @description Counts the total number of trips in the database
+
+#' @returns Counts the total number of trips in the database
 count_total_trips <- function(cons) {
 
   # for each user_id, count the number of documents associated with it
@@ -341,7 +342,6 @@ get_n_trips_in_query <- function(cons,dates){
 get_n_locations_in_query <- function(cons,dates){
   
   time_stamps <- as.numeric(as.POSIXct(dates))
-  message('get_query_size: The time stamps for that date range are:')
   message(paste0(time_stamps[1], ', ', time_stamps[2]))
   lower_stamp_string <- paste0('{\"$gte\": ',time_stamps[1], ',')
   upper_stamp_string <- paste0('\"$lte\": ',time_stamps[2], '}')

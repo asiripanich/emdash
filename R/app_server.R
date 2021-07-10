@@ -143,6 +143,7 @@ app_server <- function(input, output, session) {
         sf::st_drop_geometry()
     )
   })
+  
 
   # Maps --------------------------------------------------------------------
 
@@ -153,6 +154,8 @@ app_server <- function(input, output, session) {
   # data_geogr$trips_with_trajectories %>% colnames() %>% dput()
 
   cols_to_include_in_map_filter <- reactive({
+    browser()
+    data_geogr$locations_allowed
     data_geogr$trips_with_trajectories %>%
       colnames() %>%
       # specify columns to remove here
