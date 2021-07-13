@@ -23,16 +23,44 @@ query_cleaned_locations <- function(cons) {
 query_cleaned_locations_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
-  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
-  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
-
-  qstring <- paste0(
-    '{\"metadata.key\": \"analysis/recreated_location\", ',
-    '\"data.ts\":', lower_stamp_string, upper_stamp_string,
-    "}"
-  )
+  time_stamp_string <- sprintf('{\"$gte\": %s, \"$lte\": %s}', time_stamps[1], time_stamps[2])
+  
+  qstring <- sprintf(
+    '{\"metadata.key\": \"analysis/recreated_location\", \"data.ts\": %s}', time_stamp_string)
 
   cons$Stage_analysis_timeseries$find(qstring) %>%
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#'@rdname query
+#'@export
+#'@returns `downsample_cleaned_locations_by_timestamp` returns a dataframe containing
+#'`sample_size` location documents within the date range.
+downsample_cleaned_locations_by_timestamp <- function(cons,dates,sample_size) {
+
+  # Convert the dates to timestamps
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  time_stamp_string <- sprintf('{\"$gte\": %s, \"$lte\": %s}', time_stamps[1], time_stamps[2])
+  
+  match_string <- sprintf(
+    '{\"$match\": {\"metadata.key\": \"analysis/recreated_location\", \"data.ts\": %s}}', time_stamp_string
+    )
+  
+  # Take a sample of size `sample_size` after matching. Then remove the "_id" field.
+  sample_string <- sprintf('{\"$sample\": {\"size\": %s}}',sample_size)
+  project_string <- 
+    '{ \"$project\": 
+      {\"_id\": 0,
+      \"user_id\": 1,
+      \"metadata\": 1,
+      \"data\": 1 }
+    }'
+  qstring <- sprintf(
+    "[\n %s, \n %s, \n %s \n]", match_string, sample_string, project_string
+  )
+  
+  cons$Stage_analysis_timeseries$aggregate(qstring) %>%
     as.data.table() %>%
     normalise_uuid()
 }
@@ -221,20 +249,28 @@ query_cleaned_trips <- function(cons) {
 
 #' @rdname query
 #' @export
+#' @returns `query_most_recent_n_trip_docs()` yields trips data for the most recent n
+#' trips, based on data.end_ts
+query_most_recent_n_trip_docs <- function(cons, n) {
+  cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/confirmed_trip"}', 
+                                      sort = '{"data.end_ts" : -1}', limit = n) %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
+    data.table::setorder(data.end_fmt_time)
+}
+
+#' @rdname query
+#' @export
 #' @returns `query_cleaned_trips_by_timestamp()` trips data
 #'  between the start timestamp of the first date
 #'  and the start timestamp of the second date.
 query_cleaned_trips_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
-  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
-  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
-
-  qstring <- paste0(
-    '{\"metadata.key\": \"analysis/confirmed_trip\", ',
-    '\"data.end_ts\":', lower_stamp_string, upper_stamp_string,
-    "}"
-  )
+  time_stamp_string <- sprintf('{\"$gte\": %s, \"$lte\": %s}', time_stamps[1], time_stamps[2])
+  
+  qstring <- sprintf(
+    '{\"metadata.key\": \"analysis/confirmed_trip\", \"data.end_ts\": %s}', time_stamp_string)
 
   # The query string should have this format
   # {"metadata.key": "analysis/confirmed_trip", "data.end_ts":{"$gte": 1437544800,"$lte": 1451286000}}

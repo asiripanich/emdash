@@ -10,7 +10,7 @@
 mod_load_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    actionButton(ns("reload_data"), label = "Reload data"),
+    actionButton(ns("reload_data"), label = "Reload participants data"),
     textOutput(ns("last_load_datetime"))
   )
 }

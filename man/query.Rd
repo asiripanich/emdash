@@ -4,11 +4,13 @@
 \alias{query}
 \alias{query_cleaned_locations}
 \alias{query_cleaned_locations_by_timestamp}
+\alias{downsample_cleaned_locations_by_timestamp}
 \alias{query_server_calls}
 \alias{query_usercache_get_summ}
 \alias{query_usercache_put_summ}
 \alias{query_diary_summ}
 \alias{query_cleaned_trips}
+\alias{query_most_recent_n_trip_docs}
 \alias{query_cleaned_trips_by_timestamp}
 \alias{query_max_trip_timestamp}
 \alias{query_min_trip_timestamp}
@@ -25,6 +27,8 @@ query_cleaned_locations(cons)
 
 query_cleaned_locations_by_timestamp(cons, dates)
 
+downsample_cleaned_locations_by_timestamp(cons, dates, sample_size)
+
 query_server_calls(cons)
 
 query_usercache_get_summ(cons)
@@ -40,6 +44,8 @@ query_usercache_put_summ(cons)
 query_diary_summ(cons)
 
 query_cleaned_trips(cons)
+
+query_most_recent_n_trip_docs(cons, n)
 
 query_cleaned_trips_by_timestamp(cons, dates)
 
@@ -70,8 +76,14 @@ Dates must be in this format "yyyy-mm-dd".}
 \value{
 a data.frame/data.table.
 
+`downsample_cleaned_locations_by_timestamp` returns a dataframe containing
+`sample_size` location documents within the date range.
+
 `query_usercache_put_summ()` returns the first and last
  put calls for each user.
+
+`query_most_recent_n_trip_docs()` yields trips data for the most recent n
+trips, based on data.end_ts
 
 `query_cleaned_trips_by_timestamp()` trips data
  between the start timestamp of the first date
