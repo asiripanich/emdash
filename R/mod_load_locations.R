@@ -43,7 +43,7 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
         # else trips + 100 * trips > max_documents: warn user that we can't do this
         # downsample will be either false or the number of locations to include
         downsample <- FALSE
-        if (n_trips + n_locations < max_n_docs) {
+        if (n_trips + n_locations <= max_n_docs) {
           allow <- TRUE
           loc_message <- '' # All location points can be used
         } else if (n_trips + min_locations_per_trip * n_trips  <= max_n_docs) {
