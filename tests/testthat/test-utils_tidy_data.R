@@ -12,7 +12,6 @@ test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when ther
   expect_true(ncol(tidied_trips) >= 1)
 })
 
-
 test_that("summarise_trips_without_trips returns a nonempty data.table", {
   testthat::skip_on_ci()
   tidied_participants <-
