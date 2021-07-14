@@ -224,7 +224,7 @@ summarise_trips <- function(participants, trips) {
       last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
     ), by = user_id] %>%
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
-  
+
   merge(participants, summ_trips, by = "user_id", all.x = TRUE)
 }
 

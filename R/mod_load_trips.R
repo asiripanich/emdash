@@ -47,20 +47,20 @@ mod_load_trips_server <- function(input, output, session, cons) {
 
   data_geogr <- reactiveValues(data = data.frame(), name = "data")
   max_n_docs <- getOption("emdash.max_documents_for_mod_load_trips")
-  
+
   # Initialize trips ready as FALSE
   data_geogr$trips_ready <- reactiveVal(FALSE)
-  
+
   # Add one day to the final date because we want the date range to include the final date.
   # Converting these dates to timestamps gives us the timestamp at the beginning of the first user selected date,
   # and the timestamp at the end of the second user selected date = timestamp for the day after.
   # The timestamp for a given date is for the beginning of the day.
   data_geogr$dates <- reactive({
-    
+
     # Set trips_ready to false so that when a user changes the dates they first have to load trips for those dates
     # before loading locations and generating trajectories
     data_geogr$trips_ready(FALSE)
-    
+
     dates <- c(input$dates[1], input$dates[2] + 1)
     message(
       sprintf(
@@ -69,25 +69,31 @@ mod_load_trips_server <- function(input, output, session, cons) {
         dates[2]
       )
     )
-    
+
     window_width <-
       difftime(dates[2], dates[1], units = "days") %>%
       as.numeric()
     message(sprintf("Window_width is %s days", window_width))
- 
+
     return(dates)
   })
-  
+
   # Find the how many trip and location documents are in the specified date range.
-  data_geogr$n_trips <- reactive({get_n_trips_in_query(cons, data_geogr$dates())})
-  data_geogr$n_locations <- reactive({get_n_locations_in_query(cons,data_geogr$dates())})
+  data_geogr$n_trips <- reactive({
+    get_n_trips_in_query(cons, data_geogr$dates())
+  })
+  data_geogr$n_locations <- reactive({
+    get_n_locations_in_query(cons, data_geogr$dates())
+  })
 
   load_trips_allowed <- reactive({
-    message(sprintf('There are %s trips and %s locations in the date range',
-                    data_geogr$n_trips(), data_geogr$n_locations()))
+    message(sprintf(
+      "There are %s trips and %s locations in the date range",
+      data_geogr$n_trips(), data_geogr$n_locations()
+    ))
 
     if (data_geogr$n_trips() > max_n_docs) {
-        return("The date range is too wide.")
+      return("The date range is too wide.")
     }
 
     if (is.null(data_geogr$n_trips())) {
@@ -108,9 +114,10 @@ mod_load_trips_server <- function(input, output, session, cons) {
     {
       message("Load_trips observed")
       if (isTRUE(load_trips_allowed())) {
-        
-        get_size_kb <- function(x) {object.size(x)/1000}
-        
+        get_size_kb <- function(x) {
+          object.size(x) / 1000
+        }
+
         message("About to load trips")
         data_geogr$trips <- query_cleaned_trips_by_timestamp(cons, data_geogr$dates()) %>%
           tidy_cleaned_trips_by_timestamp() %>%
@@ -118,20 +125,21 @@ mod_load_trips_server <- function(input, output, session, cons) {
           data.table::setorder(end_fmt_time) %>%
           tidy_cleaned_trips(project_crs = get_golem_config("project_crs"))
         message("Finished loading trips")
-        message(sprintf('Trips size is: %s kb',get_size_kb(data_geogr$trips)))
-        
+        message(sprintf("Trips size is: %s kb", get_size_kb(data_geogr$trips)))
+
         # output column names into R
         # data_geogr$trips %>% colnames() %>% dput()
         # data_geogr$participants %>% colnames() %>% dput()
         # data_geogr$trips_with_trajectories %>% colnames() %>% dput()
 
         data_geogr$click <- runif(1)
-        
+
         # Set trips ready to TRUE. Now locations can be loaded, as long as the criteria within mod_load_locations --> location_info are met
         data_geogr$trips_ready(TRUE)
       }
     },
-    ignoreNULL = FALSE, ignoreInit = TRUE
+    ignoreNULL = FALSE,
+    ignoreInit = TRUE
   )
 
   message("Running: mod_load_trips_server")
