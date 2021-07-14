@@ -28,12 +28,17 @@ mod_load_data_server <- function(input, output, session, cons) {
 
   observeEvent(input$reload_data,
     {
+      get_size_kb <- function(x) {
+        object.size(x) / 1000
+      }
       message("About to load participants")
       data_r$participants <-
         tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
         summarise_trips_without_trips(., cons) %>%
         summarise_server_calls(., cons)
       message("Finished loading participants")
+      
+      message(sprintf("Participants size is: %s kb", get_size_kb(data_r$participants)))
 
       # output column names into R
       # data_r$trips %>% colnames() %>% dput()
