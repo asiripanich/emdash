@@ -11,8 +11,8 @@ mod_load_locations_ui <- function(id) {
   ns <- NS(id)
   
   fluidRow(align = "center",
-           actionButton(inputId = ns("get_trajectories"), label = "Get trajectories"),
-           textOutput(ns('locations_allowed_message'))
+           actionButton(inputId = ns("get_trajectories"), label = "Get Locations and Trajectories"),
+           htmlOutput(ns('locations_allowed_message'))
            )
 }
 
@@ -27,25 +27,30 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
   # and locations_info()$allow_load is true.
   
   # Use this to determine the message to show for locations allowed before trips is loaded.
-  startup <- reactiveVal(TRUE)
+  use_startup_message <- reactiveVal(TRUE)
   max_n_docs <- getOption("emdash.max_documents_for_mod_load_trips")
   min_locations_per_trip <- getOption("emdash.min_locations_per_trip")
-  
-    locations_info <- reactive({
       
-      # if trips are ready, check whether it is ok to load locations.
-      if (data_geogr$trips_ready() == TRUE) {
+    # Check the number of trips, the number of locations, and whether trips are ready.
+    # update messages and whether locations are allowed accordingly.
+    locations_info <- reactive({  
+      
+      # Handle the case of no trips, eg the user makes the first date a later date than the second date.
+      if (is.null(data_geogr$n_trips())) {
+        # Skip all other checks.
+        out <- list(allow_load = FALSE, sample_size = FALSE, message = "No trips in the selected date range.")
+        
+      } else {
         n_trips <- data_geogr$n_trips()
         n_locations <- data_geogr$n_locations()
         
-        # trips + trajectories < max_documents: get all locations
-        # else trips + 100 * trips < max_documents: get sample
-        # else trips + 100 * trips > max_documents: warn user that we can't do this
-        # downsample will be either false or the number of locations to include
+        # Only downsample in case 2.
         downsample <- FALSE
+        
         if (n_trips + n_locations <= max_n_docs) {
           allow <- TRUE
-          loc_message <- '' # All location points can be used
+          loc_message <- 'For the current date range, all location points can be used.'
+          
         } else if (n_trips + min_locations_per_trip * n_trips  <= max_n_docs) {
           allow <- TRUE
           downsample <- max_n_docs - n_trips   # this will serve as our sample size.
@@ -57,22 +62,27 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
           loc_message <- "Cannot get trajectories. The selected date range has too many trips."
         }
         
-        return(list(allow_load = allow,sample_size = downsample, message = loc_message))
-      
-      } else {   # Otherwise, tell user to load trips.
-          loc_message <- ifelse(startup(),'Need to load trips first.', 'To get trajectories again, load trips first.')
-          return(list(allow_load = FALSE, sample_size = FALSE, message = loc_message))
+        # if trips are ready, update allow and downsample
+        # Otherwise, add a second portion to the locations message and do not allow locations.
+        if (data_geogr$trips_ready() == TRUE) {
+          out <- list(allow_load = allow, sample_size = downsample, message = loc_message)
+        } else {
+          extra_message <- ifelse(use_startup_message(), 
+                                  'Need to load trips first.', 
+                                  'To get trajectories again, load trips first.')
+          loc_message <- paste(extra_message, loc_message, sep="<br/>")
+          out <- list(allow_load = FALSE, sample_size = FALSE, message = loc_message)
         }
+      }
+      return(out)
     })
 
   
   # Initialize locations_ready as FALSE
-  # data_geogr <- reactiveValues(data = data.frame(), name = "data")
   data_geogr$locations_ready <- reactiveVal(FALSE)
   
-  # Notify the user if either the locations are downsampled or if you cannot load locations.
-  output$locations_allowed_message <-
-    renderPrint(cat(locations_info()$message))
+  # Tell the user the status of what Get Locations and Trajectories will do.
+  output$locations_allowed_message <- renderUI({ HTML(locations_info()$message) })
   
   # Observe for when get_trajectories gets clicked.
   observeEvent(input$get_trajectories, {
@@ -109,8 +119,9 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
       # Prevent user from loading locations again until after trips has been reloaded.
       data_geogr$trips_ready(FALSE)
       
-      # After preparing locations, change locations allowed message.
-      startup(FALSE)  
+      # Now that locations and trajectories have been loaded once, change how you tell user to load trips.
+      use_startup_message(FALSE)  
+
     }
   })
   

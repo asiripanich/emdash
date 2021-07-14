@@ -83,23 +83,28 @@ mod_load_trips_server <- function(input, output, session, cons) {
   data_geogr$n_locations <- reactive({get_n_locations_in_query(cons,data_geogr$dates())})
 
   load_trips_allowed <- reactive({
-    message(sprintf('There are %s trips and %s locations in the date range',
-                    data_geogr$n_trips(), data_geogr$n_locations()))
-
-    if (data_geogr$n_trips() > max_n_docs) {
-        return("The date range is too wide.")
-    }
-
+    n_trips_message <- TRUE
+    
+    # Check if n_trips is null before comparing to max docs.
     if (is.null(data_geogr$n_trips())) {
-      return("No trips in the selected date range.")
+      out <- "No trips in the selected date range."
+      n_trips_message <- FALSE
+    } else if (data_geogr$n_trips() > max_n_docs) {
+      out <- "The date range is too wide."
+    } else {
+      out <- TRUE
     }
-
-    TRUE
+    
+    if (n_trips_message) {
+      message(sprintf('There are %s trips and %s locations in the date range',
+              data_geogr$n_trips(), data_geogr$n_locations()))
+    }
+    return(out)
   })
 
   # When referring to reactives, remember to use parentheses
   output$load_display <-
-    renderPrint(cat(ifelse(isTRUE(load_trips_allowed()), "", load_trips_allowed())))
+    renderPrint(cat(ifelse(isTRUE(load_trips_allowed()), "Ready to load trips", load_trips_allowed())))
 
   output$last_load_datetime <-
     renderText(paste0("Last loaded: ", as.character(Sys.time())))
@@ -129,6 +134,8 @@ mod_load_trips_server <- function(input, output, session, cons) {
         
         # Set trips ready to TRUE. Now locations can be loaded, as long as the criteria within mod_load_locations --> location_info are met
         data_geogr$trips_ready(TRUE)
+        
+        data_geogr$locations_ready(FALSE)   # now that trips has changed, we do not want to use them in the map.
       }
     },
     ignoreNULL = FALSE, ignoreInit = TRUE

@@ -183,11 +183,13 @@ app_server <- function(input, output, session) {
 
   # Filter the trips data before passing to the map.
   filtered_trips <- reactive({
+    # Do nothing if data_geogr$trips does not exist, which happens on startup
     req(data_geogr$trips)
+    
     callModule(
       module = esquisse::filterDF,
       id = "filtering",
-      data_table = reactive(anonymize_uuid_if_required(map_data())),
+      data_table = reactive(anonymize_uuid_if_required(map_data())), 
       data_name = reactive("data"),
       data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
       drop_ids = FALSE
@@ -195,7 +197,6 @@ app_server <- function(input, output, session) {
   })
 
   observeEvent(filtered_trips()$data_filtered(), {
-    
     # since filtered trips and data filtered are both reactive, need to include parentheses after each. otherwise you get:
     # Error in UseMethod: no applicable method for 'select' applied to an object of class "c('reactiveExpr', 'reactive', 'function')"
     
