@@ -160,9 +160,9 @@ query_diary_summ <- function(cons) {
     return()
 }
 
+#' Finds the first and last get calls for each user.
 #' @rdname query
 #' @export
-#' Finds the first and last get calls for each user.
 query_usercache_get_summ <- function(cons){
   
   cons$Stage_timeseries$aggregate(
@@ -186,9 +186,9 @@ query_usercache_get_summ <- function(cons){
     return() 
 }
 
+#' Finds the first and last put calls for each user.
 #' @rdname query
 #' @export
-#' Finds the first and last put calls for each user.
 query_usercache_put_summ <- function(cons){
   
   cons$Stage_timeseries$aggregate(
@@ -212,9 +212,9 @@ query_usercache_put_summ <- function(cons){
     return()
 }
 
+#' Finds the first and last diary calls for each user.
 #' @rdname query
 #' @export
-#' Finds the first and last diary calls for each user.
 query_diary_summ <- function(cons){
   
   cons$Stage_timeseries$aggregate(
