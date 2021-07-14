@@ -72,6 +72,10 @@ query_stage_profiles(cons)
 
 \item{dates}{a date range, a character vector of length two.
 Dates must be in this format "yyyy-mm-dd".}
+
+\item{sample_size}{number of location documents to be queried.}
+
+\item{n}{number of trips used by `query_most_recent_n_trip_docs()`}
 }
 \value{
 a data.frame/data.table.

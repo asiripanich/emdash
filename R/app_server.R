@@ -11,7 +11,7 @@ app_server <- function(input, output, session) {
   cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
   data_r <- callModule(mod_load_data_server, "load_data_ui", cons)
   data_geogr <- callModule(mod_load_trips_server, "load_trips_ui", cons)
-  data_geogr <- callModule(mod_load_locations_server,"load_locations_ui",cons, data_geogr)
+  data_geogr <- callModule(mod_load_locations_server, "load_locations_ui", cons, data_geogr)
 
   # Side bar ----------------------------------------------------------------
 
@@ -105,9 +105,9 @@ app_server <- function(input, output, session) {
         drop_list_columns() %>%
         data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
     }
-    
+
     # Make sure trips exists before attempting to manipulate it
-    if (exists('data_geogr$trips') && input$tabs == "trips") {
+    if (exists("data_geogr$trips") && input$tabs == "trips") {
       data_esquisse$data <-
         data_geogr$trips %>%
         drop_list_columns() %>%
@@ -146,7 +146,7 @@ app_server <- function(input, output, session) {
         sf::st_drop_geometry()
     )
   })
-  
+
 
   # Maps --------------------------------------------------------------------
 
@@ -155,30 +155,31 @@ app_server <- function(input, output, session) {
   # 2) which columns to remove to pass to the map and show up in the map popups
 
   # data_geogr$trips_with_trajectories %>% colnames() %>% dput()
-  
-  # Set the data used for the map. 
+
+  # Set the data used for the map.
   # Use trips_with_trajectories when locations and trajectories are ready.
   # This will update each time locations_ready, trips, or trips with trajectories updates
   map_data <- reactive({
-      if (data_geogr$locations_ready() == TRUE) {
-        message('Adding trajectories to map.')
-        return(data_geogr$trips_with_trajectories)
-      } else {
-        message('Mapping without trajectories')
-        return(data_geogr$trips)
-      }
+    if (data_geogr$locations_ready() == TRUE) {
+      message("Adding trajectories to map.")
+      return(data_geogr$trips_with_trajectories)
+    } else {
+      message("Mapping without trajectories")
+      return(data_geogr$trips)
+    }
   })
 
   # This returns a list of column names
   cols_to_include_in_map_filter <- reactive({
-      map_data() %>%
-          colnames() %>%
-          # specify columns to remove here
-          setdiff(c(
-            "start_fmt_time0", "start_local_dt_timezone", "start_local_time",
-            "end_fmt_time0", "end_local_dt_timezone", "end_local_time",
-            "end_loc_coordinates", "start_loc_coordinates", "duration", "distance",
-            "location_points", "source"))
+    map_data() %>%
+      colnames() %>%
+      # specify columns to remove here
+      setdiff(c(
+        "start_fmt_time0", "start_local_dt_timezone", "start_local_time",
+        "end_fmt_time0", "end_local_dt_timezone", "end_local_time",
+        "end_loc_coordinates", "start_loc_coordinates", "duration", "distance",
+        "location_points", "source"
+      ))
   })
 
   # Filter the trips data before passing to the map.
@@ -199,7 +200,7 @@ app_server <- function(input, output, session) {
   observeEvent(filtered_trips()$data_filtered(), {
     # since filtered trips and data filtered are both reactive, need to include parentheses after each. otherwise you get:
     # Error in UseMethod: no applicable method for 'select' applied to an object of class "c('reactiveExpr', 'reactive', 'function')"
-    
+
     callModule(
       mod_mapview_server,
       "mapview_trips",

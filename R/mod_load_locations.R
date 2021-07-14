@@ -23,9 +23,9 @@ mod_load_locations_ui <- function(id) {
 mod_load_locations_server <- function(input, output, session, cons, data_geogr) {
   ns <- session$ns
 
-  # Load Locations and generate trajectories if get_trajectories is clicked 
+  # Load Locations and generate trajectories if get_trajectories is clicked
   # and locations_info()$allow_load is true.
-  
+
   # Use this to determine the message to show for locations allowed before trips is loaded.
   use_startup_message <- reactiveVal(TRUE)
   max_n_docs <- getOption("emdash.max_documents_for_mod_load_trips")
@@ -44,6 +44,11 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
         n_trips <- data_geogr$n_trips()
         n_locations <- data_geogr$n_locations()
         
+        # trips + trajectories <= max_documents: get all locations
+        # else trips + min_locations_per_trip * trips <= max_documents: get sample
+        # else trips + min_locations_per_trip * trips > max_documents: warn user that we can't do this
+        # downsample will be either false or the number of locations to include
+        
         # Only downsample in case 2.
         downsample <- FALSE
         
@@ -51,13 +56,13 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
           allow <- TRUE
           loc_message <- 'For the current date range, all location points can be used.'
           
-        } else if (n_trips + min_locations_per_trip * n_trips  <= max_n_docs) {
+        } else if (n_trips*(1  +  min_locations_per_trip)  <= max_n_docs) {
           allow <- TRUE
           downsample <- max_n_docs - n_trips   # this will serve as our sample size.
           loc_message <- sprintf("Will only use %s locations per trip. For more detailed trajectories, use a smaller date range.", 
                                  ceiling(downsample/n_trips))
           
-        } else if (n_trips + min_locations_per_trip * n_trips > max_n_docs){
+        } else if ( n_trips*(1  +  min_locations_per_trip) > max_n_docs){
           allow <- FALSE
           loc_message <- "Cannot get trajectories. The selected date range has too many trips."
         }
@@ -77,58 +82,59 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
       return(out)
     })
 
-  
   # Initialize locations_ready as FALSE
   data_geogr$locations_ready <- reactiveVal(FALSE)
   
   # Tell the user the status of what Get Locations and Trajectories will do.
   output$locations_allowed_message <- renderUI({ HTML(locations_info()$message) })
-  
+
   # Observe for when get_trajectories gets clicked.
   observeEvent(input$get_trajectories, {
-
     if (locations_info()$allow_load == TRUE) {
-      get_size_kb <- function(x) {object.size(x)/1000}
-      
+      get_size_kb <- function(x) {
+        object.size(x) / 1000
+      }
+
       message("About to load locations")
-      
+
       # if sample_size is not false, use it to limit the number of locations queried.
-      if (locations_info()$sample_size != FALSE){
-        data_geogr$locations <- downsample_cleaned_locations_by_timestamp(cons,data_geogr$dates(), 
-                                                                          locations_info()$sample_size) %>% 
-                                  tidy_cleaned_locations()
+      if (locations_info()$sample_size != FALSE) {
+        data_geogr$locations <- downsample_cleaned_locations_by_timestamp(
+          cons, data_geogr$dates(),
+          locations_info()$sample_size
+        ) %>%
+          tidy_cleaned_locations()
       } else {
         data_geogr$locations <- tidy_cleaned_locations(query_cleaned_locations_by_timestamp(cons, data_geogr$dates()))
       }
       message("Finished loading locations")
-      message(sprintf('Locations size is: %s kb',get_size_kb(data_geogr$locations)))
-      
+      message(sprintf("Locations size is: %s kb", get_size_kb(data_geogr$locations)))
+
       message("About to create trajectories within trips")
       data_geogr$trips_with_trajectories <- generate_trajectories(data_geogr$trips,
-                                                                  data_geogr$locations,
-                                                                  project_crs = get_golem_config("project_crs")
+        data_geogr$locations,
+        project_crs = get_golem_config("project_crs")
       )
       message("Finished creating trajectories within trips")
-      message(sprintf('Trips with trajectories size is: %s kb',get_size_kb(data_geogr$trips_with_trajectories)))
-      
-      # Now that get_trajectories has been clicked and locations_info()$allow_load is TRUE, 
+      message(sprintf("Trips with trajectories size is: %s kb", get_size_kb(data_geogr$trips_with_trajectories)))
+
+      # Now that get_trajectories has been clicked and locations_info()$allow_load is TRUE,
       # update data_geogr$locations_ready() to TRUE.
       # map_data will notice the change in data_geogr$locations_ready() and the map will be updated accordingly
       data_geogr$locations_ready(TRUE)
-      
+
       # Prevent user from loading locations again until after trips has been reloaded.
       data_geogr$trips_ready(FALSE)
       
       # Now that locations and trajectories have been loaded once, change how you tell user to load trips.
       use_startup_message(FALSE)  
-
     }
   })
-  
+
   # observeEvent(data_geogr$click, {
   #   data_geogr$locations_ready(FALSE)
   #   shinyjs::show('get_trajectories', asis = TRUE)
   # })
-  
+
   return(data_geogr)
 }
