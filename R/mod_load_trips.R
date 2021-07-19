@@ -21,7 +21,7 @@ mod_load_trips_ui <- function(id) {
     as.Date(.)
   message(paste("Last trip: ", last_trip))
 
-  thirty_before_last_date <- last_trip - 30
+  thirty_before_last_date <- last_trip - getOption("emdash.load_trips_start_ndays") + 1
 
   tagList(
     dateRangeInput(ns("dates"),
@@ -144,7 +144,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
       }
     },
     ignoreNULL = FALSE,
-    ignoreInit = TRUE
+    # ignoreInit = TRUE  use this if you don't want any trips to load on startup
   )
 
   message("Running: mod_load_trips_server")
