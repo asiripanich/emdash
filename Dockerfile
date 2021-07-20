@@ -7,7 +7,7 @@ RUN R -e 'remotes::install_github("r-lib/remotes", ref = "97bbf81")'
 RUN mkdir /build_zone
 ADD . /build_zone
 WORKDIR /build_zone
-RUN R -e 'remotes::install_github("asiripanich/DTedit")'
+RUN R -e 'remotes::install_github("DavidPatShuiFong/DTedit@2.2.1")'
 RUN R -e 'remotes::install_local(upgrade="never")'
 EXPOSE 80
 ENV MONGO_URL=${MONGO_URL:-"mongodb://host.docker.internal:27017"}

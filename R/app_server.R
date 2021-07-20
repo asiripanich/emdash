@@ -4,15 +4,14 @@
 #'     DO NOT REMOVE.
 app_server <- function(input, output, session) {
   # List the first level callModules here
-
-
+  
   # prepare data ------------------------------------------------------------
   cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
   data_r <- callModule(mod_load_data_server, "load_data_ui", cons)
   data_geogr <- callModule(mod_load_trips_server, "load_trips_ui", cons)
 
   # Side bar ----------------------------------------------------------------
-
+  
   # Dashboard ---------------------------------------------------------------
   # Dashboard - boxes - start ----------
   callModule(
@@ -52,7 +51,7 @@ app_server <- function(input, output, session) {
     ),
     icon = icon("calendar-plus")
   )
-
+  
   # # Dashboard - boxes - end ----------
   # 
   # # Dashboard - plots - start ----------
@@ -85,17 +84,17 @@ app_server <- function(input, output, session) {
     "ggplotly_ui_platform",
     utils_plot_platform(data_r$participants)
   )
-
+  
   # Dashboard - plots - end ----------
   # Tables ------------------------------------------------------------------
   data_esquisse <- reactiveValues(data = data.frame(), name = "data_esquisse")
-
+  
   # Convert the config's label map to a named vector.
   # The names are the original labels, and the vector values are the new labels.
   named_label_vector <- unlist(getOption("emdash.col_labels_for_participts"))
   originalColumnNames <- names(named_label_vector)
   new_column_names <- unname(named_label_vector)
-
+  
   observeEvent(input$tabs, {
     if (input$tabs == "participants") {
       data_esquisse$data <-
@@ -110,14 +109,14 @@ app_server <- function(input, output, session) {
         sf::st_drop_geometry()
     }
   })
-
+  
   # INTERACTIVE PLOT PANEL
   callModule(
     esquisse::esquisserServer,
     "esquisse",
     data = data_esquisse
   )
-
+  
   # DATA TABS
   #
   # use these to generate lists of columns to inform which columns to remove
@@ -126,29 +125,50 @@ app_server <- function(input, output, session) {
   # POSSIBLE LINE: allNames[!(allNames %in% config$column_names)]
   # cols_to_remove_from_participts_table <- c("first_trip_datetime",
   #                                            "last_trip_datetime")
-
+  
+  # Only append supplementary table tabs on startup.
+  startup_load_supplementary <- reactiveVal(TRUE)
+  tableList <- getOption('emdash.supplementary_tables')
+  
   observeEvent(data_r$click, {
     callModule(mod_DT_server, "DT_ui_participants",
                data = data_r$participants %>%
                  dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_participts_table"))) %>%
                  data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
     )
-  })
-
-  observeEvent(data_geogr$click, {
-    callModule(mod_DT_server, "DT_ui_trips",
-      data = data_geogr$trips %>%
-        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_trips_table"))) %>%
-        sf::st_drop_geometry()
-    )
-    
-    tableList <- getOption('emdash.supplementary_tables')
     
     # For each supplementary table, append a new tabPanel and run the server function
     # that specifies table behavior
     for (t in tableList){
       table_type <- names(t)
       table_title <- t[[table_type]]$tab_name
+
+      suppl_table <- data_r[[table_type]]
+      
+      # Set the options used by DT::renderDataTable within dtedit and mod_DT
+      datatable_options <- list(
+        scrollX = TRUE,
+        pageLength = 50,
+        dom = "Bfrtip",
+        buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
+      )
+      
+      # If the table has a timestamp, make a copy of the timestamp column called fmt_time
+      if ('ts' %in% colnames(suppl_table)){
+        suppl_table[['fmt_time']] <- suppl_table[['ts']]
+        fmt_time_index <- which(names(suppl_table) == 'fmt_time')
+        
+        # Add columnDefs to datatable options to convert fmt_time to a Date
+        datatable_options[['columnDefs']] <- list(list(
+          # target column indices start from 0. 
+          # However, DT adds a row number column to the display as the 0th column
+          targets = fmt_time_index,    
+          render = htmlwidgets::JS(
+            "function(data, type, row) {",
+            "return new Date(data*1000);",
+            "}")
+        ))
+      }
       
       suppl_table <- data_r[[table_type]]
       
@@ -159,7 +179,7 @@ app_server <- function(input, output, session) {
         dom = "Bfrtip",
         buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
       )
-
+      
       # If the table has a timestamp, make a copy of the timestamp column called fmt_time
       if ('ts' %in% colnames(suppl_table)){
         suppl_table[['fmt_time']] <- suppl_table[['ts']]
@@ -178,117 +198,71 @@ app_server <- function(input, output, session) {
       }
       
       # If the table is Bike Check In and there is an 'editable' field, use dtedit
-      if (table_type == 'Checkinout' & 'editable' %in% names(t$Checkinout)) {
-
-        # If we are rendering fmt_time, adjust the target indices because DTedit 
-        # does not display a row number column
-        # Target column indices start from 0
-        if ('columnDefs' %in% names(datatable_options)){
-          datatable_options$columnDefs[[1]]$targets <- datatable_options$columnDefs[[1]]$targets - 1
-        }
-        
-        # Store the correct datatable options to use.
-        # Without this, dtedit looks at the most recent datatable options meant for the final supplementary table
-        DTedit_datatable_options <- datatable_options
-        
-        db_operations <- t$Checkinout$editable$operations
-        allow_delete <- 'D' %in% db_operations
-        allow_update <- 'U' %in% db_operations
-        allow_insert <- FALSE  #'C' %in% db_operations
-        
-        # Make status a factor so you can use selectInput
-        suppl_table$status <- as.factor(suppl_table$status)
-        
-        if ('edit_columns' %in% names(t$Checkinout$editable)){
-          edit_columns <- t$Checkinout$editable$edit_columns
-        } else {
-          edit_columns <- 'status'
-        }
-        
-        # Define the callback functions used by dtedit
-        # Insert a row. "Create"
-        # @param data the data including your inserted row
-        # @param row the row where you made the change
-        insert_callback <- function(data, row) {
-          db_insert(cons,"Checkinout",data[row,])
-          return(data)
-        }
-        
-        # Update a row
-        # @param data the data including your updated row
-        update_callback <- function(data, olddata, row) {
-          db_update(cons,"Checkinout",data[row,])
-          data
-        }
-        
-        # Delete a row
-        delete_callback <- function(data, row) {
-          db_delete(cons,"Checkinout", data[row,])   # table_type updates to PolarBear before any CUD functions are called
-          return(data[-row, ])
+      if (table_type == 'Checkinout' & 'editable' %in% names(t$Checkinout)) {        
+        if (isTRUE(startup_load_supplementary())) {
+          editable_table_tab <-  tabPanel(
+            status = "primary",
+            title = table_title,
+            value = table_type,
+            mod_DTedit_ui(id = paste0("DTedit_",table_type))
+          )
+          
+          appendTab(
+            inputId = 'tabs',
+            tab = editable_table_tab,
+            select = FALSE,
+            menuName = NULL,
+            session = getDefaultReactiveDomain()
+          )
         }
 
-        editable_table_tab <-  tabPanel(
-          status = "primary",
-          title = table_title,
-          value = table_type,
-          uiOutput(outputId = paste0("DTedit_ui_",table_type))  # Maybe Later: mod_DTedit_ui(id = paste0("DTedit_ui_",table_type))
-        )
-        
-        appendTab(
-          inputId = 'tabs',
-          tab = editable_table_tab,
-          select = FALSE,
-          menuName = NULL,
-          session = getDefaultReactiveDomain()
-        )
-
-        DTedit::dtedit(input, output,
-                       name = paste0("DTedit_ui_",table_type),
-                       thedata = suppl_table,
-                       edit.cols = edit_columns,
-                       # edit.label.cols = c('status'),
-                       # input.types = c(status = "selectInput"),
-                       # input.choices = list(status = c('TRUE','FALSE')),
-                       view.cols = names(suppl_table),
-                       callback.update = update_callback,   # db operations defined in utils_update_insert_delete.R
-                       callback.insert = insert_callback,
-                       callback.delete = delete_callback,
-                       show.insert = allow_insert,
-                       show.update = allow_update,
-                       show.delete = allow_delete,
-                       show.copy = FALSE,
-                       label.delete = 'Delete Row',
-                       datatable.options = DTedit_datatable_options
-                     ) 
+        callModule(module = mod_DTedit_server,
+                   id = paste0("DTedit_",table_type),
+                   table_data = suppl_table,
+                   Table_Type = table_type,
+                   suppl_table_sublist = t,
+                   DT_options = datatable_options,
+                   cons)
       }  
       # For other supplementary tables, use mod_DT  
-       else {
-        regular_tab <-  tabPanel(
-          status = "primary",
-          title = table_title,
-          value = table_type,
-          mod_DT_ui(id = paste0("DT_ui_",table_type)) 
-        )
-        appendTab(
-          inputId = 'tabs',
-          tab = regular_tab,
-          select = FALSE,
-          menuName = NULL,
-          session = getDefaultReactiveDomain()
-        ) 
+      else {
+        if (isTRUE(startup_load_supplementary())) {
+          regular_tab <-  tabPanel(
+            status = "primary",
+            title = table_title,
+            value = table_type,
+            mod_DT_ui(id = paste0("DT_ui_",table_type)) 
+          )
 
+          appendTab(
+            inputId = 'tabs',
+            tab = regular_tab,
+            select = FALSE,
+            menuName = NULL,
+            session = getDefaultReactiveDomain()
+          ) 
+        }
+        
         # Run mod_DT_server using data for the current table
         callModule(module = mod_DT_server,
                    id = paste0("DT_ui_",table_type),
                    data = suppl_table,
                    DT_options = datatable_options)
-       }
       }
-    
+    }
+    startup_load_supplementary(FALSE)
   })
 
+  observeEvent(data_geogr$click, {
+    callModule(mod_DT_server, "DT_ui_trips",
+      data = data_geogr$trips %>%
+        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_trips_table"))) %>%
+        sf::st_drop_geometry()
+    )
+  })
+  
   # Maps --------------------------------------------------------------------
-
+  
   # these lists of columns in trips_with_trajectories can inform
   # 1) which columns to remove in the map filter
   # 2) which columns to remove to pass to the map and show up in the map popups
@@ -306,7 +280,7 @@ app_server <- function(input, output, session) {
         "location_points", "source"
       ))
   })
-
+  
   filtered_trips <-
     callModule(
       module = esquisse::filterDF,
@@ -316,7 +290,7 @@ app_server <- function(input, output, session) {
       data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
       drop_ids = FALSE
     )
-
+  
   observeEvent(filtered_trips$data_filtered(), {
     callModule(
       mod_mapview_server,
@@ -325,7 +299,7 @@ app_server <- function(input, output, session) {
         dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_map_popup")))
     )
   })
-
+  
   # On exit -----------------------------------------------------------------
   session$onSessionEnded(function() {
     message("disconnecting from the emission collections..")
