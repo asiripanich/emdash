@@ -6,6 +6,13 @@
 \usage{
 db_delete(cons, collection_name, df_row)
 }
+\arguments{
+\item{cons}{connection to mongodb}
+
+\item{collection_name}{the collection to look in}
+
+\item{df_row}{the dataframe row to telling you which document to delete}
+}
 \description{
 Deletes a document from Checkinout corresponding to df_row
 }

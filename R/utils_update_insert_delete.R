@@ -1,10 +1,16 @@
 
 #' Inserts a row as a document into the specified collection
-db_insert <- function(cons, collection_name, df) {
-  cons[[collection_name]]$insert(df)
+#' @param cons connection to mongodb
+#' @param collection_name the collection to look in
+#' @param df_row the dataframe row to insert
+db_insert <- function(cons, collection_name, df_row) {
+  cons[[collection_name]]$insert(df_row)
 }
 
 #' Updates a document with the row 'df_row'
+#' @param cons connection to mongodb
+#' @param collection_name the collection to look in
+#' @param df_row the dataframe row to update with
 db_update <- function(cons, collection_name, df_row) {
   # The format is seen below:
   # db$collection$update('{"name":"jerry"}', '{"$set":{"age": 31}}')
@@ -21,6 +27,9 @@ db_update <- function(cons, collection_name, df_row) {
 
 
 #' Deletes a document from Checkinout corresponding to df_row
+#' @param cons connection to mongodb
+#' @param collection_name the collection to look in
+#' @param df_row the dataframe row to telling you which document to delete
 db_delete <- function(cons, collection_name, df_row) {
   if (df_row$user_id == "") {
     # In case the entry has no user id

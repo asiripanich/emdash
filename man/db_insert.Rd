@@ -4,7 +4,14 @@
 \alias{db_insert}
 \title{Inserts a row as a document into the specified collection}
 \usage{
-db_insert(cons, collection_name, df)
+db_insert(cons, collection_name, df_row)
+}
+\arguments{
+\item{cons}{connection to mongodb}
+
+\item{collection_name}{the collection to look in}
+
+\item{df_row}{the dataframe row to insert}
 }
 \description{
 Inserts a row as a document into the specified collection

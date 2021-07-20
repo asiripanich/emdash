@@ -6,6 +6,13 @@
 \usage{
 db_update(cons, collection_name, df_row)
 }
+\arguments{
+\item{cons}{connection to mongodb}
+
+\item{collection_name}{the collection to look in}
+
+\item{df_row}{the dataframe row to update with}
+}
 \description{
 Updates a document with the row 'df_row'
 }
