@@ -385,7 +385,6 @@ get_n_trips_in_query <- function(cons, dates) {
 #' @description Returns the number of cleaned locations documents in between two dates
 get_n_locations_in_query <- function(cons, dates) {
   time_stamps <- as.numeric(as.POSIXct(dates))
-  message(paste0(time_stamps[1], ", ", time_stamps[2]))
   lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
   upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
 
