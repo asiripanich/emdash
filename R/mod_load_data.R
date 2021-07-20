@@ -28,9 +28,6 @@ mod_load_data_server <- function(input, output, session, cons) {
 
   observeEvent(input$reload_data,
     {
-      get_size_kb <- function(x) {
-        object.size(x) / 1000
-      }
       message("About to load participants")
       data_r$participants <-
         tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
@@ -38,12 +35,7 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_server_calls(., cons)
       message("Finished loading participants")
       
-      message(sprintf("Participants size is: %s kb", get_size_kb(data_r$participants)))
-
-      # output column names into R
-      # data_r$trips %>% colnames() %>% dput()
-      # data_r$participants %>% colnames() %>% dput()
-      # data_r$trips_with_trajectories %>% colnames() %>% dput()
+      message(sprintf("Participants size is: %s kb", object.size(data_r$participants, units = "kB", standard = "SI")))
 
       data_r$click <- runif(1)
     },
