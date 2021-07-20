@@ -84,39 +84,40 @@ app_ui <- function(request) {
           ),
 
           # Tables ------------------------------------------------------------------
-          tabItem(tabName = "tables",
-                  box(title = "Interactive plot - this panel is linked with the data tab below",
-                      solidHeader = TRUE,
-                      collapsible = TRUE,
-                      width = 12,
-                      esquisserUI(
-                        id = "esquisse",
-                        header = FALSE, # dont display gadget title
-                        choose_data = FALSE # dont display button to change data
-                      ),
+          tabItem(
+            tabName = "tables",
+            box(
+              title = "Interactive plot - this panel is linked with the data tab below",
+              solidHeader = TRUE,
+              collapsible = TRUE,
+              width = 12,
+              esquisserUI(
+                id = "esquisse",
+                header = FALSE, # dont display gadget title
+                choose_data = FALSE # dont display button to change data
+              ),
 
-                      # Override the default font size in esquisse with CSS
-                      tags$style(".container-drag-source, .box-dad {font-size: 14px;}")
-                      ),
-                  
-                  fluidRow(
-                    tabBox(
-                      id = "tabs",
-                      width = 12,
-                      tabPanel(
-                        status = "primary",
-                        title = "Participants",
-                        value = "participants",
-                        mod_DT_ui("DT_ui_participants")    
-                      ),
-                      tabPanel(
-                        status = "primary",
-                        title = "Trips",
-                        value = "trips",
-                        mod_DT_ui("DT_ui_trips")    
-                      )
-                    )      
-                  )        
+              # Override the default font size in esquisse with CSS
+              tags$style(".container-drag-source, .box-dad {font-size: 14px;}")
+            ),
+            fluidRow(
+              tabBox(
+                id = "tabs",
+                width = 12,
+                tabPanel(
+                  status = "primary",
+                  title = "Participants",
+                  value = "participants",
+                  mod_DT_ui("DT_ui_participants")
+                ),
+                tabPanel(
+                  status = "primary",
+                  title = "Trips",
+                  value = "trips",
+                  mod_DT_ui("DT_ui_trips")
+                )
+              )
+            )
           ),
 
           # Maps ----------------------

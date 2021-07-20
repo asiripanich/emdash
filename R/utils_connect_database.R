@@ -41,8 +41,9 @@ create_connection <- function(db, collection, url) {
 "COLLECTIONS"
 
 
-COLLECTIONS <- 
-  c("CarbonUsage",
+COLLECTIONS <-
+  c(
+    "CarbonUsage",
     "Checkinout",
     "New_tier",
     "PolarBear",
@@ -54,4 +55,4 @@ COLLECTIONS <-
     "Stage_usercache",
     "Stage_uuids",
     "Tier_Sys"
-    )
+  )

@@ -88,7 +88,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
 
   load_trips_allowed <- reactive({
     n_trips_message <- TRUE
-    
+
     # Check if n_trips is null before comparing to max docs.
     if (is.null(data_geogr$n_trips())) {
       out <- "No trips in the selected date range."
@@ -98,10 +98,12 @@ mod_load_trips_server <- function(input, output, session, cons) {
     } else {
       out <- TRUE
     }
-    
+
     if (n_trips_message) {
-      message(sprintf('There are %s trips and %s locations in the date range',
-              data_geogr$n_trips(), data_geogr$n_locations()))
+      message(sprintf(
+        "There are %s trips and %s locations in the date range",
+        data_geogr$n_trips(), data_geogr$n_locations()
+      ))
     }
     return(out)
   })
@@ -117,7 +119,6 @@ mod_load_trips_server <- function(input, output, session, cons) {
     {
       message("Load_trips observed")
       if (isTRUE(load_trips_allowed())) {
-
         message("About to load trips")
         data_geogr$trips <- query_cleaned_trips_by_timestamp(cons, data_geogr$dates()) %>%
           tidy_cleaned_trips_by_timestamp() %>%
@@ -125,7 +126,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
           data.table::setorder(end_fmt_time) %>%
           tidy_cleaned_trips(project_crs = get_golem_config("project_crs"))
         message("Finished loading trips")
-        message(sprintf("Trips size is: %s", format(object.size(data_geogr$trips), units = 'kB', standard = 'SI')))
+        message(sprintf("Trips size is: %s", format(object.size(data_geogr$trips), units = "kB", standard = "SI")))
 
         # output column names into R
         # data_geogr$trips %>% colnames() %>% dput()
@@ -136,13 +137,13 @@ mod_load_trips_server <- function(input, output, session, cons) {
 
         # Set trips ready to TRUE. Now locations can be loaded, as long as the criteria within mod_load_locations --> location_info are met
         data_geogr$trips_ready(TRUE)
-        
-        data_geogr$locations_ready(FALSE)   # now that trips has changed, we do not want to use them in the map.
+
+        data_geogr$locations_ready(FALSE) # now that trips has changed, we do not want to use them in the map.
       }
     },
     ignoreNULL = FALSE,
-    #ignoreInit = TRUE if you don't want any trips to load on startup
-    ignoreInit = !getOption("emdash.load_trips_on_startup")  
+    # ignoreInit = TRUE if you don't want any trips to load on startup
+    ignoreInit = !getOption("emdash.load_trips_on_startup")
   )
 
   message("Running: mod_load_trips_server")
