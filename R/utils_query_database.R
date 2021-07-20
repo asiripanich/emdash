@@ -23,16 +23,46 @@ query_cleaned_locations <- function(cons) {
 query_cleaned_locations_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
-  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
-  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
+  time_stamp_string <- sprintf('{\"$gte\": %s, \"$lte\": %s}', time_stamps[1], time_stamps[2])
 
-  qstring <- paste0(
-    '{\"metadata.key\": \"analysis/recreated_location\", ',
-    '\"data.ts\":', lower_stamp_string, upper_stamp_string,
-    "}"
+  qstring <- sprintf(
+    '{\"metadata.key\": \"analysis/recreated_location\", \"data.ts\": %s}', time_stamp_string
   )
 
   cons$Stage_analysis_timeseries$find(qstring) %>%
+    as.data.table() %>%
+    normalise_uuid()
+}
+
+#' @param sample_size number of location documents to be queried.
+#' @rdname query
+#' @export
+#' @returns `downsample_cleaned_locations_by_timestamp` returns a dataframe containing
+#' `sample_size` location documents within the date range.
+downsample_cleaned_locations_by_timestamp <- function(cons, dates, sample_size) {
+
+  # Convert the dates to timestamps
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  time_stamp_string <- sprintf('{\"$gte\": %s, \"$lte\": %s}', time_stamps[1], time_stamps[2])
+
+  match_string <- sprintf(
+    '{\"$match\": {\"metadata.key\": \"analysis/recreated_location\", \"data.ts\": %s}}', time_stamp_string
+  )
+
+  # Take a sample of size `sample_size` after matching. Then remove the "_id" field.
+  sample_string <- sprintf('{\"$sample\": {\"size\": %s}}', sample_size)
+  project_string <-
+    '{ \"$project\":
+      {\"_id\": 0,
+      \"user_id\": 1,
+      \"metadata\": 1,
+      \"data\": 1 }
+    }'
+  qstring <- sprintf(
+    "[\n %s, \n %s, \n %s \n]", match_string, sample_string, project_string
+  )
+
+  cons$Stage_analysis_timeseries$aggregate(qstring) %>%
     as.data.table() %>%
     normalise_uuid()
 }
@@ -132,10 +162,105 @@ query_diary_summ <- function(cons) {
     return()
 }
 
+#' Finds the first and last get calls for each user.
+#' @rdname query
+#' @export
+query_usercache_get_summ <- function(cons) {
+  cons$Stage_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/usercache/get"}},
+      { "$group":
+          {
+            "_id": "$user_id",
+            "first_get_call": { "$min": "$data.ts" },
+            "last_get_call": {"$max": "$data.ts" }
+          }
+      },
+      { "$project": {
+            "user_id": "$_id",
+            "_id": 0,
+            "first_get_call": 1,
+            "last_get_call": 1}
+      }
+    ]'
+  ) %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
+    return()
+}
+
+#' Finds the first and last put calls for each user.
+#' @rdname query
+#' @export
+query_usercache_put_summ <- function(cons) {
+  cons$Stage_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/usercache/put"}},
+      { "$group":
+          {
+            "_id": "$user_id",
+            "first_put_call": { "$min": "$data.ts" },
+            "last_put_call": {"$max": "$data.ts" }
+          }
+      },
+      { "$project": {
+            "user_id": "$_id",
+            "_id": 0,
+            "first_put_call": 1,
+            "last_put_call": 1}
+      }
+    ]'
+  ) %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
+    return()
+}
+
+#' Finds the first and last diary calls for each user.
+#' @rdname query
+#' @export
+query_diary_summ <- function(cons) {
+  cons$Stage_timeseries$aggregate(
+    '[
+      { "$match": {"metadata.key": "stats/server_api_time", "data.name": "POST_/pipeline/get_complete_ts"}},
+      { "$group":
+          {
+            "_id": "$user_id",
+            "first_diary_call": { "$min": "$data.ts" },
+            "last_diary_call": {"$max": "$data.ts" }
+          }
+      },
+      { "$project": {
+            "user_id": "$_id",
+            "_id": 0,
+            "first_diary_call": 1,
+            "last_diary_call": 1}
+      }
+    ]'
+  ) %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
+    return()
+}
+
 #' @rdname query
 #' @export
 query_cleaned_trips <- function(cons) {
   cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/confirmed_trip"}') %>%
+    as.data.table() %>%
+    normalise_uuid() %>%
+    data.table::setorder(data.end_fmt_time)
+}
+
+#' @param n number of trips used by `query_most_recent_n_trip_docs()`
+#' @rdname query
+#' @export
+#' @returns `query_most_recent_n_trip_docs()` yields trips data for the most recent n
+#' trips, based on data.end_ts
+query_most_recent_n_trip_docs <- function(cons, n) {
+  cons$Stage_analysis_timeseries$find('{"metadata.key": "analysis/confirmed_trip"}',
+    sort = '{"data.end_ts" : -1}', limit = n
+  ) %>%
     as.data.table() %>%
     normalise_uuid() %>%
     data.table::setorder(data.end_fmt_time)
@@ -156,13 +281,10 @@ query_supplementary <- function(cons, name) {
 query_cleaned_trips_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
-  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
-  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
+  time_stamp_string <- sprintf('{\"$gte\": %s, \"$lte\": %s}', time_stamps[1], time_stamps[2])
 
-  qstring <- paste0(
-    '{\"metadata.key\": \"analysis/confirmed_trip\", ',
-    '\"data.end_ts\":', lower_stamp_string, upper_stamp_string,
-    "}"
+  qstring <- sprintf(
+    '{\"metadata.key\": \"analysis/confirmed_trip\", \"data.end_ts\": %s}', time_stamp_string
   )
 
   # The query string should have this format
@@ -209,6 +331,7 @@ query_min_trip_timestamp <- function(cons) {
     return()
 }
 
+#' @returns Counts the total number of trips in the database
 count_total_trips <- function(cons) {
 
   # for each user_id, count the number of documents associated with it
@@ -234,12 +357,13 @@ query_trip_dates <- function(cons) {
 }
 
 #' @rdname query
-#' @return `get_query_size()` returns the number of cleaned
+#' @export
+#' @return `get_n_trips_in_query()` returns the number of cleaned
 #'  trip documents in between two dates
 #' @export
-get_query_size <- function(cons, dates) {
+get_n_trips_in_query <- function(cons, dates) {
   time_stamps <- as.numeric(as.POSIXct(dates))
-  message("get_query_size: The time stamps for that date range are:")
+  message("get_n_trips_in_query: The time stamps for that date range are:")
   message(paste0(time_stamps[1], ", ", time_stamps[2]))
   lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
   upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
@@ -261,6 +385,33 @@ get_query_size <- function(cons, dates) {
 
   # for each user_id, count the number of documents associated with it
   cons$Stage_analysis_timeseries$aggregate(qstring) %>% .$n_trips
+}
+
+#' @rdname query
+#' @export
+#' @description Returns the number of cleaned locations documents in between two dates
+get_n_locations_in_query <- function(cons, dates) {
+  time_stamps <- as.numeric(as.POSIXct(dates))
+  lower_stamp_string <- paste0('{\"$gte\": ', time_stamps[1], ",")
+  upper_stamp_string <- paste0('\"$lte\": ', time_stamps[2], "}")
+
+  # Match by the time stamps of the dates
+  match_string <- paste0(
+    '{\"$match\":{\"metadata.key\": \"analysis/recreated_location\", ',
+    '\"data.ts\":', lower_stamp_string, upper_stamp_string,
+    "}}"
+  )
+
+  # Group by all user_ids
+  group_string <- '{\"$group\": {\"_id\": {},\"n_locations\":{\"$sum\":1}}}'
+
+  qstring <- paste0(
+    "[\n", match_string, ",",
+    group_string, "\n]"
+  )
+
+  # for each user_id, count the number of documents associated with it
+  cons$Stage_analysis_timeseries$aggregate(qstring) %>% .$n_locations
 }
 
 #' @rdname query

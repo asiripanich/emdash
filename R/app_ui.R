@@ -122,6 +122,7 @@ app_ui <- function(request) {
           # Maps ----------------------
           tabItem(
             tabName = "maps",
+            mod_load_locations_ui("load_locations_ui"),
             fluidRow(
               column(
                 width = 3,

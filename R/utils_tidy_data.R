@@ -134,7 +134,6 @@ tidy_cleaned_trips <- function(cleaned_trips, project_crs = 4326, smallest_round
       distance_mi = round(distance / 1609, smallest_rounding_digit),
       distance_km = round(distance / 1000, smallest_rounding_digit)
     )
-
   message("Finished cleaning trips")
   return(cleaned_trips_sf)
 }
@@ -237,7 +236,6 @@ summarise_trips <- function(participants, trips) {
 #' @return a data.table.
 #' @export
 summarise_server_calls <- function(participants, cons) {
-
   # Get all of the relevant server calls
   usercache_get_summ <- query_usercache_get_summ(cons)
   usercache_put_summ <- query_usercache_put_summ(cons)

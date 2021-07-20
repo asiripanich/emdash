@@ -4,15 +4,18 @@
 \alias{query}
 \alias{query_cleaned_locations}
 \alias{query_cleaned_locations_by_timestamp}
+\alias{downsample_cleaned_locations_by_timestamp}
 \alias{query_server_calls}
 \alias{query_usercache_get_summ}
 \alias{query_usercache_put_summ}
 \alias{query_diary_summ}
 \alias{query_cleaned_trips}
+\alias{query_most_recent_n_trip_docs}
 \alias{query_cleaned_trips_by_timestamp}
 \alias{query_max_trip_timestamp}
 \alias{query_min_trip_timestamp}
-\alias{get_query_size}
+\alias{get_n_trips_in_query}
+\alias{get_n_locations_in_query}
 \alias{query_cleaned_place}
 \alias{query_cleaned_section}
 \alias{query_raw_trips}
@@ -24,7 +27,15 @@ query_cleaned_locations(cons)
 
 query_cleaned_locations_by_timestamp(cons, dates)
 
+downsample_cleaned_locations_by_timestamp(cons, dates, sample_size)
+
 query_server_calls(cons)
+
+query_usercache_get_summ(cons)
+
+query_usercache_put_summ(cons)
+
+query_diary_summ(cons)
 
 query_usercache_get_summ(cons)
 
@@ -34,13 +45,17 @@ query_diary_summ(cons)
 
 query_cleaned_trips(cons)
 
+query_most_recent_n_trip_docs(cons, n)
+
 query_cleaned_trips_by_timestamp(cons, dates)
 
 query_max_trip_timestamp(cons)
 
 query_min_trip_timestamp(cons)
 
-get_query_size(cons, dates)
+get_n_trips_in_query(cons, dates)
+
+get_n_locations_in_query(cons, dates)
 
 query_cleaned_place(cons)
 
@@ -57,28 +72,30 @@ query_stage_profiles(cons)
 
 \item{dates}{a date range, a character vector of length two.
 Dates must be in this format "yyyy-mm-dd".}
+
+\item{sample_size}{number of location documents to be queried.}
+
+\item{n}{number of trips used by `query_most_recent_n_trip_docs()`}
 }
 \value{
 a data.frame/data.table.
 
+`downsample_cleaned_locations_by_timestamp` returns a dataframe containing
+`sample_size` location documents within the date range.
+
 `query_usercache_put_summ()` returns the first and last
  put calls for each user.
+
+`query_most_recent_n_trip_docs()` yields trips data for the most recent n
+trips, based on data.end_ts
 
 `query_cleaned_trips_by_timestamp()` trips data
  between the start timestamp of the first date
  and the start timestamp of the second date.
 
-`get_query_size()` returns the number of cleaned
+`get_n_trips_in_query()` returns the number of cleaned
  trip documents in between two dates
 }
 \description{
-Query functions
-
-Finds the first and last get calls for each user.
-
-Finds the first and last diary calls for each user.
-
-Finds the maximum trip end timestamp.
-
-Finds the minimum trip start timestamp.
+Returns the number of cleaned locations documents in between two dates
 }
