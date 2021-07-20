@@ -7,6 +7,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList
+#' @import DTedit
 mod_DTedit_ui <- function(id) {
   ns <- NS(id)
   tagList(

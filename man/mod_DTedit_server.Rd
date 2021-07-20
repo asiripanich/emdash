@@ -4,14 +4,25 @@
 \alias{mod_DTedit_server}
 \title{DTedit Server Function}
 \usage{
-mod_DTedit_server(input, output, session, data)
+mod_DTedit_server(
+  input,
+  output,
+  session,
+  table_data,
+  Table_Type,
+  suppl_table_sublist,
+  DT_options,
+  cons
+)
 }
 \arguments{
-\item{data}{a data.frame}
-
 \item{tab_name}{table name
-Insert a row. "Create"
-Update a row
+Insert a row. "Create"}
+
+\item{row}{the row where you made the change
+Update a row}
+
+\item{data}{the data including your updated row
 Delete a row}
 }
 \description{
