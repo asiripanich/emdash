@@ -206,22 +206,22 @@ app_server <- function(input, output, session) {
         }
         
         # Define the callback functions used by dtedit
-        #' Insert a row. "Create"
-        #' @param data the data including your inserted row
-        #' @param row the row where you made the change
+        # Insert a row. "Create"
+        # @param data the data including your inserted row
+        # @param row the row where you made the change
         insert_callback <- function(data, row) {
           db_insert(cons,"Checkinout",data[row,])
           return(data)
         }
         
-        #' Update a row
-        #' @param data the data including your updated row
+        # Update a row
+        # @param data the data including your updated row
         update_callback <- function(data, olddata, row) {
           db_update(cons,"Checkinout",data[row,])
           data
         }
         
-        #' Delete a row
+        # Delete a row
         delete_callback <- function(data, row) {
           db_delete(cons,"Checkinout", data[row,])   # table_type updates to PolarBear before any CUD functions are called
           return(data[-row, ])
