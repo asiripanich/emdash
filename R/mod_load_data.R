@@ -35,7 +35,7 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_server_calls(., cons)
       message("Finished loading participants")
       
-      message(sprintf("Participants size is: %s kb", object.size(data_r$participants, units = "kB", standard = "SI")))
+      message(sprintf("Participants size is: %s kb", format(object.size(data_r$participants), units = 'kB', standard = 'SI')))
 
       data_r$click <- runif(1)
     },

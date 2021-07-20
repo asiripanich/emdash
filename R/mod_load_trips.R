@@ -21,16 +21,16 @@ mod_load_trips_ui <- function(id) {
     as.Date(.)
   message(paste("Last trip: ", last_trip))
 
-  thirty_before_last_date <- last_trip - getOption("emdash.load_trips_start_ndays") + 1
+  start_date <- last_trip - getOption("emdash.load_trips_start_ndays") + 1
 
   tagList(
     dateRangeInput(ns("dates"),
       "Select the range of dates for trip data",
       # start = "2016-01-05",
       # end = "2016-01-05"),
-      start = thirty_before_last_date,
+      start = start_date,
       end = last_trip,
-      min = min(thirty_before_last_date, first_trip),
+      min = min(start_date, first_trip),
       max = last_trip
     ),
     textOutput(ns("load_display")),
@@ -117,9 +117,6 @@ mod_load_trips_server <- function(input, output, session, cons) {
     {
       message("Load_trips observed")
       if (isTRUE(load_trips_allowed())) {
-        get_size_kb <- function(x) {
-          object.size(x) / 1000
-        }
 
         message("About to load trips")
         data_geogr$trips <- query_cleaned_trips_by_timestamp(cons, data_geogr$dates()) %>%
@@ -128,7 +125,7 @@ mod_load_trips_server <- function(input, output, session, cons) {
           data.table::setorder(end_fmt_time) %>%
           tidy_cleaned_trips(project_crs = get_golem_config("project_crs"))
         message("Finished loading trips")
-        message(sprintf("Trips size is: %s kb", get_size_kb(data_geogr$trips)))
+        message(sprintf("Trips size is: %s", format(object.size(data_geogr$trips), units = 'kB', standard = 'SI')))
 
         # output column names into R
         # data_geogr$trips %>% colnames() %>% dput()
@@ -144,7 +141,8 @@ mod_load_trips_server <- function(input, output, session, cons) {
       }
     },
     ignoreNULL = FALSE,
-    # ignoreInit = TRUE  use this if you don't want any trips to load on startup
+    #ignoreInit = TRUE if you don't want any trips to load on startup
+    ignoreInit = !getOption("emdash.load_trips_on_startup")  
   )
 
   message("Running: mod_load_trips_server")

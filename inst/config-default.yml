@@ -6,7 +6,8 @@ default:
  
  # Options for loading trips and locations
  load_trips_start_ndays: 7
- max_documents_for_mod_load_trips: 10000 # 500 for testing with test-data
+ load_trips_on_startup: TRUE  # use FALSE if you do not want trips to load on startup
+ max_documents_for_mod_load_trips: 100000 # 500 for testing with test-data
  # Limiting to 300 megabytes worth of trips and locations:
  # each trip doc is ~1500 characters * 2 bytes/character (UTF8) 
  # 		300 *10^6 bytes/(3*10^3 bytes/document) = 100,000 documents 

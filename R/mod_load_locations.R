@@ -91,9 +91,6 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
   # Observe for when get_trajectories gets clicked.
   observeEvent(input$get_trajectories, {
     if (locations_info()$allow_load == TRUE) {
-      get_size_kb <- function(x) {
-        object.size(x) / 1000
-      }
 
       message("About to load locations")
 
@@ -108,7 +105,7 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
         data_geogr$locations <- tidy_cleaned_locations(query_cleaned_locations_by_timestamp(cons, data_geogr$dates()))
       }
       message("Finished loading locations")
-      message(sprintf("Locations size is: %s kb", get_size_kb(data_geogr$locations)))
+      message(sprintf("Locations size is: %s", format(object.size(data_geogr$locations), units = 'kB', standard = 'SI')))
 
       message("About to create trajectories within trips")
       data_geogr$trips_with_trajectories <- generate_trajectories(data_geogr$trips,
@@ -116,7 +113,7 @@ mod_load_locations_server <- function(input, output, session, cons, data_geogr) 
         project_crs = get_golem_config("project_crs")
       )
       message("Finished creating trajectories within trips")
-      message(sprintf("Trips with trajectories size is: %s kb", get_size_kb(data_geogr$trips_with_trajectories)))
+      message(sprintf("Trips with trajectories size is: %s", format(object.size(data_geogr$trips_with_trajectories), units = 'kB', standard = 'SI')))
 
       # Now that get_trajectories has been clicked and locations_info()$allow_load is TRUE,
       # update data_geogr$locations_ready() to TRUE.
