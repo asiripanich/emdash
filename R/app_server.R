@@ -259,7 +259,6 @@ app_server <- function(input, output, session) {
       # For other supplementary tables, use mod_DT  
       else {
         if (isTRUE(startup_load_supplementary())) {
-          browser()
           regular_tab <-  tabPanel(
             status = "primary",
             title = table_title,
@@ -283,9 +282,7 @@ app_server <- function(input, output, session) {
                    DT_options = datatable_options)
       }
     }
-    message(startup_load_supplementary())
     startup_load_supplementary(FALSE)
-    message(startup_load_supplementary())
   })
 
   observeEvent(data_geogr$click, {
