@@ -16,15 +16,20 @@ mod_DTedit_server(
 )
 }
 \arguments{
-\item{tab_name}{table name
-Insert a row. "Create"}
+\item{input, output, session}{Internal parameters for {shiny}}
 
-\item{row}{the row where you made the change
-Update a row}
+\item{table_data}{data to place in the editable data table}
 
-\item{data}{the data including your updated row
-Delete a row}
+\item{Table_Type}{Name of the mongo collection the data table is associated with}
+
+\item{suppl_table_sublist}{list containing information related to the table}
+
+\item{DT_options}{options used by DT::renderDataTable within dtedit}
+
+\item{cons}{the connection to mongodb}
+
+\item{data}{a data.frame}
 }
 \description{
-DTedit server module.
+DTedit Server Function
 }
