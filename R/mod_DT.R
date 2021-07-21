@@ -17,7 +17,7 @@ mod_DT_ui <- function(id) {
 #' DT Server Function
 #'
 #' @param data a data.frame
-#' @param tab_name table name
+#' @param DT_options options used by DT::renderDataTable
 #'
 #' @noRd
 mod_DT_server <- function(input, output, session, data, DT_options) {

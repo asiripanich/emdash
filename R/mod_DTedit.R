@@ -2,7 +2,7 @@
 #'
 #' @description A shiny Module.
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param id Internal parameter for {shiny}.
 #'
 #' @noRd
 #'
@@ -15,13 +15,15 @@ mod_DTedit_ui <- function(id) {
   )
 }
 
-#' @title DTedit Server Function
-#' @description
-#'
-#' DTedit server module.
-#'
+#' DTedit Server Function
+#' 
+#' @param input,output,session Internal parameters for {shiny}
 #' @param data a data.frame
-#' @param tab_name table name
+#' @param table_data data to place in the editable data table
+#' @param Table_Type Name of the mongo collection the data table is associated with
+#' @param suppl_table_sublist list containing information related to the table
+#' @param DT_options options used by DT::renderDataTable within dtedit
+#' @param cons the connection to mongodb
 mod_DTedit_server <- function(input, output, session, table_data, Table_Type,
                               suppl_table_sublist, DT_options, cons) {
   ns <- session$ns
@@ -51,22 +53,22 @@ mod_DTedit_server <- function(input, output, session, table_data, Table_Type,
   #### NOTE: db insert, update, and delete are defined specifically for Checkinout
 
   # Define the callback functions used by dtedit
-  #' Insert a row. "Create"
-  #' @param data the data including your inserted row
-  #' @param row the row where you made the change
+  # Insert a row. "Create"
+  # @param data the data including your inserted row
+  # @param row the row where you made the change
   insert_callback <- function(data, row) {
     db_insert(cons, Table_Type, data[row, ])
     return(data)
   }
 
-  #' Update a row
-  #' @param data the data including your updated row
+  # Update a row
+  # @param data the data including your updated row
   update_callback <- function(data, olddata, row) {
     db_update(cons, Table_Type, data[row, ])
     data
   }
 
-  #' Delete a row
+  # Delete a row
   delete_callback <- function(data, row) {
     db_delete(cons, Table_Type, data[row, ])
     return(data[-row, ])
