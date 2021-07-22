@@ -9,7 +9,7 @@ mod_DTedit_server(
   output,
   session,
   table_data,
-  Table_Type,
+  table_type,
   suppl_table_sublist,
   DT_options,
   cons
@@ -20,15 +20,13 @@ mod_DTedit_server(
 
 \item{table_data}{data to place in the editable data table}
 
-\item{Table_Type}{Name of the mongo collection the data table is associated with}
+\item{table_type}{Name of the mongo collection the data table is associated with}
 
 \item{suppl_table_sublist}{list containing information related to the table}
 
 \item{DT_options}{options used by DT::renderDataTable within dtedit}
 
 \item{cons}{the connection to mongodb}
-
-\item{data}{a data.frame}
 }
 \description{
 DTedit Server Function

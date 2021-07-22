@@ -19,11 +19,11 @@ mod_DTedit_ui <- function(id) {
 #' 
 #' @param input,output,session Internal parameters for {shiny}
 #' @param table_data data to place in the editable data table
-#' @param Table_Type Name of the mongo collection the data table is associated with
+#' @param table_type Name of the mongo collection the data table is associated with
 #' @param suppl_table_sublist list containing information related to the table
 #' @param DT_options options used by DT::renderDataTable within dtedit
 #' @param cons the connection to mongodb
-mod_DTedit_server <- function(input, output, session, table_data, Table_Type,
+mod_DTedit_server <- function(input, output, session, table_data, table_type,
                               suppl_table_sublist, DT_options, cons) {
   ns <- session$ns
   req(table_data)
@@ -35,7 +35,7 @@ mod_DTedit_server <- function(input, output, session, table_data, Table_Type,
     DT_options$columnDefs[[1]]$targets <- DT_options$columnDefs[[1]]$targets - 1
   }
 
-  db_operations <- suppl_table_sublist[[Table_Type]]$editable$operations
+  db_operations <- suppl_table_sublist[[table_type]]$editable$operations
   allow_delete <- "D" %in% db_operations
   allow_update <- "U" %in% db_operations
   allow_insert <- FALSE #' C' %in% db_operations
@@ -43,8 +43,8 @@ mod_DTedit_server <- function(input, output, session, table_data, Table_Type,
   # Make status a factor so you can use selectInput
   table_data$status <- as.factor(table_data$status)
 
-  if ("edit_columns" %in% names(suppl_table_sublist[[Table_Type]]$editable)) {
-    edit_columns <- suppl_table_sublist[[Table_Type]]$editable$edit_columns
+  if ("edit_columns" %in% names(suppl_table_sublist[[table_type]]$editable)) {
+    edit_columns <- suppl_table_sublist[[table_type]]$editable$edit_columns
   } else {
     edit_columns <- "status"
   }
@@ -56,20 +56,20 @@ mod_DTedit_server <- function(input, output, session, table_data, Table_Type,
   # @param data the data including your inserted row
   # @param row the row where you made the change
   insert_callback <- function(data, row) {
-    db_insert(cons, Table_Type, data[row, ])
+    db_insert(cons, table_type, data[row, ])
     return(data)
   }
 
   # Update a row
   # @param data the data including your updated row
   update_callback <- function(data, olddata, row) {
-    db_update(cons, Table_Type, data[row, ])
+    db_update(cons, table_type, data[row, ])
     data
   }
 
   # Delete a row
   delete_callback <- function(data, row) {
-    db_delete(cons, Table_Type, data[row, ])
+    db_delete(cons, table_type, data[row, ])
     return(data[-row, ])
   }
 

@@ -222,7 +222,7 @@ app_server <- function(input, output, session) {
           module = mod_DTedit_server,
           id = paste0("DTedit_", table_type),
           table_data = suppl_table,
-          Table_Type = table_type,
+          table_type = table_type,
           suppl_table_sublist = t,
           DT_options = datatable_options,
           cons
