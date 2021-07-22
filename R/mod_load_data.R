@@ -54,11 +54,6 @@ mod_load_data_server <- function(input, output, session, cons) {
         message(paste("Finished loading", table_title))
       }
 
-      # output column names into R
-      # data_r$trips %>% colnames() %>% dput()
-      # data_r$participants %>% colnames() %>% dput()
-      # data_r$trips_with_trajectories %>% colnames() %>% dput()
-
       data_r$click <- runif(1)
     },
     ignoreNULL = FALSE

@@ -9,7 +9,6 @@
 \alias{query_usercache_put_summ}
 \alias{query_diary_summ}
 \alias{query_cleaned_trips}
-\alias{query_supplementary}
 \alias{query_max_trip_timestamp}
 \alias{query_min_trip_timestamp}
 \alias{get_query_size}
@@ -33,8 +32,6 @@ query_usercache_put_summ(cons)
 query_diary_summ(cons)
 
 query_cleaned_trips(cons)
-
-query_supplementary(cons, name)
 
 query_max_trip_timestamp(cons)
 
