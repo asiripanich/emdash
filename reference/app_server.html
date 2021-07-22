@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Query functions — query • emdash</title>
+<title>The application server-side — app_server • emdash</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,8 @@
 
 
 
-<meta property="og:title" content="Query functions — query" />
-<meta property="og:description" content="Query functions
-Finds the first and last get calls for each user.
-Finds the first and last diary calls for each user.
-Finds the maximum trip end timestamp.
-Finds the minimum trip start timestamp." />
+<meta property="og:title" content="The application server-side — app_server" />
+<meta property="og:description" content="The application server-side" />
 
 
 
@@ -115,70 +111,27 @@ Finds the minimum trip start timestamp." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Query functions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/utils_query_database.R'><code>R/utils_query_database.R</code></a></small>
-    <div class="hidden name"><code>query.Rd</code></div>
+    <h1>The application server-side</h1>
+    <small class="dont-index">Source: <a href='https://github.com/asiripanich/emdash/blob/master/R/app_server.R'><code>R/app_server.R</code></a></small>
+    <div class="hidden name"><code>app_server.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Query functions</p>
-<p>Finds the first and last get calls for each user.</p>
-<p>Finds the first and last diary calls for each user.</p>
-<p>Finds the maximum trip end timestamp.</p>
-<p>Finds the minimum trip start timestamp.</p>
+    <p>The application server-side</p>
     </div>
 
-    <pre class="usage"><span class='fu'>query_cleaned_locations</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_cleaned_locations_by_timestamp</span><span class='op'>(</span><span class='va'>cons</span>, <span class='va'>dates</span><span class='op'>)</span>
-
-<span class='fu'>query_server_calls</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_usercache_get_summ</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_usercache_put_summ</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_diary_summ</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_cleaned_trips</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_max_trip_timestamp</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_min_trip_timestamp</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>get_query_size</span><span class='op'>(</span><span class='va'>cons</span>, <span class='va'>dates</span><span class='op'>)</span>
-
-<span class='fu'>query_cleaned_place</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_cleaned_section</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_raw_trips</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_stage_uuids</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span>
-
-<span class='fu'>query_stage_profiles</span><span class='op'>(</span><span class='va'>cons</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>app_server</span><span class='op'>(</span><span class='va'>input</span>, <span class='va'>output</span>, <span class='va'>session</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cons</th>
-      <td><p>a list of connections created with [connect_stage_collections()].</p></td>
-    </tr>
-    <tr>
-      <th>dates</th>
-      <td><p>a date range, a character vector of length two.
-Dates must be in this format "yyyy-mm-dd".</p></td>
+      <th>input, output, session</th>
+      <td><p>Internal parameters for shiny.
+DO NOT REMOVE.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>a data.frame/data.table.</p>
-<p>`query_usercache_put_summ()` returns the first and last
- put calls for each user.</p>
-<p>`get_query_size()` returns the number of cleaned
- trip documents in between two dates</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
