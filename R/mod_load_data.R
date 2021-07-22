@@ -43,7 +43,8 @@ mod_load_data_server <- function(input, output, session, cons) {
         table_title <- t[[table_type]]$tab_name
 
         message(paste("About to load", table_title))
-        data_r[[table_type]] <- query_supplementary(cons, table_type)
+        data_r[[table_type]] <- cons[[name]]$find("{}") %>% 
+          as.data.table()
 
         if ("user_id" %in% colnames(data_r[[table_type]])) {
           data_r[[table_type]] %>%
