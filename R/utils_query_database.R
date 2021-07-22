@@ -73,8 +73,7 @@ query_usercache_get_summ <- function(cons) {
     ]'
   ) %>%
     as.data.table() %>%
-    normalise_uuid() %>%
-    return()
+    normalise_uuid()
 }
 
 #' @rdname query
@@ -128,8 +127,7 @@ query_diary_summ <- function(cons) {
     ]'
   ) %>%
     as.data.table() %>%
-    normalise_uuid() %>%
-    return()
+    normalise_uuid()
 }
 
 #' @rdname query
@@ -141,8 +139,6 @@ query_cleaned_trips <- function(cons) {
     data.table::setorder(data.end_fmt_time)
 }
 
-#' @rdname query
-#' @export
 #' @returns `query_cleaned_trips_by_timestamp()` trips data
 #'  between the start timestamp of the first date
 #'  and the start timestamp of the second date.
@@ -179,8 +175,7 @@ query_max_trip_timestamp <- function(cons) {
       }]'
   ) %>%
     unlist() %>%
-    unname() %>%
-    return()
+    unname()
 }
 
 #' Finds the minimum trip start timestamp.
@@ -198,8 +193,7 @@ query_min_trip_timestamp <- function(cons) {
       }]'
   ) %>%
     unlist() %>%
-    unname() %>%
-    return()
+    unname()
 }
 
 count_total_trips <- function(cons) {

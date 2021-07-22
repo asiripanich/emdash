@@ -12,6 +12,7 @@
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
+
 run_app <- function(mongo_url, config_file, ...) {
   if (!missing(mongo_url)) {
     checkmate::assert_string(mongo_url)

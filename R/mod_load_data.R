@@ -35,10 +35,24 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_server_calls(., cons)
       message("Finished loading participants")
 
-      # output column names into R
-      # data_r$trips %>% colnames() %>% dput()
-      # data_r$participants %>% colnames() %>% dput()
-      # data_r$trips_with_trajectories %>% colnames() %>% dput()
+      table_list <- getOption("emdash.supplementary_tables")
+
+      # For each supplementary table, query the corresponding data
+      for (t in table_list) {
+        table_type <- names(t)
+        table_title <- t[[table_type]]$tab_name
+
+        message(paste("About to load", table_title))
+        data_r[[table_type]] <- cons[[table_type]]$find("{}") %>% 
+          as.data.table()
+
+        if ("user_id" %in% colnames(data_r[[table_type]])) {
+          data_r[[table_type]] %>%
+            normalise_uuid() %>%
+            data.table::setcolorder(c("user_id"))
+        }
+        message(paste("Finished loading", table_title))
+      }
 
       data_r$click <- runif(1)
     },

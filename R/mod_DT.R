@@ -17,27 +17,28 @@ mod_DT_ui <- function(id) {
 #' DT Server Function
 #'
 #' @param data a data.frame
-#' @param tab_name table name
+#' @param DT_options options used by DT::renderDataTable
 #'
 #' @noRd
-mod_DT_server <- function(input, output, session, data) {
+mod_DT_server <- function(input, output, session, data, DT_options) {
   ns <- session$ns
-
   req(data)
 
-  # button_list <- list(list(extend='colvis', columns=c()))
+  if (missing(DT_options)) {
+    DT_options <- list(
+      scrollX = TRUE,
+      pageLength = 50,
+      dom = "Bfrtip",
+      buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
+    )
+  }
 
+  # button_list <- list(list(extend='colvis', columns=c()))
   output$DTtable <- DT::renderDataTable({
     DT::datatable(
       data,
       autoHideNavigation = TRUE,
-      options = list(
-        scrollX = TRUE,
-        pageLength = 50,
-        dom = "Bfrtip",
-        # columnDefs = list(list(visible=FALSE, targets=c(5:16)))
-        buttons = c("copy", "csv", "excel", "pdf", "print", "colvis") # , button_list)
-      ),
+      options = DT_options,
       filter = list(position = "top", clear = FALSE),
       extensions = "Buttons"
     )

@@ -9,7 +9,6 @@
 \alias{query_usercache_put_summ}
 \alias{query_diary_summ}
 \alias{query_cleaned_trips}
-\alias{query_cleaned_trips_by_timestamp}
 \alias{query_max_trip_timestamp}
 \alias{query_min_trip_timestamp}
 \alias{get_query_size}
@@ -33,8 +32,6 @@ query_usercache_put_summ(cons)
 query_diary_summ(cons)
 
 query_cleaned_trips(cons)
-
-query_cleaned_trips_by_timestamp(cons, dates)
 
 query_max_trip_timestamp(cons)
 
@@ -63,10 +60,6 @@ a data.frame/data.table.
 
 `query_usercache_put_summ()` returns the first and last
  put calls for each user.
-
-`query_cleaned_trips_by_timestamp()` trips data
- between the start timestamp of the first date
- and the start timestamp of the second date.
 
 `get_query_size()` returns the number of cleaned
  trip documents in between two dates
