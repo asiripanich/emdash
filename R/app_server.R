@@ -309,11 +309,11 @@ app_server <- function(input, output, session) {
   filtered_trips <- reactive({
     # Do nothing if data_geogr$trips does not exist, which happens on startup
     req(data_geogr$trips)
-    
+
     callModule(
       module = esquisse::filterDF,
       id = "filtering",
-      data_table = reactive(anonymize_uuid_if_required(map_data())), 
+      data_table = reactive(anonymize_uuid_if_required(map_data())),
       data_name = reactive("data"),
       data_vars = cols_to_include_in_map_filter, # the map filter uses start_fmt_time and end_fmt_time (UTC time)
       drop_ids = FALSE
