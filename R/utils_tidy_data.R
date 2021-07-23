@@ -163,27 +163,37 @@ tidy_cleaned_trips_by_timestamp <- function(df) {
 }
 
 summarise_trips_without_trips <- function(participants, cons) {
-  date_query <- query_trip_dates(cons)
-  # Generate relevant date related information from the query
-  trip_dates <- lubridate::as_date(date_query$data$start_fmt_time) # converts to UTC
-  start_fmt_time <- lubridate::as_datetime(date_query$data$start_fmt_time) # converts to UTC
-  end_fmt_time <- lubridate::as_datetime(date_query$data$end_fmt_time) # converts to UTC
-
-  start_local_time <- purrr::map2(start_fmt_time, date_query$data$start_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
-    as.character()
-  end_local_time <- purrr::map2(end_fmt_time, date_query$data$end_local_dt$timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
-    as.character() # a timestamp but has to be a string
-
-  date_dt <- cbind(date_query, trip_dates) %>%
-    .[, !names(.) %in% c("data")] %>%
-    as.data.table() %>%
+  date_query <- query_trip_dates(cons) %>% 
+    as.data.table() %>% 
     normalise_uuid()
-  first_trip_local_datetime <- format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE)
 
+  # Generate intermediate columns to use for summarizing trips.
+  helper_trip_cols <- date_query %>% 
+    .[,.(
+      user_id = user_id,
+      trip_dates = lubridate::as_date(date_query$data.start_fmt_time), # convert trip dates to UTC
+      
+      start_fmt_time = lubridate::as_datetime(date_query$data.start_fmt_time), # convert trip start datetimes to UTC
+      end_fmt_time = lubridate::as_datetime(date_query$data.end_fmt_time) # convert trip end datetimes to UTC
+    )] %>%
+    
+    # Now add columns generated from start/end_fmt_time
+    .[,':='
+      (
+      start_local_time = purrr::map2(start_fmt_time, date_query$data.start_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+        as.character(),   # format returns a list, but lubridate::as_datetime needs it as a character string
+      end_local_time = purrr::map2(end_fmt_time, date_query$data.end_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+        as.character()
+      )
+    ]
+
+  # Write the trip summary columns
   summ_trips <-
-    date_dt %>%
-    .[, date := trip_dates] %>%
+    helper_trip_cols %>%
     # adds the date of local datetime of trip
+    .[, date := trip_dates] %>%
+    
+    # Generate summary columns
     .[, .(
       n_trips_today = sum(date == Sys.Date()),
       n_active_days = data.table::uniqueN(date),
@@ -191,9 +201,10 @@ summarise_trips_without_trips <- function(participants, cons) {
       last_trip_datetime = max(start_fmt_time), # in UTC
       first_trip_local_datetime = format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE),
       last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
-    ), by = user_id] %>%
+    ), by = user_id] %>% 
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
 
+  # Count the number of trips per user
   n_trips <- count_total_trips(cons)
   summ_trips <- merge(n_trips, summ_trips, by = "user_id")
 
@@ -245,7 +256,6 @@ summarise_server_calls <- function(participants, cons) {
 
   # Get the column names that are in participants before merging.
   particpt_cols <- names(participants)
-
 
   # Merge each nonempty summary table with participants
   # Current columns to be added to participants: (first/last)_(get/put/diary)_call
