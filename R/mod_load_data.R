@@ -34,8 +34,26 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_trips_without_trips(., cons) %>%
         summarise_server_calls(., cons)
       message("Finished loading participants")
-      
       message(sprintf("Participants size is: %s kb", format(object.size(data_r$participants), units = 'kB', standard = 'SI')))
+
+      table_list <- getOption("emdash.supplementary_tables")
+
+      # For each supplementary table, query the corresponding data
+      for (t in table_list) {
+        table_type <- names(t)
+        table_title <- t[[table_type]]$tab_name
+
+        message(paste("About to load", table_title))
+        data_r[[table_type]] <- cons[[table_type]]$find("{}") %>% 
+          as.data.table()
+
+        if ("user_id" %in% colnames(data_r[[table_type]])) {
+          data_r[[table_type]] %>%
+            normalise_uuid() %>%
+            data.table::setcolorder(c("user_id"))
+        }
+        message(paste("Finished loading", table_title))
+      }
 
       data_r$click <- runif(1)
     },

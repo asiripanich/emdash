@@ -77,6 +77,24 @@ default:
    last_put_call:  last data upload
    first_diary_call: first app launch
    last_diary_call:  last app launch
+   
+ supplementary_tables:
+   - Checkinout:
+       tab_name: "Bike Check in"
+       editable: 
+            operations:
+                        - D       # Delete
+                        #- U       # Update/Edit     (not ready)                     
+                        #- C       # Create/Insert  (Currently not allowed)
+
+            # edit_columns:
+            #             - 'status'
+            #             - 'bikeLabel' 
+                       
+   - PolarBear:
+       tab_name: "Polar Bear"
+   
+  
   
 
 

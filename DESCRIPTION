@@ -7,7 +7,7 @@ Authors@R: c(
     person("K", "Shankari", role="aut"),
     person("Michael", "Allen", role="aut"),
     person("Arthur", "Yip", role="ctb"))
-Description: e-mission dashboard built with the Shiny framework
+Description: e-mission dashboard built with the Shiny framework.
 License: MIT + file LICENSE
 Imports: 
     config,
@@ -32,8 +32,9 @@ Imports:
     randomcoloR,
     sf,
     purrr,
-    xml2,
-    checkmate
+    checkmate,
+    DTedit,
+    htmlwidgets
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
@@ -41,3 +42,4 @@ URL: https://github.com/asiripanich/emdash
 BugReports: https://github.com/asiripanich/emdash/issues
 Suggests: 
     testthat
+Remotes: DavidPatShuiFong/DTedit@7ce8de1b5fcd7195beee73ed4acce8ac33140ab7

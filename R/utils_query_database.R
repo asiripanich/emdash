@@ -103,8 +103,7 @@ query_usercache_get_summ <- function(cons) {
     ]'
   ) %>%
     as.data.table() %>%
-    normalise_uuid() %>%
-    return()
+    normalise_uuid()
 }
 
 #' @rdname query
@@ -158,8 +157,7 @@ query_diary_summ <- function(cons) {
     ]'
   ) %>%
     as.data.table() %>%
-    normalise_uuid() %>%
-    return()
+    normalise_uuid()
 }
 
 #' Finds the first and last get calls for each user.
@@ -301,8 +299,7 @@ query_max_trip_timestamp <- function(cons) {
       }]'
   ) %>%
     unlist() %>%
-    unname() %>%
-    return()
+    unname()
 }
 
 #' Finds the minimum trip start timestamp.
@@ -320,8 +317,7 @@ query_min_trip_timestamp <- function(cons) {
       }]'
   ) %>%
     unlist() %>%
-    unname() %>%
-    return()
+    unname()
 }
 
 #' @returns Counts the total number of trips in the database
