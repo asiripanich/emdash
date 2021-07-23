@@ -16,7 +16,7 @@ mod_DTedit_ui <- function(id) {
 }
 
 #' DTedit Server Function
-#' 
+#'
 #' @param input,output,session Internal parameters for {shiny}
 #' @param table_data data to place in the editable data table
 #' @param table_type Name of the mongo collection the data table is associated with
