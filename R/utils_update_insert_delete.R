@@ -43,8 +43,8 @@ db_delete <- function(cons, collection_name, df_row) {
 
 # cons <- connect_stage_collections(url = getOption('emdash.mongo_url'))
 # t <- cons$Checkinout$find()
-## Example
-# Setting up extra entries to delete or edit.
+# # Example
+# # Setting up extra entries to delete or edit.
 # for (j in 1:60){
 #   user_id <- paste(j)
 #   status <- FALSE
