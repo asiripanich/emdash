@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# emdash 1.4.0
+
+- Trip loading and location loading now depend on the number of (MongoDB) documents in the date range and the specified max documents per trip found in config-default.yml. See #49 for an explanation of this feature.
+- Make supplement tables editable. This option can be configured using the configuration file of your dashboard.
+
+
 # emdash 1.3.0
 
 - Trips can be filtered using the date range selector from the sidebar. This only affects the "Trip Trend" plot in the Dashboard panel and the trips displayed on the Maps panel. By default, only trips from the last 30 days since the last recorded trips are selected. Also, the max number of days the user can select must not be more than the `max_windows_for_mod_load_trips` option in your config file.
