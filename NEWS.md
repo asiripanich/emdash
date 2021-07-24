@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# emdash 1.4.1
+
+- The plot is now synced all the tables.
+- Correct a variable name. In config, `col_labels_for_participts` get renamed to `cols_to_remove_from_participts_table`.
+
+
 # emdash 1.4.0
 
 - Trip loading and location loading now depend on the number of (MongoDB) documents in the date range and the specified max documents per trip found in config-default.yml. See #49 for an explanation of this feature.
