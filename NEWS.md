@@ -1,8 +1,13 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# emdash 1.4.1.9000
+
+- Add a boolean option for displaying `user_email` on the trip table. See `trips_table_merge_user_email` in the config file. (#57)
+
+
 # emdash 1.4.1
 
-- The plot is now synced all the tables.
+- The plot is now synced all the tables. (#55)
 - Correct a variable name. In config, `col_labels_for_participts` get renamed to `cols_to_remove_from_participts_table`.
 
 
