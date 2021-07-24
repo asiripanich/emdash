@@ -132,10 +132,10 @@ mod_load_trips_server <- function(input, output, session, cons, data_r) {
         if (isTRUE(getOption("emdash.trips_table_merge_user_email"))) {
           data_geogr$trips <- merge(
             x = data_geogr$trips,
-            y = data_r$participants[, .SD, .SDcols = c("user_id", "user_email")], 
+            y = data_r$participants[, .SD, .SDcols = c("user_id", "user_email")],
             by = "user_id"
           ) %>%
-          data.table::setcolorder(c("user_id", "user_email"))
+            data.table::setcolorder(c("user_id", "user_email"))
         }
 
         # output column names into R
