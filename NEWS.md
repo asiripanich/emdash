@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# emdash 1.4.1.9001
+
+- Fixes bad column names that can crash the dashboard on the first reload of the trip data. (#57)
+
+
 # emdash 1.4.1.9000
 
 - Add a boolean option for displaying `user_email` on the trip table. See `trips_table_merge_user_email` in the config file. (#57)
