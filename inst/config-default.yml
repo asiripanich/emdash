@@ -56,7 +56,7 @@ default:
   
   
  # Set the labels to display for the participant data 
- col_labels_for_participts:
+ col_labels_for_participants:
    user_id:             user id
    update_ts:           last profile update  
    client:              UI channel 
