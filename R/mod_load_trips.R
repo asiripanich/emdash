@@ -42,7 +42,7 @@ mod_load_trips_ui <- function(id) {
 #' load_data Server Function
 #'
 #' @noRd
-mod_load_trips_server <- function(input, output, session, cons) {
+mod_load_trips_server <- function(input, output, session, cons, data_r) {
   ns <- session$ns
 
   data_geogr <- reactiveValues(data = data.frame(), name = "data")
@@ -125,8 +125,18 @@ mod_load_trips_server <- function(input, output, session, cons) {
           normalise_uuid() %>%
           data.table::setorder(end_fmt_time) %>%
           tidy_cleaned_trips(project_crs = get_golem_config("project_crs"))
+
         message("Finished loading trips")
         message(sprintf("Trips size is: %s", format(object.size(data_geogr$trips), units = "kB", standard = "SI")))
+
+        if (isTRUE(getOption("emdash.trips_table_merge_user_email"))) {
+          data_geogr$trips <- merge(
+            x = data_geogr$trips,
+            y = data_r$participants[, .SD, .SDcols = c("user_id", "user_email")], 
+            by = "user_id"
+          ) %>%
+          data.table::setcolorder(c("user_id", "user_email"))
+        }
 
         # output column names into R
         # data_geogr$trips %>% colnames() %>% dput()

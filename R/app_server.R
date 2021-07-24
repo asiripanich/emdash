@@ -8,8 +8,10 @@ app_server <- function(input, output, session) {
   # prepare data ------------------------------------------------------------
   cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
   data_r <- callModule(mod_load_data_server, "load_data_ui", cons)
-  data_geogr <- callModule(mod_load_trips_server, "load_trips_ui", cons)
-  data_geogr <- callModule(mod_load_locations_server, "load_locations_ui", cons, data_geogr)
+  data_geogr <- 
+    callModule(mod_load_trips_server, "load_trips_ui", cons, data_r) %>% {
+      callModule(mod_load_locations_server, "load_locations_ui", cons, .)
+    }
 
   # Side bar ----------------------------------------------------------------
 
