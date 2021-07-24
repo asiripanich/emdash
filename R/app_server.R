@@ -99,13 +99,6 @@ app_server <- function(input, output, session) {
   new_col_labels_for_participants <- unname(named_label_vector)
 
   observeEvent(input$tabs, {
-    if (input$tabs == "participants") {
-      data_esquisse$data <-
-        data_r$participants %>%
-        drop_list_columns() %>%
-        data.table::setnames(original_col_labels_for_participants, new_col_labels_for_participants, skip_absent = TRUE)
-    }
-
     # Make sure trips exists before attempting to manipulate it
     if (!is.null(data_geogr$trips) && input$tabs == "trips") {
       data_esquisse$data <-
@@ -116,12 +109,12 @@ app_server <- function(input, output, session) {
 
     if (input$tabs %in% names(data_r)) {
       data_esquisse$data <-
-        data_r[[input$tabs]] %>%
+        data.table::copy(data_r[[input$tabs]]) %>%
         drop_list_columns()
 
       if (input$tabs == "participants") {
         data.table::setnames(
-          data_r[[input$tabs]],
+          data_esquisse$data,
           original_col_labels_for_participants,
           new_col_labels_for_participants,
           skip_absent = TRUE
