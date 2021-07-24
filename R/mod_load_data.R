@@ -10,7 +10,7 @@
 mod_load_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    actionButton(ns("reload_data"), label = "Reload data"),
+    actionButton(ns("reload_data"), label = "Reload participants data"),
     textOutput(ns("last_load_datetime"))
   )
 }
@@ -34,6 +34,7 @@ mod_load_data_server <- function(input, output, session, cons) {
         summarise_trips_without_trips(., cons) %>%
         summarise_server_calls(., cons)
       message("Finished loading participants")
+      message(sprintf("Participants size is: %s kb", format(object.size(data_r$participants), units = "kB", standard = "SI")))
 
       table_list <- getOption("emdash.supplementary_tables")
 
