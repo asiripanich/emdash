@@ -12,7 +12,9 @@ default:
   
  # Limiting to 300 megabytes worth of trips and locations:
  # each trip doc is ~1500 characters * 2 bytes/character (UTF8) 
- # 		300 *10^6 bytes/(3*10^3 bytes/document) = 100,000 documents 
+ # 300 *10^6 bytes/(3*10^3 bytes/document) = 100,000 documents 
+
+ trips_table_merge_user_email: true
  
  participants_starting_recommendation_list:  # not used yet
   - check always permission or app force kill
@@ -64,7 +66,7 @@ default:
   
   
  # Set the labels to display for the participant data 
- col_labels_for_participts:
+ col_labels_for_participants:
    user_id:             user id
    update_ts:           last profile update  
    client:              UI channel 
