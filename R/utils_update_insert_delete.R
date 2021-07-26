@@ -16,30 +16,46 @@ db_update <- function(cons, collection_name, df_row) {
   # db$collection$update('{"name":"jerry"}', '{"$set":{"age": 31}}')
   # Example user_id_string: {"user_id": "Extra_User", "bikeLabel": "WestTower"}
 
-  user_id_string <- paste0('{\"user_id\": \"', df_row$user_id, '\", ', '\"bikeLabel\": \"', df_row$bikeLabel, '\"}') # %>% cat
-  new_status <- isTRUE(df_row$status %>% as.character() %>% as.logical())
-  logic_string <- ifelse(new_status, "true", "false") # if status is TRUE, output 'true'
-
+  # user_id_string <- paste0('{\"user_id\": \"', df_row$user_id, '\", ', '\"bikeLabel\": \"', df_row$bikeLabel, '\"}') # %>% cat
+  # new_status <- isTRUE(df_row$status %>% as.character() %>% as.logical())
+  # logic_string <- ifelse(new_status, "true", "false") # if status is TRUE, output 'true'
+  
+  
+  object_id_string <- sprintf('{\"_id\": {\"$oid\": \"%s\"}}', df_row$`_id`)
   set_string <- paste0('{\"$set":{\"status\":', logic_string, "}}") # %>% cat
 
-  cons[[collection_name]]$update(user_id_string, set_string)
+  cons[[collection_name]]$update(object_id_string, set_string)
 }
 
+#' Updates a participant related document with the row 'df_row'
+#' @param cons connection to mongodb
+#' @param collection_name the collection to look in
+#' @param df_row the dataframe row to update with
+db_update_participants <- function(cons,collection_name,df_row){
+
+  # Make sure the object id is correct for the collection you are using.
+  # My plan is to use the collection, 'Stage_Profiles' to store recommendations.
+  
+  object_id_string <- sprintf('{\"_id\": {\"$oid\": \"%s\"}}', df_row$`_id`)
+  
+  set_string <- sprintf('{\"$set":{\"recommendation\": \"%s\"}}',df_row$recommendation)
+  
+  cons[[collection_name]]$update(object_id_string,set_string)
+}
 
 #' Deletes a document from Checkinout corresponding to df_row
 #' @param cons connection to mongodb
 #' @param collection_name the collection to look in
 #' @param df_row the dataframe row to telling you which document to delete
 db_delete <- function(cons, collection_name, df_row) {
-  if (df_row$user_id == "") {
-    # In case the entry has no user id
-    user_id_string <- paste0('{\"user_id\": {\"$exists\" : "false" }, ', '\"bikeLabel\": \"', df_row$bikeLabel, '\"}')
-    cons$Checkinout$remove(user_id_string, just_one = TRUE)
-  } else {
-    user_id_string <- paste0('{\"user_id\": \"', df_row$user_id, '\", ', '\"bikeLabel\": \"', df_row$bikeLabel, '\"}')
-    cons[[collection_name]]$remove(user_id_string, just_one = TRUE)
-  }
+  
+  object_id_string <- sprintf('{\"_id\": {\"$oid\": \"%s\"}}', df_row$`_id`)
+  cons[[collection_name]]$remove(object_id_string, just_one = TRUE)
 }
+
+
+### Below is meant for easy set up and testing of the db functions.
+
 
 # cons <- connect_stage_collections(url = getOption('emdash.mongo_url'))
 # t <- cons$Checkinout$find()

@@ -133,11 +133,23 @@ app_server <- function(input, output, session) {
   startup_load_supplementary <- reactiveVal(TRUE)
   tableList <- getOption("emdash.supplementary_tables")
 
+  # Set the options used by DT::renderDataTable within dtedit and mod_DT
+  datatable_options <- list(
+    scrollX = TRUE,
+    pageLength = 50,
+    dom = "Bfrtip",
+    buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
+  )
+  
   observeEvent(data_r$click, {
-    callModule(mod_DT_server, "DT_ui_participants",
-      data = data_r$participants %>%
+    callModule(mod_DTedit_server, "DTedit_participants",
+      table_data = data_r$participants %>%
         dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_participts_table"))) %>%
-        data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
+        data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE),
+      table_type = 'participants',
+      suppl_table_sublist = NULL,
+      DT_options = datatable_options,
+      cons
     )
 
     # For each supplementary table, append a new tabPanel and run the server function
@@ -147,42 +159,6 @@ app_server <- function(input, output, session) {
       table_title <- t[[table_type]]$tab_name
 
       suppl_table <- data_r[[table_type]]
-
-      # Set the options used by DT::renderDataTable within dtedit and mod_DT
-      datatable_options <- list(
-        scrollX = TRUE,
-        pageLength = 50,
-        dom = "Bfrtip",
-        buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-      )
-
-      # If the table has a timestamp, make a copy of the timestamp column called fmt_time
-      if ("ts" %in% colnames(suppl_table)) {
-        suppl_table[["fmt_time"]] <- suppl_table[["ts"]]
-        fmt_time_index <- which(names(suppl_table) == "fmt_time")
-
-        # Add columnDefs to datatable options to convert fmt_time to a Date
-        datatable_options[["columnDefs"]] <- list(list(
-          # target column indices start from 0.
-          # However, DT adds a row number column to the display as the 0th column
-          targets = fmt_time_index,
-          render = htmlwidgets::JS(
-            "function(data, type, row) {",
-            "return new Date(data*1000);",
-            "}"
-          )
-        ))
-      }
-
-      suppl_table <- data_r[[table_type]]
-
-      # Set the options used by DT::renderDataTable within dtedit and mod_DT
-      datatable_options <- list(
-        scrollX = TRUE,
-        pageLength = 50,
-        dom = "Bfrtip",
-        buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-      )
 
       # If the table has a timestamp, make a copy of the timestamp column called fmt_time
       if ("ts" %in% colnames(suppl_table)) {
