@@ -44,8 +44,18 @@ mod_load_data_server <- function(input, output, session, cons) {
         table_title <- t[[table_type]]$tab_name
 
         message(paste("About to load", table_title))
-        data_r[[table_type]] <- cons[[table_type]]$find("{}") %>%
-          as.data.table()
+        if (table_type == 'Checkinout'){
+          # Get bike check in and include the object ID so we can use it instead of user_id for CUD
+          data_r[[table_type]] <- 
+            cons$Checkinout$find(query = '{}',
+                                 fields = '{"_id": 1, "user_id" : 1, "status": 1, "bikeLabel": 1}'
+            ) %>% 
+            as.data.table()
+          
+        } else {
+          data_r[[table_type]] <- cons[[table_type]]$find("{}") %>%
+            as.data.table()
+        }
 
         if ("user_id" %in% colnames(data_r[[table_type]])) {
           data_r[[table_type]] %>%
