@@ -73,12 +73,14 @@ mod_DTedit_server <- function(input, output, session, table_data, table_type,
     return(data[-row, ])
   }
 
+  column_names <-  names(table_data)
+  
   return_values <- callModule(
     DTedit::dteditmod,
     id = "DTedit_table",
     thedata = table_data,
     edit.cols = edit_columns,
-    view.cols = names(table_data),
+    view.cols = column_names[!column_names %in% '_id'], # view the table without the '_id' column
     callback.update = update_callback, # db operations defined in utils_update_insert_delete.R
     callback.insert = insert_callback,
     callback.delete = delete_callback,
