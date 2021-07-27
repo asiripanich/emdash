@@ -333,16 +333,19 @@ count_total_trips <- function(cons) {
     normalise_uuid()
 }
 
+# Gets date and mode related trip information for all trips
 query_trip_dates <- function(cons) {
-  dateq <- cons$Stage_analysis_timeseries$find(
+  small_trip_query <- cons$Stage_analysis_timeseries$find(
     query = '{"metadata.key": "analysis/confirmed_trip"}',
     fields = '{"data.start_local_dt":true,
-                                  "data.start_fmt_time":true,
-                                  "data.end_local_dt":true,
-                                  "data.end_fmt_time":true,
-                                  "user_id":true, "_id":false}'
+              "data.start_fmt_time":true,
+              "data.end_local_dt":true,
+              "data.end_fmt_time":true,
+              "data.user_input.mode_confirm":true,
+              "user_id":true, 
+              "_id":false}'
   )
-  return(dateq)
+  return(small_trip_query)
 }
 
 #' @rdname query
