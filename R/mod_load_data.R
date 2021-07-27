@@ -49,7 +49,7 @@ mod_load_data_server <- function(input, output, session, cons) {
           # Get bike check in and include the object ID so we can use it instead of user_id for CUD
           data_r[[table_type]] <- 
             cons$Checkinout$find(query = '{}',
-                                 fields = '{"_id": 1, "user_id" : 1, "status": 1, "bikeLabel": 1}'
+                                 fields = '{}'  # get all fields, including objectId
                                  ) %>% 
             as.data.table()
           
