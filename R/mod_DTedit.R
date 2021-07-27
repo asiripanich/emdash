@@ -28,12 +28,18 @@ mod_DTedit_server <- function(input, output, session, table_data, table_type,
   ns <- session$ns
   req(table_data)
 
-  # If we are rendering fmt_time, adjust the target indices because DTedit
-  # does not display a row number column
-  # Target column indices start from 0
+  # Adjust the target indices.
+  # Note that DTedit does not display a row number column like DT.
+  # Target column indices start from 0 for columnDefs.
+  
+  # "user_id"   "_id"       "status"    "bikeLabel" "ts"        "fmt_time"
+  # fmt_time is column 6 in R, but without _id and with targets starting from 0,
+  # it should be changed to target 4
+  
   if ("columnDefs" %in% names(DT_options)) {
-    DT_options$columnDefs[[1]]$targets <- DT_options$columnDefs[[1]]$targets - 1
-  }
+    # Adjust for id and for fmt_time
+    DT_options$columnDefs[[1]]$targets <- DT_options$columnDefs[[1]]$targets - 2
+  } 
 
   db_operations <- suppl_table_sublist[[table_type]]$editable$operations
   allow_delete <- "D" %in% db_operations
@@ -74,7 +80,6 @@ mod_DTedit_server <- function(input, output, session, table_data, table_type,
   }
 
   column_names <-  names(table_data)
-  
   return_values <- callModule(
     DTedit::dteditmod,
     id = "DTedit_table",
