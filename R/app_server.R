@@ -110,6 +110,7 @@ app_server <- function(input, output, session) {
     if (input$tabs %in% names(data_r)) {
       data_esquisse$data <-
         data.table::copy(data_r[[input$tabs]]) %>%
+        dplyr::select(-dplyr::any_of('_id')) %>%
         drop_list_columns()
 
       if (input$tabs == "participants") {
@@ -159,7 +160,11 @@ app_server <- function(input, output, session) {
           original_col_labels_for_participants,
           new_col_labels_for_participants,
           skip_absent = TRUE
-        )
+        ),
+      table_type = 'participants',
+      suppl_table_sublist = NULL,
+      DT_options = datatable_options,
+      cons
     )
 
     # For each supplementary table, append a new tabPanel and run the server function

@@ -27,7 +27,7 @@ mod_DTedit_server <- function(input, output, session, table_data, table_type,
                               suppl_table_sublist, DT_options, cons) {
   ns <- session$ns
   req(table_data)
-  
+
   # If we are rendering fmt_time, adjust the target indices because DTedit
   # does not display a row number column
   # Target column indices start from 0
