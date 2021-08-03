@@ -46,6 +46,9 @@ mod_DTedit_server <- function(input, output, session, table_data, table_type,
       table_data[['recommendation']] <- rep('unknown',nrow(table_data))
     }
     
+    table_data <- table_data %>%
+      dplyr::mutate(recommendation = dplyr::coalesce(recommendation, 'unknown'))
+    
     # if you get 'Not all edit.cols are in the data.', check column spellings
     edit_columns <- c('recommendation')
     input_types = c(recommendation = "selectizeInput")
