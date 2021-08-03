@@ -51,6 +51,7 @@ db_delete <- function(cons, collection_name, df_row) {
   
   object_id_string <- sprintf('{\"_id\": {\"$oid\": \"%s\"}}', df_row$`_id`)
   cons[[collection_name]]$remove(object_id_string, just_one = TRUE)
+
 }
 
 
