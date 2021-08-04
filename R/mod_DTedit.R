@@ -52,6 +52,18 @@ mod_DTedit_server <- function(input, output, session, table_data, table_type,
       table_data[['recommendation']] <- rep('unknown',nrow(table_data))
     }
     
+    # Get the list of recommendations that are already in the database
+    current_labels <- table_data[['recommendation']] %>% unique()
+
+    # Establish the possible recommendations and add any other recommendations that are in the database
+    recommendation_labels <- c(
+      'check always permission or app force kill',
+      'check always permission',
+      'check token',
+      'check aggressive power savings',
+      'unknown') %>% 
+      c(.,current_labels[!current_labels %in% c(.,NA)])  # also don't give NA as an option
+    
     table_data <- table_data %>%
       dplyr::mutate(recommendation = dplyr::coalesce(recommendation, 'unknown'))
     
@@ -59,12 +71,7 @@ mod_DTedit_server <- function(input, output, session, table_data, table_type,
     edit_columns <- c('recommendation')
     input_types = c(recommendation = "selectizeInput")
     input_choices = list(
-      recommendation = 
-        c('check always permission or app force kill',
-          'check always permission',
-          'check token',
-          'check aggressive power savings',
-          'unknown')
+      recommendation = recommendation_labels
     )
     
     
