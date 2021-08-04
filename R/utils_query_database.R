@@ -439,7 +439,8 @@ query_stage_uuids <- function(cons) {
 #' @rdname query
 #' @export
 query_stage_profiles <- function(cons) {
-  cons$Stage_Profiles$find() %>%
+  cons$Stage_Profiles$find(query = '{}',
+                           fields = '{}') %>%
     as.data.table() %>%
     normalise_uuid(., keep_uuid = FALSE)
 }

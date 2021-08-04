@@ -8,13 +8,21 @@ default:
  load_trips_start_ndays: 7
  load_trips_on_startup: TRUE  # use FALSE if you do not want trips to load on startup
  max_documents_for_mod_load_trips: 100000 # 500 for testing with test-data
+ min_locations_per_trip: 30 # 4 for easier testing with test-data
+  
  # Limiting to 300 megabytes worth of trips and locations:
  # each trip doc is ~1500 characters * 2 bytes/character (UTF8) 
  # 300 *10^6 bytes/(3*10^3 bytes/document) = 100,000 documents 
 
  trips_table_merge_user_email: true
  
- min_locations_per_trip: 30 # 4 for easier testing with test-data
+ participants_starting_recommendation_list:  # not used yet
+  - check always permission or app force kill
+  - check always permission
+  - check token
+  - check aggressive power savings
+  - unknown
+
  
  cols_to_remove_from_participts_table:
   - first_trip_datetime

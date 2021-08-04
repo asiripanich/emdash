@@ -108,7 +108,7 @@ app_ui <- function(request) {
                   status = "primary",
                   title = "Participants",
                   value = "participants",
-                  mod_DT_ui("DT_ui_participants")
+                  mod_DTedit_ui("DTedit_participants"),  # use DTedit for participants
                 ),
                 tabPanel(
                   status = "primary",
