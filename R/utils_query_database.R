@@ -334,16 +334,16 @@ count_total_trips <- function(cons) {
 }
 
 # Gets date and mode related trip information for all trips
-query_trip_dates <- function(cons) {
+query_trip_dates <- function(cons, confirmed_user_input_column) {
   small_trip_query <- cons$Stage_analysis_timeseries$find(
     query = '{"metadata.key": "analysis/confirmed_trip"}',
-    fields = '{"data.start_local_dt":true,
+    fields = sprintf('{"data.start_local_dt":true,
               "data.start_fmt_time":true,
               "data.end_local_dt":true,
               "data.end_fmt_time":true,
-              "data.user_input.mode_confirm":true,
+              "%s":true,
               "user_id":true, 
-              "_id":false}'
+              "_id":false}', confirmed_user_input_column)
   )
   return(small_trip_query)
 }

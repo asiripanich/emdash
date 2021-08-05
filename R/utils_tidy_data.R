@@ -162,7 +162,8 @@ tidy_cleaned_trips_by_timestamp <- function(df) {
 }
 
 summarise_trips_without_trips <- function(participants, cons) {
-  trip_query <- query_trip_dates(cons) %>%   # also queries mode_confirm
+  confirmed_user_input_column <- getOption('emdash.confirmed_user_input_column')
+  trip_query <- query_trip_dates(cons, confirmed_user_input_column) %>%
     as.data.table() %>%
     normalise_uuid()
 
@@ -202,7 +203,8 @@ summarise_trips_without_trips <- function(participants, cons) {
   
   # Add the 'unconfirmed' column.
   unconfirmed_summ <- trip_query %>%
-    .[is.na(data.user_input.mode_confirm), .(unconfirmed = .N), by = user_id]
+    .[is.na(trip_query[[confirmed_user_input_column]]), .(unconfirmed = .N), by = user_id]
+  
   
   # Count the number of trips per user
   n_trips <- count_total_trips(cons)

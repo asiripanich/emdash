@@ -14,6 +14,13 @@ default:
  
  min_locations_per_trip: 30 # 4 for easier testing with test-data
  
+ # What user input do you want to check how much a given user completed? 
+ # can be data.user_input.mode_confirm or a survey related input
+ # This will determine how the "unconfirmed" column is found. 
+ # In col_labels_for_participts, "unconfirmed" gets set to "unlabeled"
+ confirmed_user_input_column: data.user_input.mode_confirm
+ 
+ 
  cols_to_remove_from_participts_table:
   - first_trip_datetime
   - last_trip_datetime
