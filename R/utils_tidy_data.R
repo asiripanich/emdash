@@ -166,13 +166,11 @@ summarise_trips_without_trips <- function(participants, cons) {
   trip_query <- query_trip_dates(cons, confirmed_user_input_column) %>%
     as.data.table() %>%
     normalise_uuid()
-
+  
   # Generate intermediate columns to use for summarizing trips.
   helper_trip_cols <- trip_query %>%
     .[, .(
       user_id = user_id,
-      trip_dates = lubridate::as_date(trip_query$data.start_fmt_time), # convert trip dates to UTC
-
       start_fmt_time = lubridate::as_datetime(trip_query$data.start_fmt_time), # convert trip start datetimes to UTC
       end_fmt_time = lubridate::as_datetime(trip_query$data.end_fmt_time) # convert trip end datetimes to UTC
     )] %>%
@@ -189,7 +187,7 @@ summarise_trips_without_trips <- function(participants, cons) {
   summ_trips <-
     helper_trip_cols %>%
     # adds the date of local datetime of trip
-    .[, date := trip_dates] %>%
+    .[, date := lubridate::date(lubridate::as_datetime(start_local_time))] %>%
     # Generate summary columns
     .[, .(
       n_trips_today = sum(date == Sys.Date()),
