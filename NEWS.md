@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# emdash 1.4.1.9002
+
+- Fix `summarise_trips_without_trips()`, the function was using the min and max dates for all trips, rather than the min and max for each user. (#54)
+- Better document the options in the YAML config file.
+- The color label of the map is now configurable from the config file by changing the `map_trajectory_colors_variable` field. By default this field is set to 'user_id'. To color label by travel mode change to `mode_confirm`.
+
+
 # emdash 1.4.1.9001
 
 - Fixes bad column names that can crash the dashboard on the first reload of the trip data. (#57)
