@@ -17,7 +17,7 @@ default:
  min_locations_per_trip: 30 # 4 for easier testing with test-data
  
  ## Map options
- map_trajectory_colors_variable: 'mode_confirm' # 'user_id'
+ map_trajectory_colors_variable: 'user_id' # 'user_id'
  # choices are 'mode_confirm', 'user_id' or some other column that appears in the map
  
  # Set the labels to display for the participant data 
