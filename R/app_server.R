@@ -8,8 +8,10 @@ app_server <- function(input, output, session) {
   # prepare data ------------------------------------------------------------
   cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
   data_r <- callModule(mod_load_data_server, "load_data_ui", cons)
-  data_geogr <- callModule(mod_load_trips_server, "load_trips_ui", cons)
-  data_geogr <- callModule(mod_load_locations_server, "load_locations_ui", cons, data_geogr)
+  data_geogr <-
+    callModule(mod_load_trips_server, "load_trips_ui", cons, data_r) %>% {
+      callModule(mod_load_locations_server, "load_locations_ui", cons, .)
+    }
 
   # Side bar ----------------------------------------------------------------
 
@@ -92,24 +94,32 @@ app_server <- function(input, output, session) {
 
   # Convert the config's label map to a named vector.
   # The names are the original labels, and the vector values are the new labels.
-  named_label_vector <- unlist(getOption("emdash.col_labels_for_participts"))
-  originalColumnNames <- names(named_label_vector)
-  new_column_names <- unname(named_label_vector)
+  named_label_vector <- unlist(getOption("emdash.col_labels_for_participants"))
+  original_col_labels_for_participants <- names(named_label_vector)
+  new_col_labels_for_participants <- unname(named_label_vector)
 
   observeEvent(input$tabs, {
-    if (input$tabs == "participants") {
-      data_esquisse$data <-
-        data_r$participants %>%
-        drop_list_columns() %>%
-        data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
-    }
-
     # Make sure trips exists before attempting to manipulate it
-    if (exists("data_geogr$trips") && input$tabs == "trips") {
+    if (!is.null(data_geogr$trips) && input$tabs == "trips") {
       data_esquisse$data <-
         data_geogr$trips %>%
         drop_list_columns() %>%
         sf::st_drop_geometry()
+    }
+
+    if (input$tabs %in% names(data_r)) {
+      data_esquisse$data <-
+        data.table::copy(data_r[[input$tabs]]) %>%
+        drop_list_columns()
+
+      if (input$tabs == "participants") {
+        data.table::setnames(
+          data_esquisse$data,
+          original_col_labels_for_participants,
+          new_col_labels_for_participants,
+          skip_absent = TRUE
+        )
+      }
     }
   })
 
@@ -137,7 +147,11 @@ app_server <- function(input, output, session) {
     callModule(mod_DT_server, "DT_ui_participants",
       data = data_r$participants %>%
         dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_participts_table"))) %>%
-        data.table::setnames(originalColumnNames, new_column_names, skip_absent = TRUE)
+        data.table::setnames(
+          original_col_labels_for_participants,
+          new_col_labels_for_participants,
+          skip_absent = TRUE
+        )
     )
 
     # For each supplementary table, append a new tabPanel and run the server function
