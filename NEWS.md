@@ -1,19 +1,14 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
-# emdash 1.4.1.9002
+# emdash 1.5.0
 
+- Add a test MongoDB database to the R CMD check that runs GitHub Actions.
+- Fix the mismatch between the colors on the map and the legend. Unfortunately, this is a quick fix only, by going back to using the mapview's default palatte, which seems to be the only option that works. (#56)
+- Refactor `run_app()`.
 - Fix `summarise_trips_without_trips()`, the function was using the min and max dates for all trips, rather than the min and max for each user. (#54)
 - Better document the options in the YAML config file.
 - The color label of the map is now configurable from the config file by changing the `map_trajectory_colors_variable` field. By default this field is set to 'user_id'. To color label by travel mode change to `mode_confirm`.
-
-
-# emdash 1.4.1.9001
-
 - Fixes bad column names that can crash the dashboard on the first reload of the trip data. (#57)
-
-
-# emdash 1.4.1.9000
-
 - Add a boolean option for displaying `user_email` on the trip table. See `trips_table_merge_user_email` in the config file. (#57)
 
 
