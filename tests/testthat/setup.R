@@ -1,4 +1,3 @@
 Sys.setenv(TZ = "GMT")
-if (!testthat:::on_ci()) {
-  cons <- connect_stage_collections()
-}
+load_config_file()
+cons <- connect_stage_collections()
