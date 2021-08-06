@@ -1,7 +1,5 @@
 # The test name completes the sentence 'Test that ... <function behavior>'
 test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when there are no user inputs.", {
-  testthat::skip_on_ci()
-
   # Use the date range below within test-data to get empty user_inputs
   dates <- c("2015-08-23", "2015-08-24")
   queried_trips <- query_cleaned_trips_by_timestamp(cons, dates)
@@ -14,7 +12,6 @@ test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when ther
 
 
 test_that("summarise_trips_without_trips returns a nonempty data.table", {
-  testthat::skip_on_ci()
   summary_df <-
     tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
     summarise_trips_without_trips(cons)
@@ -25,8 +22,6 @@ test_that("summarise_trips_without_trips returns a nonempty data.table", {
 })
 
 test_that("participants after summarise_trips_without_trips matches participants after summarise_trips", {
-  testthat::skip_on_ci()
-
   trips <- tidy_cleaned_trips(query_cleaned_trips(cons),
     project_crs = get_golem_config("project_crs")
   )
@@ -45,7 +40,6 @@ test_that("participants after summarise_trips_without_trips matches participants
 })
 
 test_that("summarise_server_calls returns a nonempty data.table", {
-  testthat::skip_on_ci()
   summary_df <-
     tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
     summarise_server_calls(cons)
