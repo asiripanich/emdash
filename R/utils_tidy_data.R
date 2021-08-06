@@ -170,7 +170,7 @@ summarise_trips_without_trips <- function(participants, cons) {
   # Generate intermediate columns to use for summarizing trips.
   helper_trip_cols <- trip_query %>%
     .[, .(
-      user_id = user_id,
+      user_id,
       start_fmt_time = lubridate::as_datetime(trip_query$data.start_fmt_time), # convert trip start datetimes to UTC
       end_fmt_time = lubridate::as_datetime(trip_query$data.end_fmt_time) # convert trip end datetimes to UTC
     )] %>%
@@ -178,31 +178,30 @@ summarise_trips_without_trips <- function(participants, cons) {
     .[, ":="
     (
       start_local_time = purrr::map2(start_fmt_time, trip_query$data.start_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
-        as.character(), # format returns a list, but lubridate::as_datetime needs it as a character string
+        as.character() %>% as.POSIXct(), # format returns a list, but lubridate::as_datetime needs it as a character string
       end_local_time = purrr::map2(end_fmt_time, trip_query$data.end_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
-        as.character()
+      as.character() %>% as.POSIXct()
     )]
 
   # Write the trip summary columns
   summ_trips <-
     helper_trip_cols %>%
     # adds the date of local datetime of trip
-    .[, date := lubridate::date(lubridate::as_datetime(start_local_time))] %>%
+    .[, date := lubridate::date(start_local_time)] %>%
     # Generate summary columns
     .[, .(
       n_trips_today = sum(date == Sys.Date()),
       n_active_days = data.table::uniqueN(date),
       first_trip_datetime = min(start_fmt_time),
       last_trip_datetime = max(start_fmt_time), # in UTC
-      first_trip_local_datetime = format(min(lubridate::as_datetime(start_local_time)), usetz = FALSE),
-      last_trip_local_datetime = format(max(lubridate::as_datetime(end_local_time)), usetz = FALSE)
+      first_trip_local_datetime = min(start_local_time),
+      last_trip_local_datetime = max(end_local_time)
     ), by = user_id] %>%
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
   
   # Add the 'unconfirmed' column.
   unconfirmed_summ <- trip_query %>%
     .[is.na(trip_query[[confirmed_user_input_column]]), .(unconfirmed = .N), by = user_id]
-  
   
   # Count the number of trips per user
   n_trips <- count_total_trips(cons)
@@ -212,7 +211,6 @@ summarise_trips_without_trips <- function(participants, cons) {
   merge(participants, summ_trips, by = "user_id", all.x = TRUE) %>% 
     merge(., unconfirmed_summ, by="user_id", all.x = TRUE) %>%
     .[is.na(unconfirmed), unconfirmed := 0]
-  
   
 }
 
