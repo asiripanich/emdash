@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emdash</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -114,26 +114,17 @@
       <small>Source: <a href='https://github.com/asiripanich/emdash/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="emdash-1419002" class="section level1">
-<h1 class="page-header" data-toc-text="1.4.1.9002">
-<a href="#emdash-1419002" class="anchor"></a>emdash 1.4.1.9002</h1>
+    <div id="emdash-150" class="section level1">
+<h1 class="page-header" data-toc-text="1.5.0">
+<a href="#emdash-150" class="anchor"></a>emdash 1.5.0</h1>
 <ul>
+<li>Add a test MongoDB database to the R CMD check that runs GitHub Actions.</li>
+<li>Fix the mismatch between the colors on the map and the legend. Unfortunately, this is a quick fix only, by going back to using the mapview’s default palatte, which seems to be the only option that works. (<a href='https://github.com/asiripanich/emdash/issues/56'>#56</a>)</li>
+<li>Refactor <code><a href="../reference/run_app.html">run_app()</a></code>.</li>
 <li>Fix <code>summarise_trips_without_trips()</code>, the function was using the min and max dates for all trips, rather than the min and max for each user. (<a href='https://github.com/asiripanich/emdash/issues/54'>#54</a>)</li>
 <li>Better document the options in the YAML config file.</li>
 <li>The color label of the map is now configurable from the config file by changing the <code>map_trajectory_colors_variable</code> field. By default this field is set to ‘user_id’. To color label by travel mode change to <code>mode_confirm</code>.</li>
-</ul>
-</div>
-    <div id="emdash-1419001" class="section level1">
-<h1 class="page-header" data-toc-text="1.4.1.9001">
-<a href="#emdash-1419001" class="anchor"></a>emdash 1.4.1.9001</h1>
-<ul>
 <li>Fixes bad column names that can crash the dashboard on the first reload of the trip data. (<a href='https://github.com/asiripanich/emdash/issues/57'>#57</a>)</li>
-</ul>
-</div>
-    <div id="emdash-1419000" class="section level1">
-<h1 class="page-header" data-toc-text="1.4.1.9000">
-<a href="#emdash-1419000" class="anchor"></a>emdash 1.4.1.9000</h1>
-<ul>
 <li>Add a boolean option for displaying <code>user_email</code> on the trip table. See <code>trips_table_merge_user_email</code> in the config file. (<a href='https://github.com/asiripanich/emdash/issues/57'>#57</a>)</li>
 </ul>
 </div>
