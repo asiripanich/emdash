@@ -1,26 +1,75 @@
 # Use this file to set options for the app
 
 default:
- anon_locations: false
- display_signup_trend: false
+ anon_locations: false          # If true, changes user_id display to user_1, user_2, ...
+ display_signup_trend: false    # show the signup trend in the dashboard tab?
  
- # Options for loading trips and locations
- load_trips_start_ndays: 7
+ ## Options for loading trips and locations
+ load_trips_start_ndays: 7      # How many days of trips do you want to load on startup?
  load_trips_on_startup: TRUE  # use FALSE if you do not want trips to load on startup
+ 
+ # Set the maximum number of trip/location documents that the dashboard is allowed to load.
  max_documents_for_mod_load_trips: 100000 # 500 for testing with test-data
  # Limiting to 300 megabytes worth of trips and locations:
  # each trip doc is ~1500 characters * 2 bytes/character (UTF8) 
  # 300 *10^6 bytes/(3*10^3 bytes/document) = 100,000 documents 
+ 
+ # Set the minimum number of locations you want to be able to load for a given trip
+ min_locations_per_trip: 30 # 4 for easier testing with test-data
 
+ # Include user_email in trips table?
  trips_table_merge_user_email: true
  
- min_locations_per_trip: 30 # 4 for easier testing with test-data
- 
+ ## Specify columns to exclude from various tables:
+ # participants
+
+ cols_to_remove_from_participts_table:
+  - first_trip_datetime
+  - last_trip_datetime
+  # More to remove for this deployment:
+  - n_active_days
+  - first_trip_local_datetime
+  - first_get_call
+  - first_put_call
+  - first_diary_call
+  
+ # trips
+ cols_to_remove_from_trips_table:
+  - start_fmt_time0 
+  - start_local_dt_timezone
+  - start_fmt_time
+  - end_fmt_time0
+  - end_local_dt_timezone
+  - end_fmt_time
+  - end_loc_coordinates
+  - start_loc_coordinates
+  - duration
+  - distance
+  - geometry
+  - source
+  - cleaned_trip
+
+ # map popup
+ cols_to_remove_from_map_popup:
+  - start_fmt_time0
+  - start_local_dt_timezone
+  - start_fmt_time
+  - end_fmt_time0
+  - end_local_dt_timezone
+  - end_fmt_time
+  - end_loc_coordinates
+  - start_loc_coordinates
+  - duration
+  - distance
+  - location_points
+  - source
+  - cleaned_trip
+
  ## Map options
  map_trajectory_colors_variable: 'user_id' # 'user_id'
  # choices are 'mode_confirm', 'user_id' or some other column that appears in the map
- 
- # Set the labels to display for the participant data 
+  
+ ## Set the labels to display for the participant data 
  col_labels_for_participants:
    user_id:             user id
    update_ts:           last profile update  
@@ -43,48 +92,10 @@ default:
    first_diary_call: first app launch
    last_diary_call:  last app launch
    
- # Specify columns to remove from certain tables
- cols_to_remove_from_participts_table:
-  - first_trip_datetime
-  - last_trip_datetime
-  # More to remove for this deployment:
-  - n_active_days
-  - first_trip_local_datetime
-  - first_get_call
-  - first_put_call
-  - first_diary_call
-  
- cols_to_remove_from_trips_table:
-  - start_fmt_time0 
-  - start_local_dt_timezone
-  - start_fmt_time
-  - end_fmt_time0
-  - end_local_dt_timezone
-  - end_fmt_time
-  - end_loc_coordinates
-  - start_loc_coordinates
-  - duration
-  - distance
-  - geometry
-  - source
-  - cleaned_trip
-
- cols_to_remove_from_map_popup:
-  - start_fmt_time0
-  - start_local_dt_timezone
-  - start_fmt_time
-  - end_fmt_time0
-  - end_local_dt_timezone
-  - end_fmt_time
-  - end_loc_coordinates
-  - start_loc_coordinates
-  - duration
-  - distance
-  - location_points
-  - source
-  - cleaned_trip
-   
+ ## List the optional tables you want. Currently only Checkinout and PolarBear are supported.
  supplementary_tables:
+   # If you include Checkinout, you can make it editable bt including and 'editable' field and an operations subfield.
+   # Only delete is allowed. Other possible operations are Update and Create.
    - Checkinout:
        tab_name: "Bike Check in"
        editable: 
