@@ -44,7 +44,7 @@ jobs:
       - name: Load test database
         if: runner.os == 'Linux'
         run: |
-          docker run -d -p 27017:27017 -v $(pwd)/test-data:/root --name emdash-test-db mongo:latest
+          docker run -d -p 27017:27017 -v $(pwd):/root --name emdash-test-db mongo:latest
           unzip ./test-data/2015_2016_jul_aug_test_trips.zip
           docker exec emdash-test-db sh -c 'cd ~ && mongorestore'
 
