@@ -41,8 +41,8 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
-      - name: Create mongoDB Docker container      
-        run: sudo docker run -d -p 27017:27017 mongo:latest
+      - name: Create MongoDB Docker container      
+        run: docker run -d -p 27017:27017 mongo:latest
 
       - name: Query dependencies
         run: |
