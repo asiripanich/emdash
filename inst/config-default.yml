@@ -26,6 +26,29 @@ default:
  # In col_labels_for_participts, "unconfirmed" gets set to "unlabeled"
  confirmed_user_input_column: data.user_input.mode_confirm
  
+ ## Specify columns to include in the trips table:
+ # Use 'trips_table_merge_user_email' and list it here to include user_email
+ cols_to_include_in_trips_table:
+  - user_id
+  - user_email     # if this is merged with trips, it will appear. Otherwise it is ignored
+  - start_local_time
+  - end_local_time
+  - mode_confirm
+  - purpose_confirm
+  - replaced_mode
+  - duration_min
+  - distance_mi
+  - distance_km
+  
+# Current set of possible trip columns from Stage_analysis_timeseries:
+# c("user_id", "start_fmt_time0", "start_local_dt_timezone", "start_fmt_time", 
+# "start_local_time", "end_fmt_time0", "end_local_dt_timezone", 
+# "end_fmt_time", "end_local_time", "source", "end_loc_coordinates", 
+# "start_loc_coordinates", "duration", "distance", "cleaned_trip", 
+# "inferred_labels", "inferred_trip", "expectation_to_label", "expected_trip", 
+# "mode_confirm", "purpose_confirm", "replaced_mode", "geometry", 
+# "duration_min", "distance_mi", "distance_km")
+ 
  ## Specify columns to exclude from various tables:
  # participants
  cols_to_remove_from_participts_table:

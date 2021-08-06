@@ -103,6 +103,7 @@ app_server <- function(input, output, session) {
     if (!is.null(data_geogr$trips) && input$tabs == "trips") {
       data_esquisse$data <-
         data_geogr$trips %>%
+        dplyr::select(dplyr::any_of(getOption('emdash.cols_to_include_in_trips_table'))) %>%  # select the columns we want
         drop_list_columns() %>%
         sf::st_drop_geometry()
     }
@@ -279,7 +280,8 @@ app_server <- function(input, output, session) {
   observeEvent(data_geogr$click, {
     callModule(mod_DT_server, "DT_ui_trips",
       data = data_geogr$trips %>%
-        dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_trips_table"))) %>%
+        dplyr::select(dplyr::any_of(getOption('emdash.cols_to_include_in_trips_table'))) %>% 
+        #dplyr::select(-dplyr::any_of(getOption("emdash.cols_to_remove_from_trips_table"))) %>%
         sf::st_drop_geometry()
     )
   })
