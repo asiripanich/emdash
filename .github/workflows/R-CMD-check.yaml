@@ -42,7 +42,14 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Create MongoDB Docker container      
-        run: docker run -d -p 27017:27017 mongo:latest
+        run: |
+          docker run -d -p 27017:27017 --name emdash-test-db mongo:latest
+      
+      - name: unzip and restore test database
+        if: runner.os == 'Linux'
+        run: |
+          unzip ./test-data/2015_2016_jul_aug_test_trips.zip
+          docker exec emdash-test-db sh -c 'mongorestore ./test-data/dump'
 
       - name: Query dependencies
         run: |
