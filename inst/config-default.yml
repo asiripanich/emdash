@@ -16,6 +16,34 @@ default:
  
  min_locations_per_trip: 30 # 4 for easier testing with test-data
  
+ ## Map options
+ map_trajectory_colors_variable: 'user_id' # 'user_id'
+ # choices are 'mode_confirm', 'user_id' or some other column that appears in the map
+ 
+ # Set the labels to display for the participant data 
+ col_labels_for_participants:
+   user_id:             user id
+   update_ts:           last profile update  
+   client:              UI channel 
+   client_app_version:  smartphone app version
+   client_os_version:   android/iOS version
+   curr_platform:       android/iOS 
+   phone_lang:          language
+   n_trips:             Total trips
+   n_trips_today:       Trips today
+   n_active_days:       Number of days with at least one trip
+   first_trip_local_datetime: First trip date
+   last_trip_local_datetime: Last trip date
+   n_days:         Number of days since app install   
+   unconfirmed:    unlabeled
+   first_get_call: first app communication
+   last_get_call:  last app communication
+   first_put_call: first data upload
+   last_put_call:  last data upload
+   first_diary_call: first app launch
+   last_diary_call:  last app launch
+   
+ # Specify columns to remove from certain tables
  cols_to_remove_from_participts_table:
   - first_trip_datetime
   - last_trip_datetime
@@ -55,30 +83,6 @@ default:
   - location_points
   - source
   - cleaned_trip
-  
-  
- # Set the labels to display for the participant data 
- col_labels_for_participants:
-   user_id:             user id
-   update_ts:           last profile update  
-   client:              UI channel 
-   client_app_version:  smartphone app version
-   client_os_version:   android/iOS version
-   curr_platform:       android/iOS 
-   phone_lang:          language
-   n_trips:             Total trips
-   n_trips_today:       Trips today
-   n_active_days:       Number of days with at least one trip
-   first_trip_local_datetime: First trip date
-   last_trip_local_datetime: Last trip date
-   n_days:         Number of days since app install   
-   unconfirmed:    unlabeled
-   first_get_call: first app communication
-   last_get_call:  last app communication
-   first_put_call: first data upload
-   last_put_call:  last data upload
-   first_diary_call: first app launch
-   last_diary_call:  last app launch
    
  supplementary_tables:
    - Checkinout:
