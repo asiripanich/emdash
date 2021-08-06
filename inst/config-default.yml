@@ -22,6 +22,7 @@ default:
  
  ## Specify columns to exclude from various tables:
  # participants
+
  cols_to_remove_from_participts_table:
   - first_trip_datetime
   - last_trip_datetime
@@ -63,7 +64,10 @@ default:
   - location_points
   - source
   - cleaned_trip
-  
+
+ ## Map options
+ map_trajectory_colors_variable: 'user_id' # 'user_id'
+ # choices are 'mode_confirm', 'user_id' or some other column that appears in the map
   
  ## Set the labels to display for the participant data 
  col_labels_for_participants:

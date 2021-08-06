@@ -33,7 +33,7 @@ mod_mapview_server <- function(input, output, session, data_sf, mapview.map.type
       m <-
         mapview::mapview(
           data_sf,
-          zcol = "user_id",
+          zcol = getOption('emdash.map_trajectory_colors_variable'),
           color = randomcoloR::distinctColorPalette,
           map.types = mapview.map.types
         )
