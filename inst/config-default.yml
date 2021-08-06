@@ -20,9 +20,14 @@ default:
  # Include user_email in trips table?
  trips_table_merge_user_email: true
  
+ # What user input do you want to check how much a given user completed? 
+ # can be data.user_input.mode_confirm or a survey related input
+ # This will determine how the "unconfirmed" column is found. 
+ # In col_labels_for_participts, "unconfirmed" gets set to "unlabeled"
+ confirmed_user_input_column: data.user_input.mode_confirm
+ 
  ## Specify columns to exclude from various tables:
  # participants
-
  cols_to_remove_from_participts_table:
   - first_trip_datetime
   - last_trip_datetime

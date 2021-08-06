@@ -43,3 +43,4 @@ BugReports: https://github.com/asiripanich/emdash/issues
 Suggests: 
     testthat
 Remotes: DavidPatShuiFong/DTedit@7ce8de1b5fcd7195beee73ed4acce8ac33140ab7
+Config/testthat/edition: 3
