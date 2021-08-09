@@ -6,8 +6,10 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/asiripanich/emdash/workflows/R-CMD-check/badge.svg)](https://github.com/asiripanich/emdash/actions)
-[![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
+[![Publish Docker
+image](https://github.com/asiripanich/emdash/actions/workflows/publish-docker-image.yaml/badge.svg)](https://github.com/asiripanich/emdash/actions/workflows/publish-docker-image.yaml)
 [![Docker](https://img.shields.io/docker/pulls/amarins/emdash.svg)](https://hub.docker.com/repository/docker/amarins/emdash)
+[![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
 <!-- badges: end -->
 
 The goal of emdash is to provide a deployer dashboard for an e-mission

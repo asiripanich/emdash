@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# emdash 1.5.0.9000
+
+- Use GitHub Actions to build emdash Docker image and push to Docker Hub
+
+
 # emdash 1.5.0
 
 - Add a test MongoDB database to the R CMD check that runs GitHub Actions.
