@@ -148,7 +148,7 @@ tidy_cleaned_trips_by_timestamp <- function(df) {
   # Make a dataframe containing just the 'data' list-column
   data_df <- df[, c("data")]
   data_df_without_user_input <- data_df[, !"user_input" == names(data_df)]
-  user_input_df <- df[, c("data")][, "user_input"] %>% as.data.table()
+  user_input_df <- df[["data"]][["user_input"]] %>% as.data.table()
 
   # Combine the user_id/metadata data table with the 'data' dataframe.
   dt <- cbind(dt, data_df_without_user_input)
