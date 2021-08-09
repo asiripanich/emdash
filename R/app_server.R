@@ -110,6 +110,7 @@ app_server <- function(input, output, session) {
     if (input$tabs %in% names(data_r)) {
       data_esquisse$data <-
         data.table::copy(data_r[[input$tabs]]) %>%
+        dplyr::select(-dplyr::any_of('_id')) %>%
         drop_list_columns()
 
       if (input$tabs == "participants") {
