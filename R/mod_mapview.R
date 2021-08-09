@@ -25,7 +25,6 @@ mod_mapview_server <- function(input, output, session, data_sf, mapview.map.type
   req(data_sf)
 
   data_r <- reactiveValues(data = data_sf)
-
   output$map <- leaflet::renderLeaflet({
     if (nrow(data_sf) == 0) {
       m <- mapview::mapview(map.types = mapview.map.types)
@@ -33,8 +32,7 @@ mod_mapview_server <- function(input, output, session, data_sf, mapview.map.type
       m <-
         mapview::mapview(
           data_sf,
-          zcol = "user_id",
-          color = randomcoloR::distinctColorPalette,
+          zcol = getOption('emdash.map_trajectory_colors_variable'),
           map.types = mapview.map.types
         )
     }

@@ -15,3 +15,5 @@ $run_dev.*
 ^docs$
 ^pkgdown$
 ^test-data$
+docker_*.sh$
+dump # test database

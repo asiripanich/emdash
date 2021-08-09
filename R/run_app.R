@@ -13,20 +13,13 @@
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 
-run_app <- function(mongo_url, config_file, ...) {
+run_app <- function(mongo_url, config_file = NULL, ...) {
   if (!missing(mongo_url)) {
     checkmate::assert_string(mongo_url)
     options("emdash.mongo_url" = mongo_url)
   }
 
-  # Get the global options found in the config file
-  if (missing(config_file)) {
-    message("No config file given, the default config file will be used.")
-    config_file <- app_sys("config-default.yml")
-  }
-  config <- config::get(file = config_file)
-  names(config) <- paste0("emdash.", names(config))
-  options(config)
+  load_config_file(config_file)
 
   app <- with_golem_options(
     app = shinyApp(
@@ -37,4 +30,17 @@ run_app <- function(mongo_url, config_file, ...) {
   )
 
   print(app)
+}
+
+
+load_config_file <- function(config_file = NULL) {
+   # Get the global options found in the config file
+  if (is.null(config_file)) {
+    message("No config file given, the default config file will be used.")
+    config_file <- app_sys("config-default.yml")
+  }
+  checkmate::assert_file_exists(config_file)
+  config <- config::get(file = config_file)
+  names(config) <- paste0("emdash.", names(config))
+  options(config)
 }

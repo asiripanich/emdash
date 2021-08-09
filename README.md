@@ -6,8 +6,10 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/asiripanich/emdash/workflows/R-CMD-check/badge.svg)](https://github.com/asiripanich/emdash/actions)
-[![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
+[![Publish Docker
+image](https://github.com/asiripanich/emdash/actions/workflows/publish-docker-image.yaml/badge.svg)](https://github.com/asiripanich/emdash/actions/workflows/publish-docker-image.yaml)
 [![Docker](https://img.shields.io/docker/pulls/amarins/emdash.svg)](https://hub.docker.com/repository/docker/amarins/emdash)
+[![DOI](https://zenodo.org/badge/280847367.svg)](https://zenodo.org/badge/latestdoi/280847367)
 <!-- badges: end -->
 
 The goal of emdash is to provide a deployer dashboard for an e-mission
@@ -126,14 +128,16 @@ queried using the functions in `R/utils_query_database.R`.
 Use `emdash` in your work? Consider citing the package:
 
     @software{siripanich_amarin_2021_4456315,
-      author       = {Siripanich, Amarin and
-                      Rashidi, Taha and
-                      Shankari, K},
-      title        = {asiripanich/emdash: v1.2.3},
-      month        = jan,
+      author       = {Siripanich, Amarin and 
+                      Rashidi, Taha Hossein and 
+                      Shankari, K and 
+                      Allen, Michael and 
+                      Yip, Arthur},
+      title        = {asiripanich/emdash: v1.5.0},
+      month        = Jul,
       year         = 2021,
       publisher    = {Zenodo},
-      version      = {v1.2.3},
-      doi          = {10.5281/zenodo.4456315},
-      url          = {https://doi.org/10.5281/zenodo.4456315}
+      version      = {v1.5.0},
+      doi          = {10.5281/zenodo.5166881},
+      url          = {https://doi.org/10.5281/zenodo.5166881}
     }

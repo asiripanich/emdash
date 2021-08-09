@@ -1,6 +1,6 @@
 Package: emdash
 Title: e-mission dashboard built with the Shiny framework
-Version: 1.4.1.9001
+Version: 1.5.0.9000
 Authors@R: c(
     person('Amarin', 'Siripanich', email = 'amarin.siri@gmail.com', role = c('cre', 'aut')),
     person("Taha", "Rashidi", role="aut"),
@@ -43,3 +43,4 @@ BugReports: https://github.com/asiripanich/emdash/issues
 Suggests: 
     testthat
 Remotes: DavidPatShuiFong/DTedit@7ce8de1b5fcd7195beee73ed4acce8ac33140ab7
+Config/testthat/edition: 3
