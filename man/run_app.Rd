@@ -4,7 +4,7 @@
 \alias{run_app}
 \title{Run the Shiny Application}
 \usage{
-run_app(mongo_url, config_file = NULL, ...)
+run_app(mongo_url, config_file = getOption("emdash.config_file"), ...)
 }
 \arguments{
 \item{mongo_url}{address of the emisison mongodb server in mongo
@@ -14,7 +14,8 @@ then this is set to `mongodb://host.docker.internal:27017`, however this may not
 work on Linux. If you are using Linux or Docker version prior to 18.03 you
 need to find the gateway ip of your Docker to connect to the database.}
 
-\item{config_file}{path and file name of the YAML configuration file}
+\item{config_file}{path and file name of the YAML configuration file. By default,
+it uses getOption("emdash.config_file"), which is `NULL` if empty.}
 
 \item{...}{A series of options to be used inside the app.}
 }

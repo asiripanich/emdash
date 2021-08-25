@@ -6,14 +6,15 @@
 #'   then this is set to `mongodb://host.docker.internal:27017`, however this may not
 #'   work on Linux. If you are using Linux or Docker version prior to 18.03 you
 #'   need to find the gateway ip of your Docker to connect to the database.
-#' @param config_file path and file name of the YAML configuration file
+#' @param config_file path and file name of the YAML configuration file. By default,
+#'   it uses getOption("emdash.config_file"), which is `NULL` if empty.
 #' @param ... A series of options to be used inside the app.
 #'
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 
-run_app <- function(mongo_url, config_file = NULL, ...) {
+run_app <- function(mongo_url, config_file = getOption("emdash.config_file"), ...) {
   if (!missing(mongo_url)) {
     checkmate::assert_string(mongo_url)
     options("emdash.mongo_url" = mongo_url)
