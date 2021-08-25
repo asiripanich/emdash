@@ -11,7 +11,7 @@
 \alias{query_diary_summ}
 \alias{query_cleaned_trips}
 \alias{query_most_recent_n_trip_docs}
-\alias{query_cleaned_trips_by_timestamp}
+\alias{query_confirmed_trips_by_timestamp}
 \alias{query_max_trip_timestamp}
 \alias{query_min_trip_timestamp}
 \alias{get_n_trips_in_query}
@@ -47,7 +47,7 @@ query_cleaned_trips(cons)
 
 query_most_recent_n_trip_docs(cons, n)
 
-query_cleaned_trips_by_timestamp(cons, dates)
+query_confirmed_trips_by_timestamp(cons, dates)
 
 query_max_trip_timestamp(cons)
 
@@ -89,7 +89,7 @@ a data.frame/data.table.
 `query_most_recent_n_trip_docs()` yields trips data for the most recent n
 trips, based on data.end_ts
 
-`query_cleaned_trips_by_timestamp()` trips data
+`query_confirmed_trips_by_timestamp()` trips data
  between the start timestamp of the first date
  and the start timestamp of the second date.
 

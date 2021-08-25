@@ -209,7 +209,7 @@ summarise_trips_without_trips <- function(participants, cons) {
 
   message("merging trip summaries with participants")
   merge(participants, summ_trips, by = "user_id", all.x = TRUE) %>% 
-    merge(., unconfirmed_summ, by="user_id", all.x = TRUE) %>%
+    merge(., unconfirmed_summ, by = "user_id", all.x = TRUE) %>%
     .[is.na(unconfirmed), unconfirmed := 0]
   
 }
@@ -383,3 +383,72 @@ convert_columns_to_datetime <-
       lubridate::as_datetime(.x, tz = tz)
     })), .SDcols = cols]
   }
+
+
+#' Normalise UUID
+#'
+#' @param .data a data.frame.
+#' @param keep_uuid logical.
+#'
+#' @return a data.frame
+#' @export
+normalise_uuid <- function(.data, keep_uuid = FALSE) {
+  if (nrow(.data) == 0) {
+    return(.data)
+  }
+  # return(.data)
+  if (!is.data.table(.data)) {
+    setDT(.data)
+  }
+  if ("uuid" %in% names(.data)) {
+    .data[, user_id := sapply(uuid, function(.x) paste0(unlist(.x), collapse = ""))]
+    if (!keep_uuid) {
+      .data[, uuid := NULL]
+    }
+  } else {
+    .data[, user_id := sapply(user_id, function(.x) paste0(unlist(.x), collapse = ""))]
+  }
+  .data
+}
+
+#' Anonymize user_id field
+#'
+#' @param .data a data.frame object
+#'
+#' @return .data with anonymized user_id
+#' @export
+anonymize_uuid <- function(.data) {
+  stopifnot(is.data.frame(.data))
+  if (!"user_id" %in% names(.data)) {
+    stop("There is no `user_id` field in `.data`.")
+  }
+  unique_uuid <- unique(.data$user_id)
+  anon_uuid <- paste0("user_", sample(length(unique_uuid)))
+  names(anon_uuid) <- unique_uuid
+  .data$user_id <- anon_uuid[.data$user_id]
+  .data
+}
+
+anonymize_uuid_if_required <- function(.data, flag = getOption("emdash.anon_locations")) {
+  checkmate::assert_flag(flag, null.ok = FALSE)
+  if (flag) {
+    message("Anonymize trajectories")
+    return(anonymize_uuid(.data))
+  }
+  .data
+}
+
+#' Convert character columns to datetime columns
+#'
+#' @param .data a data.frame.
+#' @param cols columns to convert to datetime columns.
+#' @param tz time zone. Default as "Australia/Sydney".
+#'
+#' @return .data
+#' @export
+convert_datetime_string_to_datetime <- function(.data, cols, tz = "Australia/Sydney") {
+  stopifnot(data.table::is.data.table(.data))
+  .data[, c(cols) := lapply(.SD, function(.x) {
+    lubridate::as_datetime(.x, tz = tz)
+  }), .SDcols = cols]
+}

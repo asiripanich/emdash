@@ -12,7 +12,7 @@ app_server <- function(input, output, session) {
     callModule(mod_load_trips_server, "load_trips_ui", cons, data_r) %>% {
       callModule(mod_load_locations_server, "load_locations_ui", cons, .)
     }
-
+  
   # Side bar ----------------------------------------------------------------
 
   # Dashboard ---------------------------------------------------------------
