@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emdash</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0.9001</span>
       </span>
     </div>
 
@@ -114,6 +114,15 @@
       <small>Source: <a href='https://github.com/asiripanich/emdash/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="emdash-1509001" class="section level1">
+<h1 class="page-header" data-toc-text="1.5.0.9001">
+<a href="#emdash-1509001" class="anchor"></a>emdash 1.5.0.9001</h1>
+<ul>
+<li>Data from specific users can be removed from the dashboard by specifying their ids or emails in a txt file. Use <code>remove_from_participants_col</code> and <code>remove_from_participants_file</code> file in the emdash configuration file.</li>
+<li>The dashboard no longer shows the bike checkin table (which is specific to the CanBikeCO study) and the polar bear table by default.</li>
+<li>Editable table feature: switched to object ID to identify which Checkinout entry to delete. It used to use user_id, but that did not delete database entries because it was not converted to BSON before querying.</li>
+</ul>
+</div>
     <div id="emdash-1509000" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.0.9000">
 <a href="#emdash-1509000" class="anchor"></a>emdash 1.5.0.9000</h1>
