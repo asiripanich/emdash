@@ -138,11 +138,6 @@ mod_load_trips_server <- function(input, output, session, cons, data_r) {
             data.table::setcolorder(c("user_id", "user_email"))
         }
 
-        # output column names into R
-        # data_geogr$trips %>% colnames() %>% dput()
-        # data_geogr$participants %>% colnames() %>% dput()
-        # data_geogr$trips_with_trajectories %>% colnames() %>% dput()
-
         data_geogr$click <- runif(1)
 
         # Set trips ready to TRUE. Now locations can be loaded, as long as the criteria within mod_load_locations --> location_info are met
