@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# emdash 1.5.0.9001
+
+- Data from specific users can be removed from the dashboard by specifying their ids or emails in a txt file. Use `remove_from_participants_col` and `remove_from_participants_file` file in the emdash configuration file.
+- The dashboard no longer shows the bike checkin table (which is specific to the CanBikeCO study) and the polar bear table by default.
+- Editable table feature: switched to object ID to identify which Checkinout entry to delete. It used to use user_id, but that did not delete database entries because it was not converted to BSON before querying.
+
+
 # emdash 1.5.0.9000
 
 - Use GitHub Actions to build emdash Docker image and push to Docker Hub
