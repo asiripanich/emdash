@@ -101,21 +101,19 @@ default:
  supplementary_tables:
    # If you include Checkinout, you can make it editable bt including and 'editable' field and an operations subfield.
    # Only delete is allowed. Other possible operations are Update and Create.
-   - Checkinout:
-       tab_name: "Bike Check in"
-       editable: 
-            operations:
-                        - D       # Delete
+   # - Checkinout:
+   #     tab_name: "Bike Check in"
+   #     editable: 
+   #          operations:
+   #                      - D       # Delete
                         #- U       # Update/Edit     (not ready)                     
                         #- C       # Create/Insert  (Currently not allowed)
 
             # edit_columns:
             #             - 'status'
             #             - 'bikeLabel' 
-                       
-   - PolarBear:
-       tab_name: "Polar Bear"
-   
+   # - PolarBear:
+   #     tab_name: "Polar Bear"
   
   
 
