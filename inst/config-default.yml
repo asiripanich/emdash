@@ -1,9 +1,11 @@
 # Use this file to set options for the app
 
 default:
+ remove_from_participants_col: # column in the participant table
+ remove_from_participants_file: # a headerless txt file that can be read using `base::readLines()`
  anon_locations: false          # If true, changes user_id display to user_1, user_2, ...
  display_signup_trend: false    # show the signup trend in the dashboard tab?
- 
+
  ## Options for loading trips and locations
  load_trips_start_ndays: 7      # How many days of trips do you want to load on startup?
  load_trips_on_startup: TRUE  # use FALSE if you do not want trips to load on startup
