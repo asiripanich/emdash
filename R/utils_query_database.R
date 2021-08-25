@@ -266,10 +266,10 @@ query_most_recent_n_trip_docs <- function(cons, n) {
 
 #' @rdname query
 #' @export
-#' @returns `query_cleaned_trips_by_timestamp()` trips data
+#' @returns `query_confirmed_trips_by_timestamp()` trips data
 #'  between the start timestamp of the first date
 #'  and the start timestamp of the second date.
-query_cleaned_trips_by_timestamp <- function(cons, dates) {
+query_confirmed_trips_by_timestamp <- function(cons, dates) {
   # Convert the dates to timestamps
   time_stamps <- as.numeric(as.POSIXct(dates))
   time_stamp_string <- sprintf('{\"$gte\": %s, \"$lte\": %s}', time_stamps[1], time_stamps[2])

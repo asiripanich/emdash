@@ -2,7 +2,7 @@
 test_that("tidy_cleaned_trips_by_timestamp excludes user input columns when there are no user inputs.", {
   # Use the date range below within test-data to get empty user_inputs
   dates <- c("2015-08-23", "2015-08-24")
-  queried_trips <- query_cleaned_trips_by_timestamp(cons, dates)
+  queried_trips <- query_confirmed_trips_by_timestamp(cons, dates)
   tidied_trips <- queried_trips %>% tidy_cleaned_trips_by_timestamp(.)
 
   expect_true(is.data.table(tidied_trips))

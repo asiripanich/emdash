@@ -120,7 +120,7 @@ mod_load_trips_server <- function(input, output, session, cons, data_r) {
       message("Load_trips observed")
       if (isTRUE(load_trips_allowed())) {
         message("About to load trips")
-        data_geogr$trips <- query_cleaned_trips_by_timestamp(cons, data_geogr$dates()) %>%
+        data_geogr$trips <- query_confirmed_trips_by_timestamp(cons, data_geogr$dates()) %>%
           tidy_cleaned_trips_by_timestamp() %>%
           normalise_uuid() %>%
           data.table::setorder(end_fmt_time) %>%
