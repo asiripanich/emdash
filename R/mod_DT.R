@@ -29,6 +29,7 @@ mod_DT_server <- function(input, output, session, data, DT_options) {
       scrollX = TRUE,
       pageLength = 50,
       dom = "Bfrtip",
+      bPaginate = FALSE,
       buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
     )
   }
