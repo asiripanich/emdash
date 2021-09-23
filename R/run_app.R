@@ -34,7 +34,7 @@ run_app <- function(mongo_url, config_file = NULL, ...) {
 
 
 load_config_file <- function(config_file = NULL) {
-   # Get the global options found in the config file
+  # Get the global options found in the config file
   if (is.null(config_file)) {
     message("No config file given, the default config file will be used.")
     config_file <- app_sys("config-default.yml")

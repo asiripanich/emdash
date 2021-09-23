@@ -3,6 +3,7 @@
 export("%>%")
 export(COLLECTIONS)
 export(anonymize_uuid)
+export(combine_named_lists)
 export(connect_stage_collections)
 export(convert_columns_to_datetime)
 export(convert_datetime_string_to_datetime)

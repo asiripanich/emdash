@@ -342,7 +342,7 @@ query_trip_dates <- function(cons, confirmed_user_input_column) {
               "data.end_local_dt":true,
               "data.end_fmt_time":true,
               "%s":true,
-              "user_id":true, 
+              "user_id":true,
               "_id":false}', confirmed_user_input_column)
   )
   return(small_trip_query)
