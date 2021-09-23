@@ -42,11 +42,12 @@ mod_DT_server <- function(input, output, session, data, DT_options) {
 }
 
 default_DT_options <- list(
-  scrollX = TRUE,
-  pageLength = 50,
-  dom = "Bfrtip",
-  buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-)
+      scrollX = TRUE,
+      pageLength = 50,
+      dom = "Bfrtip",
+      bPaginate = FALSE,
+      buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
+    )
 
 ## To be copied in the UI
 # mod_DT_ui("DT_ui_1")
