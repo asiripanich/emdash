@@ -31,7 +31,7 @@ mod_mapview_server <- function(input, output, session, data_sf, mapview.map.type
       m <-
         mapview::mapview(
           drop_list_columns(data_sf),
-          zcol = getOption('emdash.map_trajectory_colors_variable'),
+          zcol = getOption("emdash.map_trajectory_colors_variable"),
           map.types = mapview.map.types
         )
     }

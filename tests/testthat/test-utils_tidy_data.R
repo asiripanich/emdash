@@ -36,7 +36,6 @@ test_that("participants after summarise_trips_without_trips matches participants
 
   testthat::expect_snapshot(participants_using_trips)
   testthat::expect_snapshot(participants_using_db_trip_summary)
-
 })
 
 test_that("summarise_server_calls returns a nonempty data.table", {

@@ -9,10 +9,11 @@ app_server <- function(input, output, session) {
   cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
   data_r <- callModule(mod_load_data_server, "load_data_ui", cons)
   data_geogr <-
-    callModule(mod_load_trips_server, "load_trips_ui", cons, data_r) %>% {
+    callModule(mod_load_trips_server, "load_trips_ui", cons, data_r) %>%
+    {
       callModule(mod_load_locations_server, "load_locations_ui", cons, .)
     }
-  
+
   # Side bar ----------------------------------------------------------------
 
   # Dashboard ---------------------------------------------------------------
@@ -110,7 +111,7 @@ app_server <- function(input, output, session) {
     if (input$tabs %in% names(data_r)) {
       data_esquisse$data <-
         data.table::copy(data_r[[input$tabs]]) %>%
-        dplyr::select(-dplyr::any_of('_id')) %>%
+        dplyr::select(-dplyr::any_of("_id")) %>%
         drop_list_columns()
 
       if (input$tabs == "participants") {
@@ -164,7 +165,7 @@ app_server <- function(input, output, session) {
       suppl_table <- data_r[[table_type]]
 
       # Set the options used by DT::renderDataTable within dtedit and mod_DT
-     
+
 
       # If the table has a timestamp, make a copy of the timestamp column called fmt_time
       if ("ts" %in% colnames(suppl_table)) {
@@ -268,25 +269,25 @@ app_server <- function(input, output, session) {
 
   observeEvent(data_geogr$click, {
     if ("inferred_labels" %in% colnames(data_geogr$trips)) {
-       message("Found inferred labels column, formatting");
-       inferred_label_index <- which(names(data_geogr$trips) == "inferred_labels")
-       message(inferred_label_index);
-       message(colnames(data_geogr$trips));
+      message("Found inferred labels column, formatting")
+      inferred_label_index <- which(names(data_geogr$trips) == "inferred_labels")
+      message(inferred_label_index)
+      message(colnames(data_geogr$trips))
 
-       # Add columnDefs to datatable options to convert fmt_inferred_labels to a Date
-       datatable_options <- list()
-       datatable_options[["columnDefs"]] <- list(list(
-         # target column indices start from 0.
-         # However, DT adds a row number column to the display as the 0th column
-         # TODO: Calculate this based on which trip columns are currently hidden
-         # This is currently hard-coded based on the default
-         targets = 5,
-         render = htmlwidgets::JS(
-           "function(data, type, row) {",
-               "return JSON.stringify(data);",
-           "}"
-         )
-       ))
+      # Add columnDefs to datatable options to convert fmt_inferred_labels to a Date
+      datatable_options <- list()
+      datatable_options[["columnDefs"]] <- list(list(
+        # target column indices start from 0.
+        # However, DT adds a row number column to the display as the 0th column
+        # TODO: Calculate this based on which trip columns are currently hidden
+        # This is currently hard-coded based on the default
+        targets = 5,
+        render = htmlwidgets::JS(
+          "function(data, type, row) {",
+          "return JSON.stringify(data);",
+          "}"
+        )
+      ))
     }
 
     callModule(mod_DT_server, "DT_ui_trips",

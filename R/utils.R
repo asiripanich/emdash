@@ -1,12 +1,12 @@
 #' Combine two named lists
-#' 
+#'
 #' @param x, y a named list. All the elements must be uniquely named.
 #' @param replace a logical value, default as TRUE. If TRUE, all
 #'  the `x` elements with names that exist in the `y` list will be
 #'  replaced with the values in `y`.
-#'  
-#' @export 
-#' @examples 
+#'
+#' @export
+#' @examples
 #' x <- list(x = 1, y = 2)
 #' y <- list(x = 2)
 #' combine_named_lists(x, y, FALSE)
