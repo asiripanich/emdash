@@ -24,14 +24,13 @@ mod_mapview_server <- function(input, output, session, data_sf, mapview.map.type
 
   req(data_sf)
 
-  data_r <- reactiveValues(data = data_sf)
   output$map <- leaflet::renderLeaflet({
     if (nrow(data_sf) == 0) {
       m <- mapview::mapview(map.types = mapview.map.types)
     } else {
       m <-
         mapview::mapview(
-          data_sf,
+          drop_list_columns(data_sf),
           zcol = getOption('emdash.map_trajectory_colors_variable'),
           map.types = mapview.map.types
         )
