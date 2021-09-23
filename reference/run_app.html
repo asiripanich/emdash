@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">emdash</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@
     <p>Run the Shiny Application</p>
     </div>
 
-    <pre class="usage"><span class='fu'>run_app</span><span class='op'>(</span><span class='va'>mongo_url</span>, config_file <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>run_app</span><span class='op'>(</span><span class='va'>mongo_url</span>, config_file <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"emdash.config_file"</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,7 +136,8 @@ need to find the gateway ip of your Docker to connect to the database.</p></td>
     </tr>
     <tr>
       <th>config_file</th>
-      <td><p>path and file name of the YAML configuration file</p></td>
+      <td><p>path and file name of the YAML configuration file. By default,
+it uses getOption("emdash.config_file"), which is `NULL` if empty.</p></td>
     </tr>
     <tr>
       <th>...</th>
