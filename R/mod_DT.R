@@ -45,6 +45,7 @@ default_DT_options <- list(
       scrollX = TRUE,
       pageLength = 50,
       dom = "Bfrtip",
+      bPaginate = FALSE,
       buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
     )
 
