@@ -31,9 +31,8 @@ db_update <- function(cons, collection_name, df_row) {
 #' @param collection_name the collection to look in
 #' @param df_row the dataframe row to telling you which document to delete
 db_delete <- function(cons, collection_name, df_row) {
-
-    object_id_string <- sprintf('{\"_id\": {\"$oid\": \"%s\"}}', df_row$`_id`)
-    cons[[collection_name]]$remove(object_id_string, just_one = TRUE)
+  object_id_string <- sprintf('{\"_id\": {\"$oid\": \"%s\"}}', df_row$`_id`)
+  cons[[collection_name]]$remove(object_id_string, just_one = TRUE)
 }
 
 # cons <- connect_stage_collections(url = getOption('emdash.mongo_url'))

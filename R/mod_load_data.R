@@ -33,26 +33,25 @@ mod_load_data_server <- function(input, output, session, cons) {
         tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
         summarise_trips_without_trips(., cons) %>%
         summarise_server_calls(., cons)
-        
-       if (getOption("emdash.remove_from_participants_file") != "" &&
-           checkmate::test_file_exists(getOption("emdash.remove_from_participants_file"), extension = "txt") &&
-          readLines(getOption("emdash.remove_from_participants_file")) != 0) {
-        
+
+      if (getOption("emdash.remove_from_participants_file") != "" &&
+        checkmate::test_file_exists(getOption("emdash.remove_from_participants_file"), extension = "txt") &&
+        readLines(getOption("emdash.remove_from_participants_file")) != 0) {
         participants_to_remove <- readLines(getOption("emdash.remove_from_participants_file"))
         col_to_remove_participants <- getOption("emdash.remove_from_participants_col")
-        
+
         message(
           sprintf(
-            "Removing %s participants listed in %s", 
+            "Removing %s participants listed in %s",
             length(participants_to_remove),
             getOption("emdash.remove_from_participants_file")
           )
         )
-        
+
         data_r$participants <- data_r$participants %>%
           subset(!base::get(col_to_remove_participants) %in% participants_to_remove)
       }
-        
+
       message("Finished loading participants")
       message(sprintf("Participants size is: %s kb", format(object.size(data_r$participants), units = "kB", standard = "SI")))
 
@@ -64,19 +63,19 @@ mod_load_data_server <- function(input, output, session, cons) {
         table_title <- t[[table_type]]$tab_name
 
         message(paste("About to load", table_title))
-        if (table_type == 'Checkinout'){
+        if (table_type == "Checkinout") {
           # Get bike check in and include the object ID so we can use it instead of user_id for CUD
-          data_r[[table_type]] <- 
-            cons$Checkinout$find(query = '{}',
-                                 fields = '{}'  # get all fields, including objectId            
-                                ) %>% 
+          data_r[[table_type]] <-
+            cons$Checkinout$find(
+              query = "{}",
+              fields = "{}" # get all fields, including objectId
+            ) %>%
             as.data.table()
-          
         } else {
           data_r[[table_type]] <- cons[[table_type]]$find("{}") %>%
             as.data.table()
         }
-        
+
         if ("user_id" %in% colnames(data_r[[table_type]])) {
           data_r[[table_type]] %>%
             normalise_uuid() %>%

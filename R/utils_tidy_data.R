@@ -162,11 +162,11 @@ tidy_cleaned_trips_by_timestamp <- function(df) {
 }
 
 summarise_trips_without_trips <- function(participants, cons) {
-  confirmed_user_input_column <- getOption('emdash.confirmed_user_input_column')
+  confirmed_user_input_column <- getOption("emdash.confirmed_user_input_column")
   trip_query <- query_trip_dates(cons, confirmed_user_input_column) %>%
     as.data.table() %>%
     normalise_uuid()
-  
+
   # Generate intermediate columns to use for summarizing trips.
   helper_trip_cols <- trip_query %>%
     .[, .(
@@ -180,7 +180,7 @@ summarise_trips_without_trips <- function(participants, cons) {
       start_local_time = purrr::map2(start_fmt_time, trip_query$data.start_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
         as.character() %>% as.POSIXct(), # format returns a list, but lubridate::as_datetime needs it as a character string
       end_local_time = purrr::map2(end_fmt_time, trip_query$data.end_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
-      as.character() %>% as.POSIXct()
+        as.character() %>% as.POSIXct()
     )]
 
   # Write the trip summary columns
@@ -198,20 +198,19 @@ summarise_trips_without_trips <- function(participants, cons) {
       last_trip_local_datetime = max(end_local_time)
     ), by = user_id] %>%
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
-  
+
   # Add the 'unconfirmed' column.
   unconfirmed_summ <- trip_query %>%
     .[is.na(trip_query[[confirmed_user_input_column]]), .(unconfirmed = .N), by = user_id]
-  
+
   # Count the number of trips per user
   n_trips <- count_total_trips(cons)
   summ_trips <- merge(n_trips, summ_trips, by = "user_id")
 
   message("merging trip summaries with participants")
-  merge(participants, summ_trips, by = "user_id", all.x = TRUE) %>% 
+  merge(participants, summ_trips, by = "user_id", all.x = TRUE) %>%
     merge(., unconfirmed_summ, by = "user_id", all.x = TRUE) %>%
     .[is.na(unconfirmed), unconfirmed := 0]
-  
 }
 
 #' Create a summary of trips in data.table format.
