@@ -164,12 +164,7 @@ app_server <- function(input, output, session) {
       suppl_table <- data_r[[table_type]]
 
       # Set the options used by DT::renderDataTable within dtedit and mod_DT
-      datatable_options <- list(
-        scrollX = TRUE,
-        pageLength = 50,
-        dom = "Bfrtip",
-        buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-      )
+     
 
       # If the table has a timestamp, make a copy of the timestamp column called fmt_time
       if ("ts" %in% colnames(suppl_table)) {
@@ -177,6 +172,7 @@ app_server <- function(input, output, session) {
         fmt_time_index <- which(names(suppl_table) == "fmt_time")
 
         # Add columnDefs to datatable options to convert fmt_time to a Date
+        datatable_options <- list()
         datatable_options[["columnDefs"]] <- list(list(
           # target column indices start from 0.
           # However, DT adds a row number column to the display as the 0th column
@@ -191,20 +187,13 @@ app_server <- function(input, output, session) {
 
       suppl_table <- data_r[[table_type]]
 
-      # Set the options used by DT::renderDataTable within dtedit and mod_DT
-      datatable_options <- list(
-        scrollX = TRUE,
-        pageLength = 50,
-        dom = "Bfrtip",
-        buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-      )
-
       # If the table has a timestamp, make a copy of the timestamp column called fmt_time
       if ("ts" %in% colnames(suppl_table)) {
         suppl_table[["fmt_time"]] <- suppl_table[["ts"]]
         fmt_time_index <- which(names(suppl_table) == "fmt_time")
 
         # Add columnDefs to datatable options to convert fmt_time to a Date
+        datatable_options <- list()
         datatable_options[["columnDefs"]] <- list(list(
           # target column indices start from 0.
           # However, DT adds a row number column to the display as the 0th column
@@ -278,14 +267,6 @@ app_server <- function(input, output, session) {
   })
 
   observeEvent(data_geogr$click, {
-   # Set the options used by DT::renderDataTable within dtedit and mod_DT
-   datatable_options <- list(
-     scrollX = TRUE,
-     pageLength = 100,
-     dom = "Bfrtip",
-     buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-   )
-
     if ("inferred_labels" %in% colnames(data_geogr$trips)) {
        message("Found inferred labels column, formatting");
        inferred_label_index <- which(names(data_geogr$trips) == "inferred_labels")
@@ -293,6 +274,7 @@ app_server <- function(input, output, session) {
        message(colnames(data_geogr$trips));
 
        # Add columnDefs to datatable options to convert fmt_inferred_labels to a Date
+       datatable_options <- list()
        datatable_options[["columnDefs"]] <- list(list(
          # target column indices start from 0.
          # However, DT adds a row number column to the display as the 0th column

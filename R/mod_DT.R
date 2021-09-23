@@ -25,15 +25,11 @@ mod_DT_server <- function(input, output, session, data, DT_options) {
   req(data)
 
   if (missing(DT_options)) {
-    DT_options <- list(
-      scrollX = TRUE,
-      pageLength = 50,
-      dom = "Bfrtip",
-      buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
-    )
+    DT_options <- default_DT_options
+  } else {
+    DT_options <- combine_named_lists(default_DT_options, DT_options)
   }
 
-  # button_list <- list(list(extend='colvis', columns=c()))
   output$DTtable <- DT::renderDataTable({
     DT::datatable(
       data,
@@ -44,6 +40,13 @@ mod_DT_server <- function(input, output, session, data, DT_options) {
     )
   })
 }
+
+default_DT_options <- list(
+      scrollX = TRUE,
+      pageLength = 50,
+      dom = "Bfrtip",
+      buttons = c("copy", "csv", "excel", "pdf", "print", "colvis")
+    )
 
 ## To be copied in the UI
 # mod_DT_ui("DT_ui_1")
