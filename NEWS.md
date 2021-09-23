@@ -1,14 +1,15 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
-# emdash 1.5.0.9001
+# emdash 1.6.0
 
+- Update the test database to also include inferred labels. (thanks @shankari!)
+- Update tests that had values depended on the previous test database.
+- The `mod_mapview` server module now drops all list columns in its `data_sf` argument. This change is required to remove `inferred_label` (see asiripanich#69) from the map data which is a spatial feature object.
+- Unify the default `datatable_options` in one place.
+- `run_app()` now checks if `getOption("emdash.config_file")` returns anything, otherwise it uses the default config file, `inst/config-default.yml`, for the `config_file` argument.
 - Data from specific users can be removed from the dashboard by specifying their ids or emails in a txt file. Use `remove_from_participants_col` and `remove_from_participants_file` file in the emdash configuration file.
 - The dashboard no longer shows the bike checkin table (which is specific to the CanBikeCO study) and the polar bear table by default.
 - Editable table feature: switched to object ID to identify which Checkinout entry to delete. It used to use user_id, but that did not delete database entries because it was not converted to BSON before querying.
-
-
-# emdash 1.5.0.9000
-
 - Use GitHub Actions to build emdash Docker image and push to Docker Hub
 
 
