@@ -7,7 +7,7 @@
 combine_named_lists(x, y, replace = TRUE)
 }
 \arguments{
-\item{x, }{y a named list. All the elements must be uniquely named.}
+\item{x, y}{a named list. All the elements must be uniquely named.}
 
 \item{replace}{a logical value, default as TRUE. If TRUE, all
 the `x` elements with names that exist in the `y` list will be
