@@ -6,6 +6,10 @@
 #'  replaced with the values in `y`.
 #'  
 #' @export 
+#' @examples 
+#' x <- list(x = 1, y = 2)
+#' y <- list(x = 2)
+#' combine_named_lists(x, y, FALSE)
 combine_named_lists <- function(x, y, replace = TRUE) {
   checkmate::assert_list(x, names = "unique")
   checkmate::assert_list(y, names = "unique")
