@@ -276,7 +276,7 @@ app_server <- function(input, output, session) {
         {
           which(. == "inferred_labels")
         }
-      
+
       # Add columnDefs to datatable options to convert fmt_inferred_labels to a Date
       datatable_options <- list()
       datatable_options[["columnDefs"]] <- list(list(
