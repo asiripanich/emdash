@@ -270,18 +270,18 @@ app_server <- function(input, output, session) {
   observeEvent(data_geogr$click, {
     if ("inferred_labels" %in% colnames(data_geogr$trips)) {
       message("Found inferred labels column, formatting")
-      inferred_label_index <- which(names(data_geogr$trips) == "inferred_labels")
-      message(inferred_label_index)
-      message(colnames(data_geogr$trips))
+      inferred_label_index <-
+        names(data_geogr$trips)[!names(data_geogr$trips) %in%
+          getOption("emdash.cols_to_remove_from_trips_table")] %>%
+        {
+          which(. == "inferred_labels")
+        }
 
       # Add columnDefs to datatable options to convert fmt_inferred_labels to a Date
       datatable_options <- list()
       datatable_options[["columnDefs"]] <- list(list(
         # target column indices start from 0.
-        # However, DT adds a row number column to the display as the 0th column
-        # TODO: Calculate this based on which trip columns are currently hidden
-        # This is currently hard-coded based on the default
-        targets = 5,
+        targets = inferred_label_index,
         render = htmlwidgets::JS(
           "function(data, type, row) {",
           "return JSON.stringify(data);",
