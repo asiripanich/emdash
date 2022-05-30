@@ -348,6 +348,24 @@ query_trip_dates <- function(cons, confirmed_user_input_column) {
   return(small_trip_query)
 }
 
+#' Get manual survey responses
+#' 
+#' @description 
+#' This function returns the manual survey response objects stored in
+#' the 'Stage_timeseries' collection. These are Enketo responses that
+#' emTripLog and its Forks applications stored.
+#' 
+#' @cons an e-mission MongoDB connection object.
+#' 
+#' @return a data.table object
+#' @export
+query_manual_survey_response <- function(cons) {
+  cons$Stage_timeseries$find(
+    query = '{"metadata.key": "manual/survey_response"}'
+  ) %>% 
+  as.data.table()
+}
+
 #' @rdname query
 #' @export
 #' @return `get_n_trips_in_query()` returns the number of cleaned
