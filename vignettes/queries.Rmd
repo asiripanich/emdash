@@ -1,0 +1,32 @@
+---
+title: "queries"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{queries}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(emdash)
+cons <- connect_stage_collections(url = getOption("emdash.mongo_url"))
+```
+
+
+```{r}
+# Get participant profiles
+profiles <- query_stage_profiles(cons)
+
+# Get in-app survey responses
+manual_responses <- query_manual_survey_response(cons)
+
+# Get confirmed/cleaned trips
+trips <- query_cleaned_trips(cons)
+```
