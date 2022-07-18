@@ -10,7 +10,8 @@ app_ui <- function(request) {
     # List the first level UI elements here
     dashboardPage(
       skin = "green",
-      dashboardHeader(title = paste0("emdash v", packageVersion("emdash"))),
+      # dashboardHeader(title = paste0("Fourstep v", packageVersion("emdash"))),
+      dashboardHeader(title = paste0("Fourstep dashboard")),
 
       # Sidebar -----------------------------------------------------------------
       dashboardSidebar(
