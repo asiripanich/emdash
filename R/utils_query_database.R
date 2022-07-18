@@ -366,6 +366,24 @@ query_manual_survey_response <- function(cons) {
   as.data.table()
 }
 
+#' @rdname query_manual_survey_response
+#' @export 
+query_time_use_response <- function(cons) {
+  cons$Stage_timeseries$find(
+    query = '{"metadata.key" : "manual/survey_response", "data.name" : "TimeUseSurvey"}'
+  ) %>% 
+  as.data.table()
+}
+
+#' @rdname query_manual_survey_response
+#' @export 
+query_trip_confirm_response <- function(cons) {
+  cons$Stage_timeseries$find(
+    query = '{"metadata.key" : "manual/survey_response", "data.name" : "TripConfirmSurvey"}'
+  ) %>% 
+  as.data.table()
+}
+
 #' @rdname query
 #' @export
 #' @return `get_n_trips_in_query()` returns the number of cleaned
