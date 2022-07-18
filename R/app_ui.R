@@ -9,8 +9,9 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     # List the first level UI elements here
     dashboardPage(
-      skin = "green",
-      dashboardHeader(title = paste0("emdash v", packageVersion("emdash"))),
+      skin = "#31b931",
+      # dashboardHeader(title = paste0("Fourstep v", packageVersion("emdash"))),
+      dashboardHeader(title = paste0("Fourstep dashboard")),
 
       # Sidebar -----------------------------------------------------------------
       dashboardSidebar(
