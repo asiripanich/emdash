@@ -16,10 +16,10 @@ tidy_participants <- function(stage_profiles, stage_uuids) {
     y = stage_uuids[, c("update_ts") := NULL],
     by = "user_id"
   )
-  # print(names(merged))
+
   max_cols_to_purge <- c("uuid", "source", "device_token", "mpg_array", "curr_sync_interval")
   cols_to_purge <- intersect(names(merged), max_cols_to_purge)
-  # print(cols_to_purge)
+
   merged %>%
     .[, eval(cols_to_purge) := NULL] %>%
     data.table::setcolorder(c("user_email", "user_id"))
@@ -161,25 +161,62 @@ tidy_cleaned_trips_by_timestamp <- function(df) {
   cbind(dt, user_input_df)
 }
 
+#' summarise trip patterns of the participants
 summarise_trips_without_trips <- function(participants, cons) {
-  confirmed_user_input_column <- getOption("emdash.confirmed_user_input_column")
-  trip_query <- query_trip_dates(cons, confirmed_user_input_column) %>%
+  confirmed_user_input_column <- emdash_config_get("confirmed_user_input_column")
+
+  trips_with_dates <-
+    cons$Stage_analysis_timeseries$find(
+      query = mongo_create_confirmed_trips_query(participants$uuid_decoded),
+      fields = sprintf('{"data.start_local_dt":true,
+                "data.start_fmt_time":true,
+                "data.end_local_dt":true,
+                "data.end_fmt_time":true,
+                "user_id":true,
+                "_id":false}')
+    ) %>%
+      as.data.table() %>%
+      normalise_uuid()
+
+  trip_confirm_responses <- cons$Stage_timeseries$find(
+    sprintf(
+      '{
+        "metadata.key" : "manual/survey_response", 
+        "data.name" : "TripConfirmSurvey",
+        %s
+      }',
+      mongo_create_find_in_uuid_query("user_id", participants$uuid_decoded)
+    ),
+    fields = '{
+      "_id": false,
+      "user_id": true,
+      "data.end_fmt_time": true, 
+      "data.start_fmt_time": true
+    }'
+  ) %>%
     as.data.table() %>%
-    normalise_uuid()
+    normalise_uuid() %>%
+    .[, confirmed := TRUE]
+
+  trips_with_dates <- merge(
+    trips_with_dates, trip_confirm_responses, 
+    by = c("user_id", "data.end_fmt_time", "data.start_fmt_time"), 
+    all.x = TRUE
+  )
 
   # Generate intermediate columns to use for summarizing trips.
-  helper_trip_cols <- trip_query %>%
+  helper_trip_cols <- trips_with_dates %>%
     .[, .(
       user_id,
-      start_fmt_time = lubridate::as_datetime(trip_query$data.start_fmt_time), # convert trip start datetimes to UTC
-      end_fmt_time = lubridate::as_datetime(trip_query$data.end_fmt_time) # convert trip end datetimes to UTC
+      start_fmt_time = lubridate::as_datetime(trips_with_dates$data.start_fmt_time), # convert trip start datetimes to UTC
+      end_fmt_time = lubridate::as_datetime(trips_with_dates$data.end_fmt_time) # convert trip end datetimes to UTC
     )] %>%
     # Now add columns generated from start/end_fmt_time
     .[, ":="
     (
-      start_local_time = purrr::map2(start_fmt_time, trip_query$data.start_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+      start_local_time = purrr::map2(start_fmt_time, trips_with_dates$data.start_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
         as.character() %>% as.POSIXct(), # format returns a list, but lubridate::as_datetime needs it as a character string
-      end_local_time = purrr::map2(end_fmt_time, trip_query$data.end_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
+      end_local_time = purrr::map2(end_fmt_time, trips_with_dates$data.end_local_dt.timezone, ~ format(.x, tz = .y, usetz = TRUE)) %>%
         as.character() %>% as.POSIXct()
     )]
 
@@ -200,11 +237,12 @@ summarise_trips_without_trips <- function(participants, cons) {
     .[, n_days := round(as.numeric(difftime(last_trip_datetime, first_trip_datetime, units = "days")), 1)]
 
   # Add the 'unconfirmed' column.
-  unconfirmed_summ <- trip_query %>%
-    .[is.na(trip_query[[confirmed_user_input_column]]), .(unconfirmed = .N), by = user_id]
+  unconfirmed_summ <- trips_with_dates %>%
+    .[is.na(trips_with_dates[["confirmed"]]), .(unconfirmed = .N), by = user_id]
 
   # Count the number of trips per user
-  n_trips <- count_total_trips(cons)
+  n_trips <- count_total_trips(cons) %>%
+   .[user_id %in% participants$user_id, ]
   summ_trips <- merge(n_trips, summ_trips, by = "user_id")
 
   message("merging trip summaries with participants")
