@@ -285,6 +285,48 @@ summarise_server_calls <- function(participants, cons) {
   )
 }
 
+summarise_timeuse <- function(participants, cons) {
+
+  message("Querying timeuse data")
+  uuid <- participants$uuid_decoded
+  timeuse <-
+    cons$Stage_timeseries$find(
+      query = sprintf(
+        '{
+        "metadata.key" : "manual/survey_response",
+        "data.name" : "TimeUseSurvey",
+        %s
+      }',
+        mongo_create_find_in_uuid_query("user_id", uuid)
+      ),
+      fields = '{
+        "_id": false,
+        "user_id": true,
+        "data.response.activity_startdate": true
+      }'
+    ) %>%
+    as.data.table() %>%
+    setnames("data", "data.response.activity_startdate", skip_absent = TRUE) %>%
+    normalise_uuid()
+
+  if (nrow(timeuse) == 0) {
+    message("No timeuse data")
+    return(participants)
+  }
+
+  message("Summarising timeuse data")
+  summarised_timeuse <- timeuse %>%
+    .[, .(
+      timeuse.number_unique_dates = data.response.activity_startdate %>% lubridate::date() %>% uniqueN(),
+      timeuse.number_responses = .N,
+      timeuse.first_activity_date = data.response.activity_startdate %>% lubridate::date() %>% min(),
+      timeuse.last_activity_date = data.response.activity_startdate %>% lubridate::date() %>% max()
+    ), by = user_id]
+  message("Merging summarised timeuse to participants")
+
+  merge(participants, summarised_timeuse, by = "user_id", all.x = TRUE)
+}
+
 #' Tidy the 'cleaned locations' data.frame into a tibble.
 #'
 #' @param cleaned_locations a data.table output from `query_cleaned_trips()`.
