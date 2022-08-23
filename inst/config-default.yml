@@ -1,6 +1,7 @@
 # Use this file to set options for the app
 
 default:
+ user_email_csv: # a CSV file containing a user_email column. If provided, all queries will only be for the user emails in the CSV file.
  remove_from_participants_col: # column in the participant table
  remove_from_participants_file: # a headerless txt file that can be read using `base::readLines()`
  anon_locations: false          # If true, changes user_id display to user_1, user_2, ...
@@ -98,27 +99,4 @@ default:
    last_put_call:  last data upload
    first_diary_call: first app launch
    last_diary_call:  last app launch
-   
- ## List the optional tables you want. Currently only Checkinout and PolarBear are supported.
- supplementary_tables:
-   # If you include Checkinout, you can make it editable bt including and 'editable' field and an operations subfield.
-   # Only delete is allowed. Other possible operations are Update and Create.
-   # - Checkinout:
-   #     tab_name: "Bike Check in"
-   #     editable: 
-   #          operations:
-   #                      - D       # Delete
-                        #- U       # Update/Edit     (not ready)                     
-                        #- C       # Create/Insert  (Currently not allowed)
-
-            # edit_columns:
-            #             - 'status'
-            #             - 'bikeLabel' 
-   # - PolarBear:
-   #     tab_name: "Polar Bear"
   
-  
-
-
-
-
