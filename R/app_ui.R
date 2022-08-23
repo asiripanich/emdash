@@ -10,7 +10,8 @@ app_ui <- function(request) {
     # List the first level UI elements here
     dashboardPage(
       skin = "green",
-      dashboardHeader(title = paste0("emdash v", packageVersion("emdash"))),
+      # dashboardHeader(title = paste0("Fourstep v", packageVersion("emdash"))),
+      dashboardHeader(title = paste0("Fourstep dashboard")),
 
       # Sidebar -----------------------------------------------------------------
       dashboardSidebar(
@@ -115,6 +116,12 @@ app_ui <- function(request) {
                   title = "Trips",
                   value = "trips",
                   mod_DT_ui("DT_ui_trips")
+                ),
+                tabPanel(
+                  status = "primary",
+                  title = "Time-use",
+                  value = "timeuse",
+                  mod_DT_ui("DT_ui_timeuse")
                 )
               )
             )

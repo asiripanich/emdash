@@ -28,62 +28,53 @@ mod_load_data_server <- function(input, output, session, cons) {
 
   observeEvent(input$reload_data,
     {
+      if (checkmate::test_file_exists(emdash_config_get("user_email_csv"), extension = "csv")) {
+        user_email_csv <- read.csv(emdash_config_get("user_email_csv"))
+        if (checkmate::test_character(user_email_csv$user_email, min.len = 1, all.missing = FALSE)) {
+          stage_uuids <- query_stage_uuids(cons, user_emails = na.omit(user_email_csv$user_email))
+        } else {
+          stage_uuids <- query_stage_uuids(cons)
+        }
+      }
       message("About to load participants")
       data_r$participants <-
-        tidy_participants(query_stage_profiles(cons), query_stage_uuids(cons)) %>%
+        tidy_participants(query_stage_profiles(cons), stage_uuids) %>%
         summarise_trips_without_trips(., cons) %>%
+        summarise_timeuse(., cons) %>%
         summarise_server_calls(., cons)
-
-      if (getOption("emdash.remove_from_participants_file") != "" &&
-        checkmate::test_file_exists(getOption("emdash.remove_from_participants_file"), extension = "txt") &&
-        readLines(getOption("emdash.remove_from_participants_file")) != 0) {
-        participants_to_remove <- readLines(getOption("emdash.remove_from_participants_file"))
-        col_to_remove_participants <- getOption("emdash.remove_from_participants_col")
-
-        message(
-          sprintf(
-            "Removing %s participants listed in %s",
-            length(participants_to_remove),
-            getOption("emdash.remove_from_participants_file")
-          )
-        )
-
-        data_r$participants <- data_r$participants %>%
-          subset(!base::get(col_to_remove_participants) %in% participants_to_remove)
-      }
-
       message("Finished loading participants")
       message(sprintf("Participants size is: %s kb", format(object.size(data_r$participants), units = "kB", standard = "SI")))
 
-      table_list <- getOption("emdash.supplementary_tables")
-
-      # For each supplementary table, query the corresponding data
-      for (t in table_list) {
-        table_type <- names(t)
-        table_title <- t[[table_type]]$tab_name
-
-        message(paste("About to load", table_title))
-        if (table_type == "Checkinout") {
-          # Get bike check in and include the object ID so we can use it instead of user_id for CUD
-          data_r[[table_type]] <-
-            cons$Checkinout$find(
-              query = "{}",
-              fields = "{}" # get all fields, including objectId
-            ) %>%
-            as.data.table()
-        } else {
-          data_r[[table_type]] <- cons[[table_type]]$find("{}") %>%
-            as.data.table()
-        }
-
-        if ("user_id" %in% colnames(data_r[[table_type]])) {
-          data_r[[table_type]] %>%
+      message("Loading timeuse data")
+      timeuse_records <- cons$Stage_timeseries$find(
+        query = sprintf(
+          '{
+          "metadata.key" : "manual/survey_response",
+          "data.name" : "TimeUseSurvey",
+          %s
+        }',
+          mongo_create_find_in_uuid_query("user_id", stage_uuids$uuid_decoded)
+        ),
+          fields = '{
+            "user_id": true,
+            "metadata.write_fmt_time": true,
+            "data.label": true,
+            "data.response.sub_label": true,
+            "data.response.activity_startdate": true,
+            "data.response.activity_starttime": true,
+            "data.response.activity_endtime": true
+          }'
+        ) 
+        if (nrow(timeuse_records) != 0) {
+          data_r$timeuse <- timeuse_records %>%
+            as.data.table() %>%
             normalise_uuid() %>%
-            data.table::setcolorder(c("user_id"))
+            .[, .SD, .SDcols = -patterns("^X_id$")] %>%
+            merge(data_r$participants[, .(user_id, user_email)], by = "user_id") %>%
+            data.table::setcolorder(c("user_id", "user_email"))
+        } else {
+          data_r$timeuse <- data.frame()
         }
-        message(paste("Finished loading", table_title))
-      }
-
       data_r$click <- runif(1)
     },
     ignoreNULL = FALSE

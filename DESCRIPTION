@@ -33,14 +33,15 @@ Imports:
     sf,
     purrr,
     checkmate,
-    DTedit,
     htmlwidgets
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 URL: https://github.com/asiripanich/emdash
 BugReports: https://github.com/asiripanich/emdash/issues
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat
-Remotes: DavidPatShuiFong/DTedit@7ce8de1b5fcd7195beee73ed4acce8ac33140ab7
 Config/testthat/edition: 3
+VignetteBuilder: knitr

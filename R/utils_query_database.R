@@ -3,6 +3,7 @@
 #' @param cons a list of connections created with [connect_stage_collections()].
 #' @param dates a date range, a character vector of length two.
 #'  Dates must be in this format "yyyy-mm-dd".
+#' @param uuid a character vector of user IDs to be queried.
 #'
 #' @return a data.frame/data.table.
 #' @name query
@@ -333,19 +334,40 @@ count_total_trips <- function(cons) {
     normalise_uuid()
 }
 
-# Gets date and mode related trip information for all trips
-query_trip_dates <- function(cons, confirmed_user_input_column) {
-  small_trip_query <- cons$Stage_analysis_timeseries$find(
-    query = '{"metadata.key": "analysis/confirmed_trip"}',
-    fields = sprintf('{"data.start_local_dt":true,
-              "data.start_fmt_time":true,
-              "data.end_local_dt":true,
-              "data.end_fmt_time":true,
-              "%s":true,
-              "user_id":true,
-              "_id":false}', confirmed_user_input_column)
-  )
-  return(small_trip_query)
+#' Get manual survey responses
+#' 
+#' @description 
+#' This function returns the manual survey response objects stored in
+#' the 'Stage_timeseries' collection. These are Enketo responses that
+#' emTripLog and its Forks applications stored.
+#' 
+#' @cons an e-mission MongoDB connection object.
+#' 
+#' @return a data.table object
+#' @export
+query_manual_survey_response <- function(cons) {
+  cons$Stage_timeseries$find(
+    query = '{"metadata.key": "manual/survey_response"}'
+  ) %>% 
+  as.data.table()
+}
+
+#' @rdname query_manual_survey_response
+#' @export 
+query_time_use_response <- function(cons) {
+  cons$Stage_timeseries$find(
+    query = '{"metadata.key" : "manual/survey_response", "data.name" : "TimeUseSurvey"}'
+  ) %>% 
+  as.data.table()
+}
+
+#' @rdname query_manual_survey_response
+#' @export 
+query_trip_confirm_response <- function(cons) {
+  cons$Stage_timeseries$find(
+    query = '{"metadata.key" : "manual/survey_response", "data.name" : "TripConfirmSurvey"}'
+  ) %>% 
+  as.data.table()
 }
 
 #' @rdname query
@@ -432,17 +454,66 @@ query_raw_trips <- function(cons) {
 }
 
 #' @rdname query
+#' @param user_emails user_email values in the Stage UUID collection to be filtered.
 #' @export
-query_stage_uuids <- function(cons) {
-  cons$Stage_uuids$find() %>%
+query_stage_uuids <- function(cons, user_emails = NULL) {
+  if (!is.null(user_emails)) {
+    user_emails_array <-
+      mongo_create_find_in_query(
+        field = "user_email",
+        paste0('"', user_emails, '"', collapse = ",")
+      )
+  } else {
+    user_emails_array <- ""
+  }
+
+  q <- sprintf("{%s}", user_emails_array)
+
+  cons$Stage_uuids$find(q) %>%
     as.data.table(.) %>%
-    normalise_uuid(., keep_uuid = FALSE)
+    .[, uuid_decoded := sapply(uuid, function(x) {
+      base64enc::base64encode(x)
+    })] %>%
+    normalise_uuid(., keep_uuid = TRUE)
 }
+
+
 
 #' @rdname query
 #' @export
-query_stage_profiles <- function(cons) {
+query_stage_profiles <- function(cons, user_id) {
   cons$Stage_Profiles$find() %>%
     as.data.table() %>%
     normalise_uuid(., keep_uuid = FALSE)
+}
+
+mongo_create_uuid_array <- function(uuid) {
+  paste0(
+      '{"$binary": {"base64": "', uuid, '","subType": "3"}}',
+      collapse = ","
+  )
+}
+
+#' @param field a field to find `x` in.
+#' @param mongo_array a mongo array as character.
+mongo_create_find_in_query <- function(field, mongo_array) {
+  checkmate::expect_character(field)
+  checkmate::expect_character(mongo_array)
+  sprintf('"%s": {"$in": [%s]}', field, mongo_array)
+}
+
+mongo_create_find_in_uuid_query <- function(field, uuid) {
+  mongo_create_uuid_array(uuid) %>%
+    mongo_create_find_in_query(field = field, .)
+}
+
+mongo_create_confirmed_trips_query <- function(uuid = NULL) {
+  if (!is.null(uuid)) {
+    q <- mongo_create_uuid_array(uuid) %>%
+      mongo_create_find_in_query(field = "user_id", .) %>%
+      sprintf('{"metadata.key": "analysis/confirmed_trip", %s}', .)
+  } else {
+    q <- '{"metadata.key": "analysis/confirmed_trip"}'
+  }
+  return(q)
 }

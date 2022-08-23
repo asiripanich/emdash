@@ -133,18 +133,6 @@ app_server <- function(input, output, session) {
   )
 
   # DATA TABS
-  #
-  # use these to generate lists of columns to inform which columns to remove
-  # data_r$participants %>% colnames() %>% dput()
-  # data_geogr$trips %>% colnames() %>% dput()
-  # POSSIBLE LINE: allNames[!(allNames %in% config$column_names)]
-  # cols_to_remove_from_participts_table <- c("first_trip_datetime",
-  #                                            "last_trip_datetime")
-
-  # Only append supplementary table tabs on startup.
-  startup_load_supplementary <- reactiveVal(TRUE)
-  tableList <- getOption("emdash.supplementary_tables")
-
   observeEvent(data_r$click, {
     callModule(mod_DT_server, "DT_ui_participants",
       data = data_r$participants %>%
@@ -155,116 +143,12 @@ app_server <- function(input, output, session) {
           skip_absent = TRUE
         )
     )
+  })
 
-    # For each supplementary table, append a new tabPanel and run the server function
-    # that specifies table behavior
-    for (t in tableList) {
-      table_type <- names(t)
-      table_title <- t[[table_type]]$tab_name
-
-      suppl_table <- data_r[[table_type]]
-
-      # Set the options used by DT::renderDataTable within dtedit and mod_DT
-
-
-      # If the table has a timestamp, make a copy of the timestamp column called fmt_time
-      if ("ts" %in% colnames(suppl_table)) {
-        suppl_table[["fmt_time"]] <- suppl_table[["ts"]]
-        fmt_time_index <- which(names(suppl_table) == "fmt_time")
-
-        # Add columnDefs to datatable options to convert fmt_time to a Date
-        datatable_options <- list()
-        datatable_options[["columnDefs"]] <- list(list(
-          # target column indices start from 0.
-          # However, DT adds a row number column to the display as the 0th column
-          targets = fmt_time_index,
-          render = htmlwidgets::JS(
-            "function(data, type, row) {",
-            "return new Date(data*1000);",
-            "}"
-          )
-        ))
-      }
-
-      suppl_table <- data_r[[table_type]]
-
-      # If the table has a timestamp, make a copy of the timestamp column called fmt_time
-      if ("ts" %in% colnames(suppl_table)) {
-        suppl_table[["fmt_time"]] <- suppl_table[["ts"]]
-        fmt_time_index <- which(names(suppl_table) == "fmt_time")
-
-        # Add columnDefs to datatable options to convert fmt_time to a Date
-        datatable_options <- list()
-        datatable_options[["columnDefs"]] <- list(list(
-          # target column indices start from 0.
-          # However, DT adds a row number column to the display as the 0th column
-          targets = fmt_time_index,
-          render = htmlwidgets::JS(
-            "function(data, type, row) {",
-            "return new Date(data*1000);",
-            "}"
-          )
-        ))
-      }
-
-      # If the table is Bike Check In and there is an 'editable' field, use dtedit
-      if (table_type == "Checkinout" & "editable" %in% names(t$Checkinout)) {
-        if (isTRUE(startup_load_supplementary())) {
-          editable_table_tab <- tabPanel(
-            status = "primary",
-            title = table_title,
-            value = table_type,
-            mod_DTedit_ui(id = paste0("DTedit_", table_type))
-          )
-
-          appendTab(
-            inputId = "tabs",
-            tab = editable_table_tab,
-            select = FALSE,
-            menuName = NULL,
-            session = getDefaultReactiveDomain()
-          )
-        }
-
-        callModule(
-          module = mod_DTedit_server,
-          id = paste0("DTedit_", table_type),
-          table_data = suppl_table,
-          table_type = table_type,
-          suppl_table_sublist = t,
-          DT_options = datatable_options,
-          cons
-        )
-      }
-      # For other supplementary tables, use mod_DT
-      else {
-        if (isTRUE(startup_load_supplementary())) {
-          regular_tab <- tabPanel(
-            status = "primary",
-            title = table_title,
-            value = table_type,
-            mod_DT_ui(id = paste0("DT_ui_", table_type))
-          )
-
-          appendTab(
-            inputId = "tabs",
-            tab = regular_tab,
-            select = FALSE,
-            menuName = NULL,
-            session = getDefaultReactiveDomain()
-          )
-        }
-
-        # Run mod_DT_server using data for the current table
-        callModule(
-          module = mod_DT_server,
-          id = paste0("DT_ui_", table_type),
-          data = suppl_table,
-          DT_options = datatable_options
-        )
-      }
-    }
-    startup_load_supplementary(FALSE)
+  observeEvent(data_r$click, {
+    callModule(mod_DT_server, "DT_ui_timeuse",
+      data = data_r$timeuse
+    )
   })
 
   observeEvent(data_geogr$click, {

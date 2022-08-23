@@ -14,8 +14,8 @@
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 
-run_app <- function(mongo_url, config_file = getOption("emdash.config_file"), ...) {
-  if (!missing(mongo_url)) {
+run_app <- function(mongo_url = NULL, config_file = getOption("emdash.config_file"), ...) {
+  if (!is.null(mongo_url)) {
     checkmate::assert_string(mongo_url)
     options("emdash.mongo_url" = mongo_url)
   }

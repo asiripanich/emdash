@@ -4,7 +4,7 @@
 \alias{run_app}
 \title{Run the Shiny Application}
 \usage{
-run_app(mongo_url, config_file = getOption("emdash.config_file"), ...)
+run_app(mongo_url = NULL, config_file = getOption("emdash.config_file"), ...)
 }
 \arguments{
 \item{mongo_url}{address of the emisison mongodb server in mongo
