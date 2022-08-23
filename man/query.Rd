@@ -63,9 +63,9 @@ query_cleaned_section(cons)
 
 query_raw_trips(cons)
 
-query_stage_uuids(cons)
+query_stage_uuids(cons, user_emails = NULL)
 
-query_stage_profiles(cons)
+query_stage_profiles(cons, user_id)
 }
 \arguments{
 \item{cons}{a list of connections created with [connect_stage_collections()].}
@@ -76,6 +76,10 @@ Dates must be in this format "yyyy-mm-dd".}
 \item{sample_size}{number of location documents to be queried.}
 
 \item{n}{number of trips used by `query_most_recent_n_trip_docs()`}
+
+\item{user_emails}{user_email values in the Stage UUID collection to be filtered.}
+
+\item{uuid}{a character vector of user IDs to be queried.}
 }
 \value{
 a data.frame/data.table.
